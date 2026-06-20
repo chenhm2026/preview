@@ -1,15 +1,28 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>公众号兼容性全元素测试 (mp-mode)</title>
-<style>body{max-width:680px;margin:0 auto;padding:20px;font-family:-apple-system,sans-serif;background:#fff;}
-.test-instruction{background:#fff7e6;border-left:4px solid #ff9800;padding:12px 16px;margin-bottom:24px;font-size:13px;color:#664;}
-.test-instruction code{background:#f5e9d0;padding:2px 6px;border-radius:3px;}</style>
+<style>
+  body { max-width: 720px; margin: 0 auto; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; background: #f5f5f5; }
+  .toolbar { position: sticky; top: 0; z-index: 99; background: #fff; padding: 16px 20px; border-bottom: 1px solid #e5e5e5; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+  .toolbar h1 { margin: 0 0 8px; font-size: 16px; color: #333; }
+  .toolbar p { margin: 0 0 12px; font-size: 13px; color: #666; line-height: 1.6; }
+  .toolbar p code { background: #f5e9d0; padding: 1px 6px; border-radius: 3px; font-size: 12px; }
+  #copy-btn { display: inline-block; padding: 10px 24px; background: #D4622A; color: #fff; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; }
+  #copy-btn:hover { background: #B85420; }
+  #copy-btn.copied { background: #22C55E; }
+  .canvas { background: #fff; padding: 20px; }
+  #mp-content { /* 不加任何额外样式，让 mp-mode HTML 自渲染 */ }
+</style>
 </head><body>
-<div class="test-instruction">
-  <strong>📋 测试说明</strong><br>
-  这是 <code>--mp-mode</code> 推送版（微信兼容版）的全元素测试 HTML。<br>
-  请在<strong>电脑浏览器</strong>打开本页 → <code>Ctrl+A</code> 全选 → <code>Ctrl+C</code> → 微信公众号编辑器 <code>Ctrl+V</code> 粘贴。<br>
-  然后截图微信里的渲染效果给我，我会逐个元素核对哪些样式被保留、哪些被剥掉。
+
+<div class="toolbar">
+  <h1>📋 公众号兼容性全元素测试（mp-mode 版）</h1>
+  <p>请在 <strong>电脑浏览器</strong> 打开本页 → 点下面 <code>📋 一键复制（仅复制下方内容）</code> → 微信公众号编辑器 <code>Ctrl+V</code> 粘贴 → 截图给我。<br>
+  <strong>不要用 Ctrl+A</strong>，那会把这个工具栏一起选上，污染粘贴结果。</p>
+  <button id="copy-btn" onclick="copyMpContent()">📋 一键复制（仅复制下方内容）</button>
 </div>
+
+<div class="canvas">
+  <div id="mp-content">
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; margin: 0 auto; padding: 20px 0;">
 
   <div style="margin: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(212,98,42, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
@@ -146,4 +159,48 @@
 
   <p style="font-size: 14px; color: #374151; line-height: 2; margin: 0 0 24px; word-break: break-all;">#兼容性测试 #排版调试 #微信公众号</p>
 </div>
+  </div>
+</div>
+
+<script>
+function copyMpContent() {
+  var btn = document.getElementById('copy-btn');
+  var target = document.getElementById('mp-content');
+  if (!target) return;
+  var html = target.innerHTML;
+  var plain = target.innerText;
+  
+  if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+    var blob = new Blob([html], {type: 'text/html'});
+    var plainBlob = new Blob([plain], {type: 'text/plain'});
+    navigator.clipboard.write([
+      new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+    ]).then(function() { showCopied(btn); })
+      .catch(function() { fallbackCopy(btn, target); });
+  } else {
+    fallbackCopy(btn, target);
+  }
+}
+function fallbackCopy(btn, target) {
+  var range = document.createRange();
+  range.selectNodeContents(target);
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  try {
+    document.execCommand('copy');
+    showCopied(btn);
+  } catch(e) { alert('复制失败，请手动选中下方内容复制'); }
+  sel.removeAllRanges();
+}
+function showCopied(btn) {
+  btn.classList.add('copied');
+  btn.textContent = '✓ 已复制，去微信编辑器粘贴吧';
+  setTimeout(function() {
+    btn.classList.remove('copied');
+    btn.textContent = '📋 一键复制（仅复制下方内容）';
+  }, 2500);
+}
+</script>
+
 </body></html>

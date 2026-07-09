@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>飞哥公众号文章</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #ffffff;
+    color: #374151;
+    line-height: 1.75;
+    letter-spacing: 0.5px;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 20px 0;
+  }
+
+  @media (max-width: 600px) {
+    .container {
+      padding: 0;
+    }
+  }
+
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover {
+    background: #DE7356;
+    color: #ffffff;
+    border-color: #DE7356;
+  }
+  #copy-btn.copied {
+    background: #22C55E;
+    color: #ffffff;
+    border-color: #22C55E;
+  }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.container');
+    if (!container) return;
+
+    // 优先用 ClipboardItem 写 text/html，保留富文本格式
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function() {
+        showCopied(btn);
+      }).catch(function() {
+        fallbackCopy(btn, container);
+      });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+
+  function fallbackCopy(btn, container) {
+    // 创建临时选区覆盖 container
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    try {
+      document.execCommand('copy');
+      showCopied(btn);
+    } catch(e) {
+      alert('复制失败，请手动 Ctrl+A / Cmd+A 全选后复制');
+    }
+    sel.removeAllRanges();
+  }
+
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '✓ 已复制';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>一键复制';
+    }, 2000);
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div class="container">
+
+  <section style="margin: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(58,136,145, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #3A8891; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #3A8891;">BREAKING</span>
+        <span style="flex: 1; height: 1px; background: linear-gradient(to right, rgba(58,136,145, 0.15), transparent);"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.07</span>
+      </section>
+      <section style="display: flex; align-items: center; gap: 20px;">
+        <section style="flex: 1;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; margin: 0; line-height: 1.1; letter-spacing: -1px;">新疆20天，我记下了这趟旅程所有舍不得忘的瞬间</p>
+          <section style="width: 48px; height: 3px; background: linear-gradient(to right, #3A8891, #E8956D); border-radius: 2px; margin: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; margin: 0; line-height: 1.7; letter-spacing: 0.5px;">从赛里木湖的晴雨到库车小巷的灯火，一家老小7人，被朋友托举起来的20天</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+<div style="text-align: center; font-size: 14px; color: #A0926B; padding: 0 0 12px;">📖 全文 7209 字 · 约 25 分钟</div>
+<section style="background: #FBF6EC; border-left: 4px solid #3A8891; border-radius: 8px; overflow: hidden; padding: 0 0 28px 0;"><section style="padding: 18px 22px;"><section style="padding-bottom: 10px;"><span style="font-size: 14px; color: #3A8891; font-weight: bold; letter-spacing: 1px;">📌 本期导读</span></section><section><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">20天，7个人，11个节点，被颢姐一程一程托举着走完。赛里木湖遇上阴雨又放晴，六星街没听到巴扬琴声，喀拉峻被草原击中心口，回程的绿皮火车把风景放成慢电影。<strong style="font-weight: 900; color: #111827;">这不是一份攻略，是一份舍不得忘的清单。</strong></p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">---</p></section></section></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #3A8891, #E8956D); border-radius: 12px; overflow: hidden; display: table; width: 100%; box-sizing: border-box;">
+      <section style="display: table-cell; width: 1%; white-space: nowrap; padding: 14px 16px; vertical-align: middle; text-align: center; border-right: 1px solid rgba(255,255,255,0.22);">
+        <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+        <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">01</span>
+      </section>
+      <section style="display: table-cell; padding: 14px 18px; vertical-align: middle;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35;">一、被朋友托举起来的一趟旅行</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">去新疆找我的贵人颢姐，是赴她多次的邀约。之前总被工作或生活琐事绊住，迟迟没能成行。这回总算把手里的事都捋顺了，腾出一大段空闲时间，才终于飞了过去。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">出发其实挺仓促的。确认紧要事项都收尾了，剩下的也能远程处理，让家人大致地做了个攻略，一行人便动身了。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">我们七个，男女老少凑齐了。飞到乌鲁木齐，是颢姐亲自来接——她对我真的很好。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">颢姐生在新疆，如今定居南方，但仍不时回乡。自驾路上她常念叨："不去新疆不知中国有多大。"</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">回程也同样匆忙，因为客户要来签单。原计划玩到七月初，足足一个月，这下只能提前折返。颢姐说我们"来得突然，走得也突然"，算下来，在新疆总共待了二十天。</p>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">✨</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">关键一笔</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">这一路所有的遇见、所有的被照顾，都从"颢姐"两个字开始。
+一程一程的安排、朋友的朋友、一顿又一顿被塞满的饭，全是她托起来的。</p>
+  </section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(58,136,145, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #3A8891, #E8956D); border-radius: 12px; overflow: hidden; display: table; width: 100%; box-sizing: border-box;">
+      <section style="display: table-cell; width: 1%; white-space: nowrap; padding: 14px 16px; vertical-align: middle; text-align: center; border-right: 1px solid rgba(255,255,255,0.22);">
+        <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+        <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">02</span>
+      </section>
+      <section style="display: table-cell; padding: 14px 18px; vertical-align: middle;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35;">二、20 天路线 · 一程一程舍不得忘</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;">🥛 2.0 昌吉休整</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我们抵达乌鲁木齐时已是深夜，隔天没有急着赶路，而是在昌吉休整了一天。颢姐带我们采购了物资，为接下来的长途旅行做足准备。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">岔开一个题外话，新疆的鲜牛奶真是好喝又便宜，图里这么一大袋鲜奶只要5块钱，我女儿喝了鲜奶后，再给她冲奶粉，她说：这个不好喝，我要喝有加"甜"的牛奶。</p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/SwnFRD1P/img-01.jpg" alt="昌吉鲜奶大袋 5 块钱" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">第三天我们一早从昌吉出发，直奔赛里木湖。</p>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">实用小记</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">鲜牛奶 5 块钱一大袋，真的好喝又便宜，是新疆给我们的第一个见面礼。</p>
+  </section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(58,136,145, 0.3), transparent); margin: 24px 0;"></section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;">🏔 2.1 赛里木湖 · 果子沟大桥</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我们提前一天就买好了门票——六月的赛里木湖虽不算最旺季，但当天临时购票仍有售罄的可能。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">从昌吉出发，车程大约六个小时，抵达时已是下午。我们从景区东门进入，沿逆时针方向绕湖，最后从南门驶出；这条路线上的湖面正好顺光，据说会呈现出亮蓝色。不过刚到的时候天色有些阴沉，湖面并不很明亮，但深邃的蓝色依旧很美，远处雪山连绵，湖边风也大。没过多久，雨便落了下来，山间雾气弥漫，湖水泛着灰蓝。然而雨很快停了，云层散开，阳光洒下，湖面瞬间变为耀眼的亮蓝色——<strong style="font-weight: 900; color: #111827;">短短几个小时，阴、雨、晴我们都赶上了，实在幸运。</strong></p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/WvkmXc2Q/img-02.jpg" alt="赛里木湖晴雨变幻" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">离开赛里木湖，沿连霍高速去伊宁，必经果子沟大桥。从隧道口一出往外看，烟雾缭绕的山景里，山上有积雪、有流水，空气里带着刚下完雨的那种朦胧。我们正赶上一场雨刚停，整个山间像被洗过一样，恍若走进一幅山水画。说实话，我觉着果子沟大桥的景色比赛里木湖还要更好看一些。</p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/m5DhXnv0/img-03.jpg" alt="果子沟大桥云雾山色" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">✨</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">这一程的金句</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;"><strong style="font-weight: 900; color: #111827;">短短几个小时，阴、雨、晴我们都赶上了，实在幸运。</strong>
+旅行最妙的部分，是被天气突然加进来的那一笔。</p>
+  </section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(58,136,145, 0.3), transparent); margin: 24px 0;"></section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;">🎻 2.2 伊宁六星街 · 《苹果香》</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">从果子沟下来，我们就到了伊宁市。这座城是伊犁河谷的核心，也是整个伊犁地区的交通枢纽，无论是往北去赛里木湖，还是往西去昭苏，或者往东去特克斯、那拉提，都以这里为中转。我们决定在伊宁住上几晚，一来休整一下，二来也想好好逛逛这座老城。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">第二天，我们去了六星街。这是伊宁市区里一片按六角形布局的老城区，街道从中心向六个方向辐射延伸，像是一个缩小版的八卦城。走在街上，能看到巴扬琴博物馆、手工艺品店，还有色彩鲜艳的维吾尔族民居——蓝色的门窗、爬满藤蔓的院墙，很有异域风情。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">去六星街还有一个特别的原因——那首《苹果香》。这首歌存在于我妈哄我女儿睡觉的歌单里，因为我女儿一睡觉就让智能音箱反复播，到后面连我都已经会唱了。"六星街里还传来巴扬琴声吗？"歌词里这样问。我好奇歌里唱的地方到底是什么样子，想亲眼去看一看。走进去才发现——巴扬琴声我没听到，但六角形的街道布局真的很有特点，从中心向六个方向蔓延开来，每条街都通向不同的街巷，走起来有种迷宫的趣味。<strong style="font-weight: 900; color: #111827;">虽然没有听到琴声，但那份安静的老城气息，反而更让人喜欢。</strong></p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/LDVV5Yry/img-05.jpg" alt="六星街一角" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/84Mcz1JX/img-06.jpg" alt="六星街花车" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">（反正我去的时候，阿列克桑德的面包房列巴还没出炉🤨）</p>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">给同行的你</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">"六星街里还传来巴扬琴声吗？"——我替你们听了，没有。
+但六角形的街道和安静的老城气息，更让人喜欢。</p>
+  </section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(58,136,145, 0.3), transparent); margin: 24px 0;"></section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;">🐎 2.3 昭苏：天马浴河、格登碑和骑马</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">从伊宁出发去昭苏，有200多公里的山路。昭苏在伊犁南部，是天马的故乡。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我们在昭苏县城住了两晚，选的那家酒店环境不错，旁边就是美食街，晚上逛吃很方便。说到吃，一定要提昭苏美食街上的手抓羊肉饭——羊肉是当地现宰的，做法是新疆传统的，先煮后蒸，米饭吸满羊汤的精华。</p>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">昭苏住宿小记</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">选酒店靠近美食街，晚上逛吃方便；当地手抓羊肉饭是必点。</p>
+  </section>
+
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;"># 第一天：天马浴河</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">到昭苏的第一天，颢姐为了招待我们，提前托了当地不少朋友帮忙安排。其中一位大哥先请我们吃了一顿地道的本地早餐。我至今还记得那个饼，奶呼呼、软绵绵的，咬下去满口奶香，配上刚挤出来的新鲜纯牛奶，特别的鲜香。樱桃和我都吃得不亦乐乎。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">吃饱喝足，我们下午去了昭苏湿地公园看天马浴河。这是个固定节目——一群马从河里奔跑而过，水花飞溅。马群奔跑的整齐度、速度感，加上河水的反光，整个画面非常壮观。</p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/gL6Mh5ht/img-08.jpg" alt="昭苏天马浴河" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不过我们到的时候已经下午五六点了，那天我们看的正好是当天的最后一场表演。能明显感觉到，这些马儿经过一天的来回奔波，状态已经不太好了。工作人员在前面赶、在后面催，它们为了"生计"不得不一趟趟地拼命奔跑。场面确实壮观，但看着它们被赶来赶去的样子，我心里还是有点不是滋味。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;"># 第二天：格登碑</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">第二天，颢姐的朋友带我们去了格登碑。这是个相对小众的景点，在昭苏县西部，对面就是哈萨克斯坦。碑是清朝年间立的，记录了清军平定准噶尔的历史。站在碑前能直接看到边境——哈萨克斯坦的山和村庄就在眼前，那种地理上的临近感很奇妙。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;"># 骑马与马奶酒</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">颢姐朋友的牧场就在草原上，雇人照看羊群，搭着蒙古包。我们一上午都在他们家。一群人轮流体验了骑马，老陈在马背上颠了一会儿，下来感慨：怪不得古代说男儿志在沙场。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">说实话，我以前对骑马的印象还停留在"景区里慢慢走一圈"，但真的在辽阔草原上策马奔腾时，那种豪情完全是另一种感觉——你坐在马背上，被风吹着，眼前是无边无际的草原，那一刻终于懂古人为什么写出"马作的卢飞快，弓如霹雳弦惊"。</p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/9mkVsXgy/img-09.jpg" alt="草原骑马" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">他们还请我们喝了马奶酒，是马奶发酵的酒。我喝不太惯，老陈倒是觉得好喝——他说口感酸酸的，有点像酸奶酒，第一口有点怪，第二口就习惯了，越喝越有滋味。</p>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">✨</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">这一程的金句</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">我以前对骑马的印象还停留在"景区里慢慢走一圈"，
+但真的在辽阔草原上策马奔腾时，<strong style="font-weight: 900; color: #111827;">你坐在马背上，被风吹着，眼前是无边无际的草原</strong>——那一刻终于懂古人为什么写出"马作的卢飞快，弓如霹雳弦惊"。</p>
+  </section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(58,136,145, 0.3), transparent); margin: 24px 0;"></section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;">☯️ 2.4 特克斯八卦城</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">从昭苏离开后，我们去了特克斯八卦城。特克斯是按八卦布局建的县城，整个城市从空中看是个巨大的八卦图。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我们在特克斯住了两晚，那家民宿真是这一路最舒服的一家——落地窗，窗外就是开阔的景色，并且室内装修很好地体现了房东不俗的品味。价格也实惠，三百多一晚，我们一行八九个人住下来特别划算。我妈离开之后一直念念不忘，老念叨那间屋子。</p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/23J3cDk9/img-10.jpg" alt="特克斯民宿落地窗" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">特克斯号称没有红绿灯，不过实际上街头增加了不少交警在维持交通秩序，<strong style="font-weight: 900; color: #111827;">所以我觉得"没有红绿灯"更像是个噱头。</strong></p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我觉得最有意思的是，我们骑着共享单车绕了整个县城。特克斯城区不大，骑共享单车刚好能转完，边骑边看放射状的路网，吹着自然凉风，这大概是最接地气的"看八卦城"的方式了。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">除了骑车，我们还坐了摩天轮。说实话，想坐的话最好再晚一点去——我们是晚上10点上去的，但新疆天黑得晚，那会儿天还很亮，路灯都没开，坐在上面并没有看到想象中的夜景。如果天色完全暗下来，整座城的灯都亮了，再从高处俯瞰八卦城的放射状街道，应该会特别漂亮。</p>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">实用提醒</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">摩天轮建议晚一点去！我们 10 点上去时天还亮着，
+最好天色完全暗下来、整座城的灯都亮了，再从高处俯瞰。</p>
+  </section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(58,136,145, 0.3), transparent); margin: 24px 0;"></section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;">🌾 2.5 喀拉峻大草原 · 姑娘峰</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">接着我们去了喀拉峻草原，从特克斯开车过去一个多小时。"喀拉峻"在哈萨克语里是"山脊上的草原"的意思。站上去往前看，连绵起伏的草坡一直铺到远处的雪山脚下——没有树，没有遮挡，就是一整片绿色的、流动的、望不到边的草原。<strong style="font-weight: 900; color: #111827;">那一刻我脑子里冒出"祖国山河的壮丽"这句话，不是喊口号，是身体真的被那个画面击中了</strong>，那种开阔感让人说不出话来。从喀拉峻回来我跟老陈说我们一定要多出去走走。</p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/mmMXVy8/img-11.jpg" alt="喀拉峻大草原" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">喀拉峻上山很方便，不想爬的话可以坐魔毯，10块钱一个人，特别划算。带着老人小孩完全不用担心，一点都不会累。我们在上面还玩了滑草，我已经记不得上次在山坡上滑草是什么时候了，但总之真的很刺激，满目都是漂亮的绿色，有山有树，滑下去的体验特别畅快。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">景区里还有当地的乐队在表演，摆了些椅子，大家慢悠悠地坐着听歌，有人跟着唱，有人跳舞，欢声笑语混在一起。现在想起来都觉得那段日子特别美好。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">不过说实话，景区里有个叫"鲜花台"的景点，名字听着挺美，但真去了发现没什么花，还不如我们在高速路上一路开过去看到的野花多。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">去那拉提镇之前，我们又顺路去了阿克塔斯姑娘峰，就在喀拉峻景区附近，是一片高山草甸。这个景点相对小众一些，但风景一点也不输喀拉峻，而且人少，看草原的体验更安静。</p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/qYgb4ZKx/img-12.jpg" alt="阿克塔斯姑娘峰" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这些景点都有拍照服务，说是"免费拍照"，拍完会送你一张小的（大概五六寸）照片，想要大照片就得加钱，30块一张。不过那个价格其实可以讲价——我妈在姑娘峰那儿30块钱买了三张。我和老陈听到都惊呆了，因为就在喀拉峻我们刚花30块买了一张，顿时觉得自己亏爆了。</p>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">✨</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">这一程的金句</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;"><strong style="font-weight: 900; color: #111827;">"祖国山河的壮丽"，不是喊口号，是身体真的被那个画面击中了。</strong>
+那种开阔感让人说不出话来。</p>
+  </section>
+
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">拍照可以讲价</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">30 块一张大照片，能讲价就讲价。
+我妈在姑娘峰 30 块买了 3 张，我和老陈瞬间觉得自己亏爆了。</p>
+  </section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(58,136,145, 0.3), transparent); margin: 24px 0;"></section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;">🏞 2.6 那拉提、巴音布鲁克和独库公路</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">那拉提大草原被称为"空中草原"——草原在山坡上，视野极其开阔。我们到了之后才真正明白"空中"是什么意思：你站在草原上，对面是连绵的雪山和层叠的森林，那不是平原上一览无余的那种开阔，而是一种"被抬起来"的开阔——仿佛整个草原被托举在半空中，天地在你脚下铺开，头顶是低垂的云，脚下是起伏的绿，人在中间显得特别渺小。</p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/DHmZTdWP/img-13.jpg" alt="那拉提空中草原" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">从那拉提往巴音布鲁克走，原本是要全程走独库公路的。那段路在来之前就被很多人提起，我们也都特别期待。但赶上天气不好，北段因为泥石流和山体滑坡封了路，没能走成。独库公路一年只开放短短几个月，赶上就赶上，赶不上也没有办法——没能走完最精华的那段，算是这一趟小小的遗憾吧。</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(58,136,145, 0.3), transparent); margin: 24px 0;"></section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;">🌙 2.7 库车和天山神秘大峡谷</h3>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/D39GVnM/img-14.jpg" alt="天山大峡谷入口" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">从伊犁到南疆的过渡，库车是个重要的节点。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我们去了库车王府，门票我记得是55块一个人，进去后有关于库车历史的展示，从古龟兹国到清代到民国，能大概了解南疆在丝绸之路上的位置。不过说实话，里面逛下来没什么特别吸引人的地方，原本说是可以跟中国最后一位王妃合影，结果我们去的时候王妃已经下班了，没见着。总的来说，这个王府我觉得不太值得专门跑一趟。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">从王府出来，对面就是一条步行街，一个个小摊子连成一片，卖什么的都有。我们本来是自己闲逛着，后来看到路边有那种花车——像人力三轮车的样子，但其实是电动的，能坐上十个人。车夫大叔报价一个人20块，我们七八个人，我就试着讲了个价："100行不行？"他爽快地答应了。然后他就拉着我们逛起来，每到一个小景点就让我们下车进去转一圈，他在外面等着，转完再接着去下一个，全程大概三四十分钟。车很漂亮，大叔人也特别好，一路上不停地给我们讲各个地方的历史和来历。中间有一处空地，两个大叔在那儿弹乐器，周围的人在跳舞，拉车的大叔也停下车跑过去一起跳。我这个汉族人只会在旁边鼓掌，能歌善舞这件事，真的羡慕不来。天黑以后，步行街的灯全部亮起来，整条街变得特别漂亮。白天看的时候虽然也好看，但总觉得商业味有点浓，人造的痕迹重了些。但晚上灯一亮，完全是另一个层次的美，感觉整条街的气质都不一样了。<strong style="font-weight: 900; color: #111827;">总之这100块花得很值，不光坐了车，还听了一路的故事，逛了好几个地方。</strong></p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/20wNpRBW/img-15.jpg" alt="库车步行街花车" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/v6gGVrWw/img-16.jpg" alt="库车步行街夜景" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">在库车市区歇了一晚之后，隔天一早我们就驱车去了天山神秘大峡谷。那其实是我特别想去的一个地方，但到了售票处才发现，里面的观光车正在维修，全程只能靠走。从入口走到终点再折返，起码要三个小时，那天三十几度的高温，我们一行人里年纪最大的70岁，最小的才两岁多，实在走不了，只好放弃了。回来之后我一直跟老陈念叨，下次来我一定要自己进去走一趟，一定要亲眼看看里面的样子。这个景点没去成，真的是我这一路挺大的一个遗憾。</p>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">库车小记</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">- 库车王府 55 块/人，没什么特别值得的，王妃还下班了；
+- <strong style="font-weight: 900; color: #111827;">步行街花车 100 块 7 个人</strong>，听一路故事逛一路地方，超值；
+- 天山神秘大峡谷观光车维修得走 3 小时，老人小孩慎入。</p>
+  </section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(58,136,145, 0.3), transparent); margin: 24px 0;"></section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;">🍑 2.8 博斯腾湖·库尔勒</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">从库车往库尔勒方向走，颢姐提议说中间可以去博斯腾湖转转。我在路上搜了一下，网上对它的评价普遍是"平平无奇，没什么特别值得看的"，于是我们就只是开到景区门口绕了一圈，没进去就往回走了。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">到了库尔勒之后，颢姐当地的朋友秀秀姐热情地接待了我们，带我们去摘野桑葚。路边的桑树一丛一丛的，桑葚一串一串挂在树上，有白色的，也有紫色的，完全是在野外自然长的，不是果园里那种。<strong style="font-weight: 900; color: #111827;">说实话，我在南方也吃过桑葚，一直不太喜欢，觉得不好吃，这回才明白——原来不是桑葚不好吃，是我以前压根没吃过好吃的。</strong> 秀秀姐还说，要是再晚来几天，就能赶上药桑葚了，那种桑葚的汁液红得像血一样，特别补血。可惜我们行程赶不上，没吃成，总觉得以后还得再来一趟，必须补上这个遗憾。</p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/fYNKpqtH/img-17.jpg" alt="库尔勒野桑葚" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">除了桑葚，我们还摘了大量的杏子，个个都甜得很。我在南方唯一接触过的"杏"相关的东西，大概就是杏仁露了，偏偏我又觉得那玩意儿不好喝，所以对杏子一直很排斥。但看到树上那些杏子，长得小小个，毛茸茸的，黄澄澄的，就想说试着尝一个吧。结果一吃——哇，超级好吃，还有一种淡淡的水蜜桃的香味，不知道是不是我的错觉。更意外的是，把杏核晒干敲开，里面就是杏仁，新鲜的杏仁也很好吃。那一瞬间我真的觉得，以前在南方没吃过什么好东西。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">当天晚上，秀秀姐还请我们吃了当地一家馆子，点了羊肉串和过油肉拌面，超级无敌好吃。最让我意外的是我妈——她从来不吃羊肉的，这次尝了一口，发现竟然一点膻味都没有，直接撸了一大串，简直是破了她人生记录了。</p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/1Y2wfWpH/img-18.jpg" alt="库尔勒羊肉串" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">✨</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">这一程的金句</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;"><strong style="font-weight: 900; color: #111827;">原来不是桑葚不好吃，是我以前压根没吃过好吃的。</strong>
+旅行常把"我以前不喜欢"翻篇成"我以前压根没遇到过"。</p>
+  </section>
+
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">库尔勒小记</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">- 野桑葚、药桑葚时间对不上就赶不上，要去赶早；
+- 杏子现摘现吃带淡淡水蜜桃香，杏仁也新鲜好吃；
+- 当地羊肉串、羊肉"无膻味"——不吃羊肉的我妈都破例撸了一大串。</p>
+  </section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(58,136,145, 0.3), transparent); margin: 24px 0;"></section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;">↩️ 2.9 返回昌吉</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">从库尔勒出发，我们经天山隧道返回昌吉。天山隧道本身其实很壮观，只可惜前面玩得太久，新疆的景点之间动不动就是几百公里，车程实在太长，我们一路上睡得昏昏沉沉，隧道再美也没怎么好好看。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这一趟全程都是颢姐一个人开车，载着我们一大家子。到最后一天，她因为休息不够已经非常疲惫了。她自己说，这趟完全是一次自我挑战，要不是为了我，她是绝对不会做这个事情的——她经常说很幸运能遇见我这个丫头——我听到后心里特别感动。</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(58,136,145, 0.3), transparent); margin: 24px 0;"></section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;">🐎 2.10 昌吉休整 · 汗血宝马基地 · 新疆餐厅</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">回到昌吉又休息了几天，颢姐的朋友带我们去乌鲁木齐汗血宝马基地。十几匹马成群的奔跑，场面非常帅气。</p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/q3XGJxP6/img-19.jpg" alt="汗血宝马" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">最后还去了当地一家新疆餐厅，边吃边看歌舞表演。反正我们家老的小的，都兴奋得不行，跟着演员一起跳舞，非常开心。这家餐厅我也觉得挺值得推荐的，如果有机会去的话可以试试。</p>
+
+  <section style="margin: 24px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); line-height: 0;">
+    <img src="https://i.ibb.co/WN2mmHdq/img-20.jpg" alt="新疆餐厅歌舞" style="width: 100%; max-width: 100%; display: block; border-radius: 16px;" />
+  </section>
+
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">乌鲁木齐周边</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">- 汗血宝马基地，十几匹马成群奔跑，场面很帅；
+- 新疆餐厅"边吃边看歌舞"，去的话值得安排一顿。</p>
+  </section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(58,136,145, 0.3), transparent); margin: 24px 0;"></section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #3A8891; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #3A889133;">🚂 2.11 返程 · 绿皮火车</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">在昌吉休整了几天之后，我临时有客户要来，于是我们开始准备返程了。颢姐建议我们一路坐绿皮火车回广东，说虽然时间长一点，但可以看风景，体验很不一样。我们想了想，时间也来得及，就采纳了她的建议。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">从乌鲁木齐出发，火车一路向东，穿过戈壁、沙漠、草原，再慢慢进入秦岭、黄土高原，最后一路南下到广东。全程大概五十个小时，两天两夜多，听着确实挺长的，但真正坐上去了，反而觉得时间过得很快。窗外的景色一直在变——前面还是茫茫的戈壁滩，一望无际的黄色，过几个小时就变成了绿色的田野和村庄；早晨醒来，窗外可能是连绵的群山，傍晚又变成了金色的麦田。你什么都不用做，就坐在窗边看着风景一点一点地后退，像在看一部放得很慢很慢的电影。</p>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">✨</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">这一程的金句</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">五十个小时，<strong style="font-weight: 900; color: #111827;">窗外风景一点一点地后退，像在看一部放得很慢很慢的电影。</strong>
+什么都不用做，就坐着看——这是我这一路最奢侈的"发呆"。</p>
+  </section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(58,136,145, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #3A8891, #E8956D); border-radius: 12px; overflow: hidden; display: table; width: 100%; box-sizing: border-box;">
+      <section style="display: table-cell; width: 1%; white-space: nowrap; padding: 14px 16px; vertical-align: middle; text-align: center; border-right: 1px solid rgba(255,255,255,0.22);">
+        <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+        <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">03</span>
+      </section>
+      <section style="display: table-cell; padding: 14px 18px; vertical-align: middle;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35;">三、回来的改变</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">回到广东之后，新疆的草原、雪山、湖泊、马群、桑葚、杏子、羊肉串、歌舞——全都还在脑子里转。但除了这些回忆，这次旅程还留下了一样东西：我和老陈下决心要重新学开车了。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">在新疆的时候，我们认识了一对北京来的退休夫妇，大哥大姐60岁左右，特别开朗，3月开着轿车一路从北京出发，先逛了内蒙古，又来到新疆，现在应该在甘肃。我和老陈跟他们一起吃早饭，听他们聊起这种生活方式——想去哪就去哪，不用赶时间，不用看攻略，走哪算哪。我们俩当时对视了一眼，那种"我们以后也要这样"的感觉，根本不用说出口，两个人都明白。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">其实我和老陈都是十多年前就拿过驾照的人了，但一直不需要开车，驾驶技能早就还给驾校教练了。<strong style="font-weight: 900; color: #111827;">这次新疆之行后，老陈主动把"重新练车"这件事提上了议程。有些事，真的是被别人激发的，不是自己想通的。</strong></p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">在此，也想借这篇文字，再一次感谢颢姐和她的朋友们这一路的热情款待。从出发前的物资采购，到途中拜托当地朋友安排食宿、带我们体验最地道的新疆，每一个细节都有颢姐的用心和人情在。没有她，就没有这趟旅行，也不会有这些文字。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我想，我以后一定会再回去的。下次再去，可能就是自己开着车了。</p>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #3A8891; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(58,136,145, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">✨</span>
+      <span style="font-size: 16px; font-weight: 900; color: #3A8891; letter-spacing: -0.2px;">这一程的收束</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;"><strong style="font-weight: 900; color: #111827;">有些事，真的是被别人激发的，不是自己想通的。</strong>
+旅行最大的价值，往往是激发出那些原本以为"以后再说"的事。</p>
+  </section>
+
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(58,136,145, 0.3), transparent); margin: 32px 0 28px;"></section>
+
+  <section style="margin: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(58,136,145, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #3A8891; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #3A8891; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+  <section style="margin: 0 0 16px; padding: 22px 24px; background: #ffffff; border-radius: 14px; border: 1px solid rgba(58,136,145, 0.15); border-left: 3px solid #3A8891;">
+    <p style="font-size: 14px; font-weight: 700; color: #3A8891; margin: 0 0 8px; letter-spacing: 0.3px;">💬 聊聊你的故事</p>
+    <p style="font-size: 14px; color: #374151; line-height: 1.85; margin: 0;">这一路最让你心动的，是赛里木湖的晴雨变幻、喀拉峻的草原击中心口、绿皮火车的两天两夜，还是旅途中某个人托举起来的善意？ 新疆最让你想去的，或者最让你想再回去一次的，是哪里？</p>
+    <p style="font-size: 14px; color: #BBBBBB; margin: 10px 0 0; line-height: 1.6;">欢迎在留言区聊聊～</p>
+  </section>
+
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; letter-spacing: 0.3px; white-space: pre-line;">我是 Kay，也可以叫我小许。
+始终坚持以解决问题为导向，
+用专业守护重要的人与未来。</p>
+    <p style="font-size: 14px; color: #BBBBBB; margin: 0; letter-spacing: 0.5px;">把复杂的事讲清楚，陪你一步步理明白</p>
+  </section>
+
+  <p style="font-size: 14px; color: #374151; line-height: 2; margin: 0 0 24px; word-break: break-all;">#新疆 #新疆旅游 #新疆攻略 #南疆北疆 #伊犁 #赛里木湖 #伊宁六星街 #昭苏天马 #特克斯八卦城 #喀拉峻草原 #那拉提 #库车王府 #库尔勒 #绿皮火车 #一家老小旅行</p>
+</div>
+</body>
+</html>

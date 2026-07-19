@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>PART 标题 iOS 截断兼容性测试 · 20260719</title>
+<style>
+body{max-width:680px; margin:0 auto; padding:20px; font-family:-apple-system, "PingFang SC", sans-serif; background:#fff; color:#333;}
+</style>
+</head><body>
+
+<div style="background:#FFF7E6; border:1px solid #FFD580; border-radius:8px; padding:16px 18px; margin-bottom:20px;">
+  <p style="font-size:14px; color:#8B5A00; line-height:1.7; margin:0;">
+    <strong>测试目的</strong>：找出能让 iOS 微信里 PART 一级标题正确换行的写法<br>
+    <strong>症状</strong>：iOS 微信不自动换行 → 标题内容溢出被截断；安卓正常<br>
+    <strong>操作</strong>：浏览器打开 → 全选 Ctrl+A → 复制 Ctrl+C → 公众号编辑器粘贴 Ctrl+V<br>
+    <strong>重点看</strong>：4 个版本标题"如果孩子是港籍理科生..."是否都能完整换行显示<br>
+    <strong>反馈</strong>：哪一版的标题在 iOS 微信里完整可见？哪一版有截断/溢出？
+  </p>
+</div>
+
+
+<h2 style="text-align:center; color:#444; font-size:15px; padding:24px 0 6px; border-top:1px dashed #ccc; margin-top:30px;">【版本 A · 当前生产代码（对照组，已知 iOS 截断）】</h2>
+<p style="text-align:center; color:#888; font-size:12px; padding:0 0 14px; line-height:1.6;">变量：左侧 width:1% white-space:nowrap + 右侧 inline-block 无宽度 + 标题无 word-break</p>
+<section style="margin: 36px 0 18px;">
+  <section style="background: linear-gradient(135deg, #D4622A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box;">
+    <section style="display: inline-block; vertical-align: middle; width: 1%; white-space: nowrap; padding: 14px 16px; text-align: center; border-right: 1px solid rgba(255,255,255,0.22);">
+      <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+      <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">03</span>
+    </section>
+    <section style="display: inline-block; vertical-align: middle; padding: 14px 18px;">
+      <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35;">如果孩子是港籍理科生，还有另一条赛道值得提前两年开始准备</h2>
+    </section>
+  </section>
+</section>
+<p style="padding:20px 0; color:#bbb; font-size:12px; text-align:center;">—— 分隔线 ——</p>
+
+<h2 style="text-align:center; color:#444; font-size:15px; padding:24px 0 6px; border-top:1px dashed #ccc; margin-top:30px;">【版本 B · 右侧显式宽度 + 标题 word-break 兜底】</h2>
+<p style="text-align:center; color:#888; font-size:12px; padding:0 0 14px; line-height:1.6;">变量：变量：右侧容器 width: calc(100% - 80px)，标题加 word-break + overflow-wrap</p>
+<section style="margin: 36px 0 18px;">
+  <section style="background: linear-gradient(135deg, #D4622A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box;">
+    <section style="display: inline-block; vertical-align: middle; width: 1%; white-space: nowrap; padding: 14px 16px; text-align: center; border-right: 1px solid rgba(255,255,255,0.22);">
+      <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+      <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">03</span>
+    </section>
+    <section style="display: inline-block; vertical-align: middle; padding: 14px 18px; width: calc(100% - 80px); box-sizing: border-box;">
+      <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">如果孩子是港籍理科生，还有另一条赛道值得提前两年开始准备</h2>
+    </section>
+  </section>
+</section>
+<p style="padding:20px 0; color:#bbb; font-size:12px; text-align:center;">—— 分隔线 ——</p>
+
+<h2 style="text-align:center; color:#444; font-size:15px; padding:24px 0 6px; border-top:1px dashed #ccc; margin-top:30px;">【版本 C · 左侧 absolute 定位 + 右侧标题自然撑满】</h2>
+<p style="text-align:center; color:#888; font-size:12px; padding:0 0 14px; line-height:1.6;">变量：变量：左侧 position:absolute 脱离文档流，右侧标题容器占满父宽度</p>
+<section style="margin: 36px 0 18px; position: relative;">
+  <section style="background: linear-gradient(135deg, #D4622A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding-left: 80px; min-height: 70px; position: relative;">
+    <section style="display: inline-block; vertical-align: middle; width: 64px; white-space: nowrap; padding: 14px 0; text-align: center; border-right: 1px solid rgba(255,255,255,0.22); position: absolute; left: 0; top: 0;">
+      <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+      <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">03</span>
+    </section>
+    <section style="display: block; padding: 14px 18px;">
+      <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">如果孩子是港籍理科生，还有另一条赛道值得提前两年开始准备</h2>
+    </section>
+  </section>
+</section>
+<p style="padding:20px 0; color:#bbb; font-size:12px; text-align:center;">—— 分隔线 ——</p>
+
+<h2 style="text-align:center; color:#444; font-size:15px; padding:24px 0 6px; border-top:1px dashed #ccc; margin-top:30px;">【版本 D · 纵向上下排版（彻底回避左右排版冲突）】</h2>
+<p style="text-align:center; color:#888; font-size:12px; padding:0 0 14px; line-height:1.6;">变量：变量：放弃左右排版，PART 标签在上 + 标题在下，纵向布局</p>
+<section style="margin: 36px 0 18px;">
+  <section style="background: linear-gradient(135deg, #D4622A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+    <section style="padding-bottom: 6px;">
+      <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+    </section>
+    <section style="display: block;">
+      <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">如果孩子是港籍理科生，还有另一条赛道值得提前两年开始准备</h2>
+    </section>
+  </section>
+</section>
+<p style="padding:20px 0; color:#bbb; font-size:12px; text-align:center;">—— 分隔线 ——</p>
+
+
+</body></html>

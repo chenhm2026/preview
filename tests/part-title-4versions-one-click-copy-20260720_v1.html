@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>PART 标题 4 版一键复制对照 · 20260720</title>
+<style>
+  body {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
+    background: #fff;
+    color: #333;
+  }
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 1.5px solid rgba(222,115,86,0.4);
+    border-radius: 18px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .copy-btn:hover { background: #DE7356; color: #fff; border-color: #DE7356; }
+  .copy-btn.copied { background: #22C55E; color: #fff; border-color: #22C55E; }
+  .copy-row {
+    text-align: center;
+    margin: 18px 0 8px;
+    padding: 10px 0 0;
+    border-top: 1px dashed #ddd;
+  }
+  .copy-row.no-border { border-top: none; padding-top: 0; }
+  .copy-hint {
+    display: inline-block;
+    margin-left: 8px;
+    color: #22C55E;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .copy-hint.show { opacity: 1; }
+  .label-tag {
+    font-size: 13px;
+    color: #444;
+    margin-right: 12px;
+    font-weight: 700;
+  }
+</style>
+<script>
+function copyVersion(btn, versionId) {
+  var target = document.getElementById(versionId);
+  if (!target) return;
+  var html = target.outerHTML;
+  var plain = target.innerText;
+
+  function showCopied() {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = btn.nextElementSibling;
+    if (hint && hint.classList.contains('copy-hint')) {
+      hint.classList.add('show');
+      setTimeout(function(){ hint.classList.remove('show'); }, 2500);
+    }
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 复制此版本';
+    }, 2500);
+  }
+
+  if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+    var blob = new Blob([html], {type: 'text/html'});
+    var plainBlob = new Blob([plain], {type: 'text/plain'});
+    navigator.clipboard.write([
+      new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+    ]).then(showCopied).catch(function(){ fallbackCopy(btn, target, showCopied); });
+  } else {
+    fallbackCopy(btn, target, showCopied);
+  }
+}
+function fallbackCopy(btn, target, cb) {
+  var range = document.createRange();
+  range.selectNodeContents(target);
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  try { document.execCommand('copy'); cb(); }
+  catch(e) { alert('复制失败，请手动选中卡片后复制'); }
+  sel.removeAllRanges();
+}
+</script>
+</head>
+<body>
+
+<div style="background:#FFF7E6; border:1px solid #FFD580; border-radius:8px; padding:16px 18px; margin-bottom:20px;">
+  <p style="font-size:14px; color:#8B5A00; line-height:1.7; margin:0;">
+    <strong>使用方式</strong>：每个版本下方有「复制此版本」按钮，点哪个就复制哪个版本的 PART 卡片 HTML（带 inline 样式）<br>
+    <strong>建议</strong>：iOS 微信实测后选喜欢的，再去公众号编辑器粘贴<br>
+    <strong>注意</strong>：复制的是 <strong>该版本的卡片 HTML</strong>（不包含外层描述文字），粘贴到公众号编辑器直接显示
+  </p>
+</div>
+
+<h2 style="text-align:center; color:#444; font-size:15px; padding:24px 0 6px; border-top:1px dashed #ccc; margin-top:30px;">【版本 A · 当前生产代码（对照组，已知 iOS 截断）】</h2>
+<p style="text-align:center; color:#888; font-size:12px; padding:0 0 14px; line-height:1.6;">变量：左侧 width:1% white-space:nowrap + 右侧 inline-block 无宽度 + 标题无 word-break</p>
+<div id="version-A">
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #D4622A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box;">
+      <section style="display: inline-block; vertical-align: middle; width: 1%; white-space: nowrap; padding: 14px 16px; text-align: center; border-right: 1px solid rgba(255,255,255,0.22);">
+        <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+        <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">03</span>
+      </section>
+      <section style="display: inline-block; vertical-align: middle; padding: 14px 18px;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35;">如果孩子是港籍理科生，还有另一条赛道值得提前两年开始准备</h2>
+      </section>
+    </section>
+  </section>
+</div>
+<div class="copy-row no-border">
+  <span class="label-tag">版本 A</span>
+  <button class="copy-btn" onclick="copyVersion(this, 'version-A')">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    复制此版本
+  </button>
+  <span class="copy-hint">已复制，去公众号粘贴</span>
+</div>
+
+<h2 style="text-align:center; color:#444; font-size:15px; padding:24px 0 6px; border-top:1px dashed #ccc; margin-top:30px;">【版本 B · 右侧显式宽度 + 标题 word-break 兜底】</h2>
+<p style="text-align:center; color:#888; font-size:12px; padding:0 0 14px; line-height:1.6;">变量：右侧容器 width: calc(100% - 80px)，标题加 word-break + overflow-wrap</p>
+<div id="version-B">
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #D4622A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box;">
+      <section style="display: inline-block; vertical-align: middle; width: 64px; white-space: nowrap; padding: 14px 16px; text-align: center; border-right: 1px solid rgba(255,255,255,0.22); box-sizing: border-box;">
+        <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+        <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">03</span>
+      </section>
+      <section style="display: inline-block; vertical-align: middle; width: calc(100% - 70px); padding: 14px 18px; vertical-align: middle; box-sizing: border-box;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">如果孩子是港籍理科生，还有另一条赛道值得提前两年开始准备</h2>
+      </section>
+    </section>
+  </section>
+</div>
+<div class="copy-row no-border">
+  <span class="label-tag">版本 B</span>
+  <button class="copy-btn" onclick="copyVersion(this, 'version-B')">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    复制此版本
+  </button>
+  <span class="copy-hint">已复制，去公众号粘贴</span>
+</div>
+
+<h2 style="text-align:center; color:#444; font-size:15px; padding:24px 0 6px; border-top:1px dashed #ccc; margin-top:30px;">【版本 C · 左侧 absolute 定位 + 右侧标题自然撑满】</h2>
+<p style="text-align:center; color:#888; font-size:12px; padding:0 0 14px; line-height:1.6;">变量：左侧 position:absolute 脱离文档流，右侧标题容器占满父宽度</p>
+<div id="version-C">
+  <section style="margin: 36px 0 18px; position: relative;">
+    <section style="background: linear-gradient(135deg, #D4622A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding-left: 80px; min-height: 70px; position: relative;">
+      <section style="display: inline-block; vertical-align: middle; width: 64px; white-space: nowrap; padding: 14px 0; text-align: center; border-right: 1px solid rgba(255,255,255,0.22); position: absolute; left: 0; top: 0;">
+        <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+        <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">03</span>
+      </section>
+      <section style="display: block; padding: 14px 18px;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">如果孩子是港籍理科生，还有另一条赛道值得提前两年开始准备</h2>
+      </section>
+    </section>
+  </section>
+</div>
+<div class="copy-row no-border">
+  <span class="label-tag">版本 C</span>
+  <button class="copy-btn" onclick="copyVersion(this, 'version-C')">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    复制此版本
+  </button>
+  <span class="copy-hint">已复制，去公众号粘贴</span>
+</div>
+
+<h2 style="text-align:center; color:#444; font-size:15px; padding:24px 0 6px; border-top:1px dashed #ccc; margin-top:30px;">【版本 D · 纵向上下排版（彻底回避左右排版冲突）】</h2>
+<p style="text-align:center; color:#888; font-size:12px; padding:0 0 14px; line-height:1.6;">变量：放弃左右排版，PART 标签在上 + 标题在下，纵向布局</p>
+<div id="version-D">
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #D4622A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">如果孩子是港籍理科生，还有另一条赛道值得提前两年开始准备</h2>
+      </section>
+    </section>
+  </section>
+</div>
+<div class="copy-row no-border">
+  <span class="label-tag">版本 D</span>
+  <button class="copy-btn" onclick="copyVersion(this, 'version-D')">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    复制此版本
+  </button>
+  <span class="copy-hint">已复制，去公众号粘贴</span>
+</div>
+
+</body>
+</html>

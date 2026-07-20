@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>港籍升学推送版（修复 v2.3 + 一键复制）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+function copyArticle() {
+  var btn = document.getElementById('copy-btn');
+  var container = document.querySelector('.push-container');
+  if (!container) return;
+  if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+    var html = container.innerHTML;
+    var blob = new Blob([html], {type: 'text/html'});
+    var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+    navigator.clipboard.write([
+      new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+    ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+  } else {
+    fallbackCopy(btn, container);
+  }
+}
+function fallbackCopy(btn, container) {
+  var range = document.createRange();
+  range.selectNodeContents(container);
+  var sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  try { document.execCommand('copy'); showCopied(btn); }
+  catch(e) { alert('复制失败，请手动 Ctrl+A / Cmd+A 全选后复制'); }
+  sel.removeAllRanges();
+}
+function showCopied(btn) {
+  btn.classList.add('copied');
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+  var hint = document.getElementById('copy-hint');
+  hint.classList.add('show');
+  setTimeout(function(){
+    btn.classList.remove('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+    hint.classList.remove('show');
+  }, 2500);
+}
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; margin: 0 auto; padding: 20px 0;">
+
+  <section style="margin: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(212,98,42, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; margin-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #D4622A; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #D4622A;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: linear-gradient(to right, rgba(212,98,42, 0.15), transparent);"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.07</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; margin: 0; line-height: 1.1; letter-spacing: -1px;">一个15年前联考过来人的观察：港籍升学这条路，比你想的挤</p>
+          <section style="width: 48px; height: 3px; background: linear-gradient(to right, #D4622A, #E8956D); border-radius: 2px; margin: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; margin: 0; line-height: 1.7; letter-spacing: 0.5px;">联考参考人数 5 年翻近 2 倍，985/211 录取率只剩 9.8%；联考并不轻松，DSE 也不简单。</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+<div style="text-align: center; font-size: 14px; color: #A0926B; padding: 0 0 12px;">📖 全文 2512 字 · 约 9 分钟</div>
+<section style="background: #FBF6EC; border-left: 4px solid #D4622A; border-radius: 8px; overflow: hidden; padding: 0 0 28px 0;"><section style="padding: 18px 22px;"><section style="padding-bottom: 10px;"><span style="font-size: 14px; color: #D4622A; font-weight: bold; letter-spacing: 1px;">📌 本期导读</span></section><section><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;"><strong style="font-weight: 900; color: #111827;">15 年前我参加港澳台联考时，620 分能冲清北；今年联考人数翻了近 2 倍，985/211 录取率只剩 9.8%。</strong> 如果你家有港籍考生，DSE 这条赛道的真实门槛、英语那道必须过的坎、孩子提前两年就得做准备的窗口期——是这一篇想帮你看清的几件事。</p></section></section></section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><p style="text-align:center;color:#9B8A75;font-size:13px;letter-spacing:1px;padding:8px 0 16px 0;">📖 全文 1750 字 · 约 6 分钟</p></p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #D4622A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box;">
+      <section style="display: inline-block; vertical-align: middle; width: 64px; white-space: nowrap; padding: 14px 16px; vertical-align: middle; text-align: center; border-right: 1px solid rgba(255,255,255,0.22); box-sizing: border-box;">
+        <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+        <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">01</span>
+      </section>
+      <section style="display: inline-block; vertical-align: middle; width: calc(100% - 70px); padding: 14px 18px; vertical-align: middle; box-sizing: border-box;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一个港籍小姑娘的厦大录取</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">2025 年 3 月，我在小红书上认识了一个小姑娘。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">她出生在香港，但在广东长大，成长和教育的背景都和我颇为相似。我们互加好友之后，她主动问起我对未来职业规划的看法；之后，偶尔会向我咨询考学、专业选择等建议。不过因为她是住校生，平时用不了手机，只能在周末从紧张的学习里挤出一点时间联系我，所以每次交流都很仓促，隔很久才聊一次。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">直到上个月，她忽然问我有没有推荐的专业，说成绩已经出来，打算报考我的母校厦门大学。我结合当下的就业形势，从个人角度给了她一些专业选择上的建议。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">今天，她告诉我已被厦大经济学专业正式录取。听到这个消息，我由衷地为她高兴。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><img src="https://internal-api-drive-stream.feishu.cn/space/api/box/stream/download/authcode/?code=MjU3MDQ0OGVkZjMxNjgyNzg0YWY4MGJiYjI1ZGM2ZTNfNzQwMGNjYmRlZTVhNzIxYmYxNWNlOTFkODdhZGM4ZjNfSUQ6NzY2MzQ3NDk4MzY0NTAyMzQ5OV8xNzg0MjkzMjc1OjE3ODQyOTY4NzVfVjM" alt="厦大录取通知" /></p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">但有一组数据让这件事没那么单纯——620 分上厦大。<strong style="font-weight: 900; color: #111827;">15 年前这个分数，不说清北必上，复旦和人大是肯定能被录取的。</strong></p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #D4622A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box;">
+      <section style="display: inline-block; vertical-align: middle; width: 64px; white-space: nowrap; padding: 14px 16px; vertical-align: middle; text-align: center; border-right: 1px solid rgba(255,255,255,0.22); box-sizing: border-box;">
+        <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+        <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">02</span>
+      </section>
+      <section style="display: inline-block; vertical-align: middle; width: calc(100% - 70px); padding: 14px 18px; vertical-align: middle; box-sizing: border-box;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">620 分上厦大，放到今天是什么水平</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我在 15 年前参加过港澳台联考。那个年代，联考参考人数不过四五千人，620 分是一个可以冲击清北线的成绩。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">而今年，2025 年的港澳台联考审核通过人数是 11,882 人。看一组数据：</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">2020 年是 4,035 人，2023 年升到 7,238 人，2024 年首次破万达到 10,320 人，2025 年继续增长到 11,882 人。5 年时间，参考人数涨了近 2 倍。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">而 985、211 院校在联考中的录取率只有 9.8%-12% 左右。换句话说，每 10 个参加联考的孩子，只有 1 个能进 985/211。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">清北复交这些顶尖高校，今年预计需要 660 分以上才有竞争力。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #D4622A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box;">
+      <section style="display: inline-block; vertical-align: middle; width: 64px; white-space: nowrap; padding: 14px 16px; vertical-align: middle; text-align: center; border-right: 1px solid rgba(255,255,255,0.22); box-sizing: border-box;">
+        <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+        <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">03</span>
+      </section>
+      <section style="display: inline-block; vertical-align: middle; width: calc(100% - 70px); padding: 14px 18px; vertical-align: middle; box-sizing: border-box;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">"400 分上清北"，这句话过时了 15 年</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">让我感慨的，是身边一直流传的一句话——"拿了香港身份，400 多分就能上北大清华"。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这句话，15 年前我参加联考那会儿，就已经是旧闻了。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">时代在变，招生政策在变，参考人数在变，录取率在变。但有些话术，却像是被时间冻住了一样，停留在十几年前的语境里反复出现。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我经常看到有家长因为这句话而动心，花大力气给孩子办香港身份，期待换来一条捷径。但真正走完这条路才发现，当年的 "400 分" 和今天的 "400 分"，根本不是同一个分数的含义。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">信息差造成的认知错位，是很多家长容易踩的坑。</strong></p>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #D4622A; border-radius: 0 12px 12px 0; ">
+    <section style="display: block; align-items: center; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">✨</span>
+      <span style="font-size: 16px; font-weight: 900; color: #D4622A; letter-spacing: -0.2px;">15 年前的"400 分上清北"和今天的"400 分"，根本不是同一个分数的含义。</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;"></p>
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">但不得不承认，联考就算再怎么卷，难度比过去大幅提升，跟普通高考比起来还是轻松不少。我问了今年考上厦大的那位师妹，如果她当初参加普通高考，大概也就上个 211 的水平。但现在她不仅进了 985，还能读到王牌专业，真的算是逆天改命了。所以整体来看，联考的难度确实比高考低很多。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #D4622A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box;">
+      <section style="display: inline-block; vertical-align: middle; width: 64px; white-space: nowrap; padding: 14px 16px; vertical-align: middle; text-align: center; border-right: 1px solid rgba(255,255,255,0.22); box-sizing: border-box;">
+        <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+        <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">04</span>
+      </section>
+      <section style="display: inline-block; vertical-align: middle; width: calc(100% - 70px); padding: 14px 18px; vertical-align: middle; box-sizing: border-box;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">如果孩子是理科生，可以考虑另一条赛道</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果家有港籍考生，又是在近一两年参加升学，我的个人建议是——如果是理科生，可以考虑 DSE 这条赛道。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">为什么这么说？几个关键依据：</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">第一，竞争密度不同。</strong> 2024 年港澳台联考报考人数为 10,320 人，本科录取率约 58%；而同年 DSE 考试中，港籍生考取港八大的录取率约 38%，其中港三大（港大、中大、科大）的录取率约为 20%，远高于联考顶尖高校（985）的不到 9%（2022 年升入 985 还有 20.23%，2024 年就只有 8.6% 了），竞争正快速加剧。相比之下，DSE 的升学路径更多元，竞争格局相对稳定。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><img src="https://internal-api-drive-stream.feishu.cn/space/api/box/stream/download/authcode/?code=MzllMzdmZWYwMjU4YTUyZmI5OTQ2MDE5NGU1MzBhNDJfYTUwYTZhNjhlYzg1Zjc1ZThiOTkyZjU3N2IwMjFjYzBfSUQ6NzY2MzQ3NjM3MTEyMDc4NjY1MF8xNzg0MjkzMjc1OjE3ODQyOTY4NzVfVjM" alt="联考 vs DSE 录取率对比" /></p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><img src="https://internal-api-drive-stream.feishu.cn/space/api/box/stream/download/authcode/?code=MDE0NWExNDBjMWU5ZjFiZWJiMzEwNTEyYmJhMWIwMzhfYzk2ZGJhZWVjZWRlMzI4OTA4NmI0OTgxMTJhNzQxYWJfSUQ6NzY2MzQ3Njc3NzcwMDAwMjk5Nl8xNzg0MjkzMjc1OjE3ODQyOTY4NzVfVjM" alt="985 录取率趋势" /></p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">补充一个比较口径：我这里只拿港前三（港大、中大、科大）和内地 985 直接比。从内地就业市场的实际认可度看，其他港校（含港四港五）参差很多，对标 985 并不严谨。</p>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #D4622A; border-radius: 0 12px 12px 0; ">
+    <section style="display: block; align-items: center; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #D4622A; letter-spacing: -0.2px;">DSE 政策窗口：若想走 DSE，须在考试前两年取得香港身份并就读满两年，最早高一就得把孩子转学到香港，"临时抱佛脚"这条路已经走不通了。</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;"></p>
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">讲一个真实的例子：2025 年有位女生，她妈妈临时帮她拿到了香港身份并转考 DSE，按当时的政策这条路还走得通。她如果走原来的普通高考路径，大概只能考到 211 的水平，但最终她成功被香港中文大学录取。这个对比比较直观——前提做到位，DSE 升读香港名校的难度确实比内地高考低不少。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">第二，课程重合度高。</strong> DSE 课程与内地普高知识点重合度在 70%-80% 左右，尤其理科（数学、物理、化学）的内容，自然衔接度很高。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><img src="https://internal-api-drive-stream.feishu.cn/space/api/box/stream/download/authcode/?code=ZDlmNmM5MGQxMWM0NjE1ODkwMGU1MTY0ZGViYjBjNGRfOTkxZTFmOTIzOGVkYWMyMzYyZGRhMjc3NTQ3Mjc4MmNfSUQ6NzY2MzQ3ODI4Nzg1NDg4MjA3OV8xNzg0MjkzMjc1OjE3ODQyOTY4NzVfVjM" alt="DSE 与内地普高知识点重合度" /></p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">第三，出口更宽。</strong> DSE 成绩不仅可以申请香港的大学，还可以申请内地 138 所高校（含清北复交等 985/211），以及全球 400 多所海外大学，包括剑桥、耶鲁、新加坡国立等——<strong style="font-weight: 900; color: #111827;">当然，前提是考试时孩子已经是香港永居，非永居孩子的成绩只能申请香港的高校。</strong></p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">第四，时间窗口允许。</strong> 内地高中前 2 年的课程内容，已经基本覆盖 DSE 理科的考点。只需要在高三最后一年，到专业机构进行针对性的衔接和强化训练熟悉考试模式，这是一条被多家机构验证过的可行路径。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">需要强调的是，我说的是"可以考虑"，不是"必须选"。</strong></p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">每条路径都有它的前提条件。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #D4622A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box;">
+      <section style="display: inline-block; vertical-align: middle; width: 64px; white-space: nowrap; padding: 14px 16px; vertical-align: middle; text-align: center; border-right: 1px solid rgba(255,255,255,0.22); box-sizing: border-box;">
+        <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+        <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">05</span>
+      </section>
+      <section style="display: inline-block; vertical-align: middle; width: calc(100% - 70px); padding: 14px 18px; vertical-align: middle; box-sizing: border-box;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">DSE 不是万能的，有一道必须过的坎</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这里有一个不能回避的门槛——英语。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">DSE 的英语科目，对标的是雅思 6-7 分的水平，词汇量要求在 8,000-10,000 之间，而内地高考英语的词汇量要求大约是 3,500。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">这意味着，一个内地普高学生转 DSE，英语是要重点突破的科目。<strong style="font-weight: 900; color: #111827;">如果孩子的英语基础不扎实，强行转轨反而可能哪边都没拿到结果。</strong></p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">所以我的建议是：在决定之前，先评估一下孩子的英语能力。如果英语成绩在高考模拟里能稳定在 120 分以上，转 DSE 会更顺畅；如果能到 130 分或以上，会更稳妥。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这是一个容易被忽略的门槛。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #D4622A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box;">
+      <section style="display: inline-block; vertical-align: middle; width: 64px; white-space: nowrap; padding: 14px 16px; vertical-align: middle; text-align: center; border-right: 1px solid rgba(255,255,255,0.22); box-sizing: border-box;">
+        <span style="font-size: 9px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase; display: block; line-height: 1;">PART</span>
+        <span style="font-size: 22px; font-weight: 900; color: #ffffff; line-height: 1.1; letter-spacing: -1px; display: block; margin-top: 2px;">06</span>
+      </section>
+      <section style="display: inline-block; vertical-align: middle; width: calc(100% - 70px); padding: 14px 18px; vertical-align: middle; box-sizing: border-box;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">选路之前先把前提看清楚</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">回头看那个考上厦大的小姑娘，她能走到今天，靠的是她妈妈早早就开始做教育规划（当时香港不限制非本地居民赴港生子，且孩子落地即可成为香港永久居民，这个条件被充分利用了），她自己高中三年拼尽了全力，再加上一点运气。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你家有港籍考生，这篇里写的几件事——联考的真实密度、DSE 的真实门槛、英语的真实要求——都是你应该提前知道的。<strong style="font-weight: 900; color: #111827;">重要的从来不是选哪条路，而是选之前是不是把每条路的前提和代价都看清楚了——这才是真正能帮你撑伞的那一步。</strong></p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你目前还没有宝宝，但计划未来在香港生个港宝；或者现在已经怀孕，打算赴港生产，那么提前做好规划真的很重要。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果还有任何疑问，欢迎随时联系我，我们可以详细聊聊，我一定知无不言、言无不尽。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">祝每一个努力的孩子，都能走进自己合适的学校。</p>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(212,98,42, 0.3), transparent); margin: 32px 0 28px;"></section>
+
+  <section style="margin: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(212,98,42, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #D4622A; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #D4622A; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+  <section style="margin: 0 0 16px; padding: 22px 24px; background: #ffffff; border-radius: 14px; border: 1px solid rgba(212,98,42, 0.15); border-left: 3px solid #D4622A;">
+    <p style="font-size: 14px; font-weight: 700; color: #D4622A; margin: 0 0 8px; letter-spacing: 0.3px;">💬 聊聊你的故事</p>
+    <p style="font-size: 14px; color: #374151; line-height: 1.85; margin: 0;">如果你身边有正在考虑港籍升学的家庭，你最想让他们先看到哪一件事？</p>
+    <p style="font-size: 14px; color: #BBBBBB; margin: 10px 0 0; line-height: 1.6;">欢迎在留言区聊聊～</p>
+  </section>
+
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; letter-spacing: 0.3px; white-space: pre-line;">我是Kay，也可以叫我小许。
+始终坚持以解决问题为导向，
+用专业守护重要的人与未来。</p>
+    <p style="font-size: 14px; color: #BBBBBB; margin: 0; letter-spacing: 0.5px;">把复杂的事讲清楚，陪你一步步理明白</p>
+  </section>
+
+  <p style="font-size: 14px; color: #374151; line-height: 2; margin: 0 0 24px; word-break: break-all;">#港籍升学 #港澳台联考 #DSE #跨境教育 #香港身份 #升学规划 #Kay说清楚 #跨境家庭规划笔记</p>
+</section>
+</div>
+</body>
+</html>

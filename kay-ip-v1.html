@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kay · 大图出血 温暖金（含微信号）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --photo: url('kay-photo.jpg'); }
+  html, body {
+    background: #eceff3;
+    font-family: "PingFang SC","Microsoft YaHei","Hiragino Sans GB","Source Han Sans SC",sans-serif;
+    display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px;
+    color: #2b3140;
+  }
+  .canvas {
+    position: relative; width: 1280px; height: 720px; max-width: 100%; aspect-ratio: 16/9;
+    margin: 0 auto; border-radius: 24px; overflow: hidden;
+    box-shadow: 0 24px 60px rgba(40,60,90,.16);
+  }
+  .qr-box { background:#fff; border-radius:14px; padding:11px; box-shadow:0 10px 24px rgba(30,50,90,.18); }
+  .qr-box img { display:block; width:100%; height:100%; object-fit:contain; border-radius:6px; }
+
+  /* ===== V1 大图出血 · 温暖金 ===== */
+  .v1 { background: linear-gradient(120deg,#fbf4e6 0%, #f6ead1 45%, #eef3f8 100%); }
+  .v1 .photo {
+    position:absolute; left:0; top:0; bottom:0; width:46%;
+    background:var(--photo) center 20%/cover no-repeat;
+  }
+  .v1 .photo::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg, transparent 60%, #f6ead1 100%); }
+  .v1 .info { position:absolute; right:0; top:0; bottom:0; width:54%; padding:74px 70px; display:flex; flex-direction:column; justify-content:center; }
+  .v1 .name { font-size:70px; font-weight:800; letter-spacing:4px; color:#3a3528; }
+  .v1 .name small { display:block; font-size:16px; letter-spacing:2px; color:#b08d3c; font-weight:600; margin-top:6px; }
+  .v1 .tag { font-size:27px; line-height:1.85; font-weight:700; color:#3a3528; margin:34px 0 38px; }
+  .v1 .tag b { color:#c9a227; }
+  .v1 .cta { display:flex; align-items:center; gap:28px; }
+  .v1 .cta .qr-box { width:170px; height:170px; flex:0 0 auto; }
+  .v1 .cta .txt { display:flex; flex-direction:column; }
+  .v1 .cta .txt .t { font-size:27px; font-weight:800; color:#3a3528; }
+  .v1 .cta .txt .s { font-size:17px; color:#9a8657; margin-top:7px; }
+
+  /* 微信号 + 复制按钮 */
+  .wxid {
+    display:inline-flex; align-items:center; gap:14px; margin-top:22px;
+    background:rgba(255,255,255,.6); border:1px solid rgba(201,162,39,.4);
+    border-radius:999px; padding:10px 12px 10px 20px; align-self:flex-start;
+  }
+  .wxid .wxlabel { font-size:16px; color:#9a8657; font-weight:600; }
+  .wxid .wxnum { font-size:23px; font-weight:800; color:#3a3528; letter-spacing:1px; }
+  .wxid .copybtn {
+    cursor:pointer; border:none; background:linear-gradient(135deg,#d8b13a,#c9a227);
+    color:#fff; font-size:16px; font-weight:800; padding:9px 20px; border-radius:999px;
+    letter-spacing:1px; box-shadow:0 6px 14px rgba(201,162,39,.3); transition:.18s;
+  }
+  .wxid .copybtn:hover { filter:brightness(1.06); }
+  .wxid .copybtn:active { transform:scale(.95); }
+</style>
+</head>
+<body>
+  <div class="canvas v1">
+    <div class="photo"></div>
+    <div class="info">
+      <div class="name">Kay<small>许嘉仪</small></div>
+      <div class="tag">以<b>解决问题</b>为导向，用专业<b>守护重要的人与未来</b>。<br>把复杂的事讲清楚，陪你一步步理明白。</div>
+      <div class="cta">
+        <div class="qr-box"><img src="kay-qr.jpg" alt="微信二维码"></div>
+        <div class="txt">
+          <div class="t">欢迎加微信，交个朋友</div>
+          <div class="s">扫码即可 · 期待认识你</div>
+          <div class="wxid">
+            <span class="wxlabel">微信号</span>
+            <span class="wxnum" id="wxid">ikaymakit</span>
+            <button class="copybtn" id="copyBtn" onclick="copyWx()">复制</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function copyWx() {
+      var txt = document.getElementById('wxid').textContent.trim();
+      var btn = document.getElementById('copyBtn');
+      function done() {
+        btn.textContent = '已复制 ✓';
+        setTimeout(function(){ btn.textContent = '复制'; }, 1600);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(done).catch(function(){ fallback(txt, done); });
+      } else {
+        fallback(txt, done);
+      }
+    }
+    function fallback(txt, cb) {
+      var ta = document.createElement('textarea');
+      ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta); cb();
+    }
+  </script>
+</body>
+</html>

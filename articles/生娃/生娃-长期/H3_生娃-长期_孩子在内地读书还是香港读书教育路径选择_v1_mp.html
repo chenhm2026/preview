@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>飞哥公众号文章</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #ffffff;
+    color: #374151;
+    line-height: 1.75;
+    letter-spacing: 0.5px;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 20px 0;
+  }
+
+  @media (max-width: 600px) {
+    .container {
+      padding: 0;
+    }
+  }
+
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover {
+    background: #DE7356;
+    color: #ffffff;
+    border-color: #DE7356;
+  }
+  #copy-btn.copied {
+    background: #22C55E;
+    color: #ffffff;
+    border-color: #22C55E;
+  }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.container');
+    if (!container) return;
+
+    // 优先用 ClipboardItem 写 text/html，保留富文本格式
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function() {
+        showCopied(btn);
+      }).catch(function() {
+        fallbackCopy(btn, container);
+      });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+
+  function fallbackCopy(btn, container) {
+    // 创建临时选区覆盖 container
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    try {
+      document.execCommand('copy');
+      showCopied(btn);
+    } catch(e) {
+      alert('复制失败，请手动 Ctrl+A / Cmd+A 全选后复制');
+    }
+    sel.removeAllRanges();
+  }
+
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '✓ 已复制';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>一键复制';
+    }, 2000);
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div class="container">
+
+  <section style="margin: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(232,180,184, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #E8B4B8; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #E8B4B8;">BREAKING</span>
+        <span style="flex: 1; height: 1px; background: linear-gradient(to right, rgba(232,180,184, 0.15), transparent);"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.07</span>
+      </section>
+      <section style="display: flex; align-items: center; gap: 20px;">
+        <section style="flex: 1;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; margin: 0 0 12px; line-height: 1.2; letter-spacing: -1px;">孩子在内地读书还是香港读书？教育路径选择</p>
+          <section style="width: 48px; height: 3px; background: linear-gradient(to right, #E8B4B8, #E8956D); border-radius: 2px; margin: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; margin: 0; line-height: 1.7; letter-spacing: 0.5px;">本文**不重复内地/香港都是 3-6 岁幼稚园、6-12 岁小学**——这些阶段表没有任何信息量。**真正要决定的是**:孩子该走哪条升学通道(内地高考 / 香</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">用途:帮父母根据孩子身份/家庭规划/经济情况,选对教育路径</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">适用对象:在香港出生的孩子的父母、考虑未来教育的家庭</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">更新日期:2026年7月</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">用途</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">本文<strong style="font-weight: 900; color: #111827;">不重复内地/香港都是 3-6 岁幼稚园、6-12 岁小学</strong>——这些阶段表没有任何信息量。<strong style="font-weight: 900; color: #111827;">真正要决定的是</strong>:孩子该走哪条升学通道(内地高考 / 香港 DSE / 国际课程 / 华侨生联考),以及在哪读对应的学校。</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、先看孩子身份(决定可走的路)</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">孩子身份</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">内地读书</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">香港读书</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">海外升学</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">香港永久居民(单非/双非)</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 可读,需内地户口或居住证</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 免费</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ DSE/IB 通用</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">香港非永久居民(持签注者子女)</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 同上</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 可读公校(需住址证明)</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ DSE/IB</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">内地户口(放弃香港身份)</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">❌ 需先恢复身份</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 内地高考/华侨生</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #E8B4B8; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(232,180,184, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #E8B4B8; letter-spacing: -0.2px;"><strong style="font-weight: 900; color: #111827;">核心决策点</strong>:<strong style="font-weight: 900; color: #111827;">18 岁前孩子的身份选择</strong>(永居/非永居/内地户口)直接决定他 18 岁后能用什么考试升学。详见 [H5 孩子18岁后身份选择]。</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;"></p>
+  </section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、升学通道对比(真正不同的部分)</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">2.1 内地高考 vs 香港 DSE vs 国际课程</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">内地高考</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">香港 DSE</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">国际课程(IB/A-Level)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">考试语言</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">普通话</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">粤语/中英双语</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">英语</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">考试地点</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">内地</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港(内地设考点)</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">全球</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">可申请大学</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">主要内地大学</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港+内地+海外 300+</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">海外为主</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">竞争强度</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">极大(2026 报名 1300 万+)</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">较小(5 万左右考生)</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中等</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">录取门槛</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">一本需 600+/750</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港大 555+/满分 49</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">看学校</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">内地 985/211</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 高考直入</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⚠️ 需 DSE 5\* 顶分</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">❌ 需港澳台联考</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">香港本地大学</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">❌ 需港澳台联考</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 港大/中大/科大</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">海外大学</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⚠️ 极少</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 普遍接受</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 主流通道</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">学费</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">公办 5,000/年</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">公校免费/直资 1-5 万/年</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">国际学校 15-30 万/年</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">2.2 还有哪些通道?</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">通道</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">适用身份</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">报名时间</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">优势</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">华侨生联考</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港澳台/海外华侨</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">每年 3 月</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">题目简单、录取线低(一本 400+ 即可)</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">DSE 内地考</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港人子女(内地学校)</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">每年 9-10 月报名</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">在内地读,赴港考 DSE</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">港澳台联考</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港澳台居民</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">每年 5 月</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">进内地 985 容易</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">IB 课程</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">任意身份</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高中阶段</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">进海外大学主流</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">A-Level</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">任意身份</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高中阶段</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">进英国大学</td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、按家庭规划选路径(关键决策)</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">3.1 决策树</h3>
+
+  <section style="background: #2B2622; border-radius: 11px; padding: 18px; margin: 18px 0; overflow-x: auto; font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace; font-size: 12px; line-height: 1.6; color: #E5E7EB;">
+<pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;"><code>你的长期规划是什么?
+├── 孩子未来在内地发展
+│   ├── 接受内地高考 → 内地学校 K12 完整路线
+│   ├── 想轻松点进好大学 → 港澳台联考(内地学校 + 备考)
+│   └── 想进海外大学 → 国内国际学校(IB/A-Level) + 海外大学
+│
+├── 孩子未来在香港发展
+│   ├── 港校本科 → 香港本地学校 K12 + DSE
+│   ├── 海外本科 → 香港国际学校 + IB/DSE + 海外大学
+│   └── 内地+香港双轨 → 跨境学童(深圳/内地学校 + DSE 内地考)
+│
+└── 不确定 / 想保留选择权
+    ├── 香港身份优先 → 香港本地学校 + DSE(可进港校/海外/内地 3 用)
+    └── 内地身份优先 → 内地学校 + 保留港澳台考试通道</code></pre>
+  </section>
+
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">3.2 推荐路径(按家庭情况)</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">家庭情况</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">推荐路径</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">预估费用(到 18 岁)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">港人单非+经济中等</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港公校 K12 + DSE 5\* 冲港大</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">50-100 万港元</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">港人单非+经济宽裕</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">直资/国际学校 + IB/DSE + 海外大学</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">200-400 万港元</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">跨境家庭(深港)</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">内地学校 + 周中跨境 DSE 培训 + 周末港校</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">80-150 万港元</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">内地生活+港籍</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">内地国际学校 + IB + 海外/华侨生双轨</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">150-300 万人民币</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">计划 18 岁回内地高考</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">内地学校 K12 + 港澳台联考备考</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">30-80 万人民币</td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、3 个常见误区(避开=省几年弯路)</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">误区 1:"双语优势 = 免费进港大"</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">现实:港大/中大/科大 DSE 录取 555+/49,5\* 是基本门槛,双语只是参与资格,不是分数</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">港大本地生比例 80%,DSE 是主通道,IB/A-Level 国际生配额仅 20%</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">误区 2:"港籍=任意进内地 985"</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">现实:港籍生进内地 985 主要走<strong style="font-weight: 900; color: #111827;">港澳台联考</strong>(5 月),不是高考。联考题目比高考简单 30%,但录取线仍然 400-500+(总 750)</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">需保留<strong style="font-weight: 900; color: #111827;">回乡证</strong>,否则无法报名</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">误区 3:"国际学校一定能进海外名校"</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">现实:IB 40+ 分 / A-Level A\*AA 是基本要求,学校品牌+孩子实际成绩才是关键</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">部分国际学校毕业进世界前 30 比例 < 10%</span></li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、决策时间窗口(关键节点别错过)</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">年龄</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">关键决策</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">影响</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">出生</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">决定孩子落户内地 vs 留港身份</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">18 岁后升学通道根本不同</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">3-6 岁</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">选幼稚园(本地/国际)</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">决定小学通道</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">6 岁</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">选小学</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">公/私/直资/国际定型</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">12 岁</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">升中抉择</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">是否进直资/国际/DSE 班</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">15-16 岁</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">选 DSE / IB / A-Level</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">决定升学体系</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">18 岁</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">身份最终选择</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">永居/内地户口只能选一个</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ <strong style="font-weight: 900; color: #111827;">最关键窗口:6 岁和 15 岁</strong>。6 岁决定走公校还是私校,15 岁决定走哪个考试体系。</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、注意事项</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">不要同时保留双重身份</strong>:18 岁必须二选一(永居/内地户口),不要拖到最后</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">跨境学童(深港)实际成本高</strong>:每天往返 2-4 小时,实际住宿+通勤 > 学费</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">国际学校≠海外名校</strong>:要进世界前 30,IB 40+ + 学校品牌 + 课外活动</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">联考/高考题不同</strong>:港澳台联考和高考是<strong style="font-weight: 900; color: #111827;">两套试卷</strong>,不能用同一套备考</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">香港 DSE 可在内地考</strong>:港人子女在内地学校读,可直接报 DSE 内地考点</li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 08</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">七、下一步</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">确定教育路径后,下一步需要了解:</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">回港读书</strong> → 查看 [H4 香港出生孩子回港读书需要什么手续?]</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">18 岁身份选择</strong> → 查看 [H5 孩子18岁后身份选择:内地户籍vs香港身份]</li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 09</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">官方信息来源</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">香港教育局《学校概览》</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="https://www.edb.gov.hk/tc/edu-system/primary-secondary/applicable-to-primary-secondary/index.html" style="color: #E8B4B8; text-decoration: underline;">https://www.edb.gov.hk/tc/edu-system/primary-secondary/applicable-to-primary-secondary/index.html</a></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">香港考试及评核局《DSE》</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="https://www.hkeaa.edu.hk/tc/" style="color: #E8B4B8; text-decoration: underline;">https://www.hkeaa.edu.hk/tc/</a></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">教育部《港澳台联考》</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="https://www.gatzk.com/" style="color: #E8B4B8; text-decoration: underline;">https://www.gatzk.com/</a></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">国务院侨办《华侨生联考》</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="https://www.gqbzcj.com/" style="color: #E8B4B8; text-decoration: underline;">https://www.gqbzcj.com/</a></p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><em style="font-style: italic; color: #4B5563;">本内容仅供参考,具体政策以教育局/考评局/教育部最新公布为准。</em></p>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 32px 0 28px;"></section>
+
+  <section style="margin: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(232,180,184, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #E8B4B8; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #E8B4B8; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; letter-spacing: 0.3px; white-space: pre-line;">我是 Sidney，一个实干派的记录者</p>
+    <p style="font-size: 14px; color: #BBBBBB; margin: 0; letter-spacing: 0.5px;">知行合一 · 不制造焦虑 · 聚焦真实价值</p>
+  </section>
+
+</div>
+</body>
+</html>

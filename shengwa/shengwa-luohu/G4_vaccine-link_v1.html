@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>飞哥公众号文章</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #ffffff;
+    color: #374151;
+    line-height: 1.75;
+    letter-spacing: 0.5px;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 20px 0;
+  }
+
+  @media (max-width: 600px) {
+    .container {
+      padding: 0;
+    }
+  }
+
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover {
+    background: #DE7356;
+    color: #ffffff;
+    border-color: #DE7356;
+  }
+  #copy-btn.copied {
+    background: #22C55E;
+    color: #ffffff;
+    border-color: #22C55E;
+  }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.container');
+    if (!container) return;
+
+    // 优先用 ClipboardItem 写 text/html，保留富文本格式
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function() {
+        showCopied(btn);
+      }).catch(function() {
+        fallbackCopy(btn, container);
+      });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+
+  function fallbackCopy(btn, container) {
+    // 创建临时选区覆盖 container
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    try {
+      document.execCommand('copy');
+      showCopied(btn);
+    } catch(e) {
+      alert('复制失败，请手动 Ctrl+A / Cmd+A 全选后复制');
+    }
+    sel.removeAllRanges();
+  }
+
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '✓ 已复制';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>一键复制';
+    }, 2000);
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div class="container">
+
+  <section style="margin: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(232,180,184, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #E8B4B8; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #E8B4B8;">BREAKING</span>
+        <span style="flex: 1; height: 1px; background: linear-gradient(to right, rgba(232,180,184, 0.15), transparent);"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.07</span>
+      </section>
+      <section style="display: flex; align-items: center; gap: 20px;">
+        <section style="flex: 1;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; margin: 0 0 12px; line-height: 1.2; letter-spacing: -1px;">新生儿疫苗本怎么衔接？香港vs内地疫苗计划</p>
+          <section style="width: 48px; height: 3px; background: linear-gradient(to right, #E8B4B8, #E8956D); border-radius: 2px; margin: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; margin: 0; line-height: 1.7; letter-spacing: 0.5px;">本文说明香港出生的新生儿返回内地后，如何将香港的疫苗记录与内地的疫苗计划衔接，确保孩子按时接种疫苗。</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">用途：说明香港出生的新生儿返回内地后疫苗本的衔接方法</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">适用对象：在香港出生后返回内地的新生儿及其父母</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">更新日期：2026年6月</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">用途</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">本文说明香港出生的新生儿返回内地后，如何将香港的疫苗记录与内地的疫苗计划衔接，确保孩子按时接种疫苗。</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、香港与内地疫苗计划对比</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">1.1 疫苗种类对比</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">疫苗</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">香港计划</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">内地计划</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">卡介苗</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 出生时接种</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 出生时接种</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">相同</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">乙肝疫苗</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 出生时接种</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 出生时接种</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">相同</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">脊髓灰质炎疫苗</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 2/3/4/18月龄</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 2/3/4/18月龄</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">相同</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">百白破疫苗</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 2/3/4/18月龄</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 2/3/4/18月龄</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">相同</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">麻疹疫苗</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 12月龄</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 8月龄</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">时间略有差异</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">1.2 主要差异</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">差异点</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">香港</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">内地</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">接种时间</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">部分疫苗时间略有不同</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">按国家免疫规划</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">疫苗品牌</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">可能使用进口疫苗</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">国产/进口疫苗均有</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">接种记录</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">使用香港疫苗纪录</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">使用内地疫苗本</td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、疫苗本衔接流程</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">2.1 香港疫苗记录转换</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">步骤</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1. 获取香港疫苗纪录</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">向香港医院或母婴健康院申请</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">2. 翻译疫苗纪录</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">如为英文，需翻译成中文</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">3. 前往内地社区卫生服务中心</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">携带翻译后的疫苗纪录</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">4. 办理疫苗本衔接</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">工作人员将香港记录录入内地系统</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">2.2 所需材料</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">材料</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港疫苗纪录</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">正本</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">疫苗纪录翻译件</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">如为英文，需翻译成中文</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">新生儿的出生证明</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">正本</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">父母的身份证</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">正本</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">新生儿的户口簿</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">如已落户</td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、注意事项</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">及时衔接</strong>：返回内地后尽快办理疫苗本衔接，确保孩子按时接种</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">疫苗品牌</strong>：如香港使用进口疫苗，内地可能使用国产疫苗，需咨询医生是否可以混打</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">接种时间</strong>：如香港与内地接种时间有差异，以内地计划为准</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">保存记录</strong>：妥善保存香港疫苗纪录，作为接种历史证明</li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、常见问题</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">4.1 香港的疫苗内地认可吗？</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">认可。香港使用的疫苗通常符合国际标准，内地认可其接种记录。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">4.2 可以在内地补种吗？</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">可以。如孩子错过了某些疫苗，可在内地社区卫生服务中心补种。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">4.3 疫苗本衔接需要多长时间？</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">通常当天可完成，具体时间因地区而异。</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、下一步</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">疫苗本衔接后，下一步需要办理：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">医保办理</strong> → 查看 [G5 新生儿医保怎么办理？内地参保指引]</li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">官方信息来源</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">香港家庭健康服务《产前及产后服务》</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="https://www.fhs.gov.hk/tc_chi/main_ser/process.html" style="color: #E8B4B8; text-decoration: underline;">https://www.fhs.gov.hk/tc_chi/main_ser/process.html</a></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">国家卫生健康委员会《国家免疫规划疫苗儿童免疫程序及说明》</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="https://www.nhc.gov.cn/" style="color: #E8B4B8; text-decoration: underline;">https://www.nhc.gov.cn/</a></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">各地社区卫生服务中心</span></li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><em style="font-style: italic; color: #4B5563;">本内容仅供参考，具体政策以当地卫生健康部门最新公布为准。</em></p>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 32px 0 28px;"></section>
+
+  <section style="margin: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(232,180,184, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #E8B4B8; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #E8B4B8; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; letter-spacing: 0.3px; white-space: pre-line;">港通+
+内地↔香港跨境问题的中文索引入口</p>
+    <p style="font-size: 14px; color: #BBBBBB; margin: 0; letter-spacing: 0.5px;">结构优先·入口导向·合规底线·工具风格</p>
+  </section>
+
+</div>
+</body>
+</html>

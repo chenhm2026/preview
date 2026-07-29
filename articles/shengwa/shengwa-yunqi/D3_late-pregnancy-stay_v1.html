@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>飞哥公众号文章</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #ffffff;
+    color: #374151;
+    line-height: 1.75;
+    letter-spacing: 0.5px;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 20px 0;
+  }
+
+  @media (max-width: 600px) {
+    .container {
+      padding: 0;
+    }
+  }
+
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover {
+    background: #DE7356;
+    color: #ffffff;
+    border-color: #DE7356;
+  }
+  #copy-btn.copied {
+    background: #22C55E;
+    color: #ffffff;
+    border-color: #22C55E;
+  }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.container');
+    if (!container) return;
+
+    // 优先用 ClipboardItem 写 text/html，保留富文本格式
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function() {
+        showCopied(btn);
+      }).catch(function() {
+        fallbackCopy(btn, container);
+      });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+
+  function fallbackCopy(btn, container) {
+    // 创建临时选区覆盖 container
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    try {
+      document.execCommand('copy');
+      showCopied(btn);
+    } catch(e) {
+      alert('复制失败，请手动 Ctrl+A / Cmd+A 全选后复制');
+    }
+    sel.removeAllRanges();
+  }
+
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '✓ 已复制';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>一键复制';
+    }, 2000);
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div class="container">
+
+  <section style="margin: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(232,180,184, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #E8B4B8; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #E8B4B8;">BREAKING</span>
+        <span style="flex: 1; height: 1px; background: linear-gradient(to right, rgba(232,180,184, 0.15), transparent);"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.07</span>
+      </section>
+      <section style="display: flex; align-items: center; gap: 20px;">
+        <section style="flex: 1;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; margin: 0 0 12px; line-height: 1.2; letter-spacing: -1px;">孕晚期赴港待产要提前多久？住宿怎么安排？</p>
+          <section style="width: 48px; height: 3px; background: linear-gradient(to right, #E8B4B8, #E8956D); border-radius: 2px; margin: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; margin: 0; line-height: 1.7; letter-spacing: 0.5px;">本文提供孕晚期赴港待产的时间安排和住宿建议，帮助孕妇做好待产准备。</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">用途：指导孕晚期赴港待产的时间安排和住宿选择</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">适用对象：计划在香港分娩的孕妇</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">更新日期：2026年6月</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">用途</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">本文提供孕晚期赴港待产的时间安排和住宿建议，帮助孕妇做好待产准备。</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、待产时间安排</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">1.1 建议赴港时间</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">情况</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">建议赴港时间</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">初产妇</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">36周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">提前4周</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">经产妇</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">37周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">提前3周</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高危妊娠</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">34周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">提前6周</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">有早产风险</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">32周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">提前8周</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">1.2 待产期间安排</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">时间</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">安排</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">赴港后第1周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">安顿、熟悉环境</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">适应香港生活</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">赴港后第2周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">定期产检</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">监测胎儿状况</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">赴港后第3周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">准备分娩</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">准备待产包</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">赴港后第4周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">待产</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">等待分娩</td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、住宿选择</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">2.1 住宿类型</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">类型</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">费用范围（港元/日）</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">优点</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">缺点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">经济型酒店</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">300-600</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">费用低</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">设施简单</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中档酒店</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">600-1,200</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">设施较好</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">费用较高</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高档酒店</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1,200-3,000</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">服务好</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">费用高</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">服务式公寓</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">500-1,500</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">有厨房、洗衣机</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">需签租约</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">月子中心</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">3,000-8,000</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">专业服务</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">费用高</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">2.2 推荐住宿选择</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">需求</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">推荐类型</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">预算有限</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">经济型酒店</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">费用低</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">需要厨房</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">服务式公寓</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">可自己做饭</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">需要专业照顾</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">月子中心</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">有专业护理</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">短期待产</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中档酒店</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">性价比高</td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二之一、按分娩医院选住宿区域(实用)</h2>
+      </section>
+    </section>
+  </section>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #E8B4B8; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(232,180,184, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #E8B4B8; letter-spacing: -0.2px;"><strong style="font-weight: 900; color: #111827;">核心原则</strong>:住<strong style="font-weight: 900; color: #111827;">距离医院 3 公里内、30 分钟车程可达</strong>。孕晚期随时可能破水/见红,远距离奔波有风险。</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;"></p>
+  </section>
+
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">按私院选区域</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">分娩医院</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">推荐住宿区</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">距离参考</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">推荐酒店/公寓</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">养和医院(跑马地)</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">跑马地/铜锣湾/湾仔</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">0.5-2 km</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">跑马地小型服务式公寓、富豪香港</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港怡医院(黄竹坑)</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">黄竹坑/香港仔/海洋公园</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1-3 km</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">The Arca 酒店、赤柱小公寓</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">浸会医院(九龙塘)</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">九龙塘/九龙城/旺角</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1-3 km</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">九龙塘服务式公寓、旺角维景</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">圣德肋撒医院(太子)</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">太子/九龙城/新蒲岗</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1-3 km</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">太子区中档酒店</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">仁安医院(沙田)</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">沙田/大围/火炭</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1-3 km</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">沙田万怡、帝逸酒店</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港安医院(荃湾)</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">荃湾/葵涌</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1-3 km</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">荃湾如心、悦来酒店</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">按公立医院选区域(医院员工推荐)</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">分娩医院(联网)</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">推荐住宿区</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">距离参考</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">备注</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">玛丽医院/赞育</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">薄扶林/香港仔/西环</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1-3 km</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">海怡/置富/华富一带</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">伊利沙伯医院</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">九龙/油尖旺/何文田</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1-3 km</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">旺角/佐敦/红磡</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">威尔斯亲王医院</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">沙田/大围/马鞍山</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1-3 km</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">沙田市中心/大围</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">广华医院</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">油麻地/旺角/太子</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1-3 km</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">油尖旺核心区</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">屯门医院</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">屯门/元朗</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1-3 km</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">屯门市中心</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">基督教联合医院</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">观塘/九龙湾/牛头角</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1-3 km</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">观塘工业区附近</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">东区尤德夫人那打素医院</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">柴湾/西湾河/筲箕湾</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1-3 km</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港岛东</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #E8B4B8; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(232,180,184, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #E8B4B8; letter-spacing: -0.2px;"><strong style="font-weight: 900; color: #111827;">避坑提示</strong>:</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">- 不要选"看着便宜但偏远"的屯门/元朗酒店——去医院急诊时间长,堵车 1 小时+
+- 优先选<strong style="font-weight: 900; color: #111827;">有电梯、有 24h 前台</strong>——孕晚期搬运行李/夜间急诊都需要
+- 看清是否允许<strong style="font-weight: 900; color: #111827;">短期租约</strong>(1 个月起 vs 1 周起)</p>
+  </section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、住宿预订</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">3.1 预订时间</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">时间</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">怀孕初期</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">开始了解住宿选择</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">怀孕中期</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">预订住宿</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">怀孕晚期</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">确认预订</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">3.2 预订方式</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">方式</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">网上预订</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">Booking、Agoda等平台</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">直接联系</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">联系酒店或公寓</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中介帮助</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">通过中介预订</td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、费用参考</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">住宿类型</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">费用范围（港元/月）</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">经济型酒店</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">9,000-18,000</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">30天</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中档酒店</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">18,000-36,000</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">30天</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高档酒店</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">36,000-90,000</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">30天</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">服务式公寓</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">15,000-45,000</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">30天</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">月子中心</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">90,000-240,000</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">30天</td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、注意事项</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">提前预订</strong>：建议在怀孕中期即预订住宿，避免临时涨价</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">位置选择</strong>：选择距离医院较近的住宿，方便产检和分娩</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">设施需求</strong>：根据自身需求选择住宿类型（如需要厨房、洗衣机等）</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">费用确认</strong>：预订前确认所有费用，避免后期纠纷</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">交通便利</strong>：考虑住宿附近的交通便利性</li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 08</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、下一步</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">安排好住宿后，下一步需要了解：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">孕妇过关</strong> → 查看 [D4 孕妇过关有什么特殊注意事项？]</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">产前课程</strong> → 查看 [D5 香港产前课程/孕妇教育哪里找？]</li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #E8B4B8, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 09</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">官方信息来源</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">香港酒店业协会</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="https://www.hkha.org/" style="color: #E8B4B8; text-decoration: underline;">https://www.hkha.org/</a></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">各酒店及公寓官方网站</span></li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 24px 0;"></section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><em style="font-style: italic; color: #4B5563;">本内容仅供参考，具体费用以各机构最新公布为准。</em></p>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(232,180,184, 0.3), transparent); margin: 32px 0 28px;"></section>
+
+  <section style="margin: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(232,180,184, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #E8B4B8; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #E8B4B8; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; letter-spacing: 0.3px; white-space: pre-line;">港通+
+内地↔香港跨境问题的中文索引入口</p>
+    <p style="font-size: 14px; color: #BBBBBB; margin: 0; letter-spacing: 0.5px;">结构优先·入口导向·合规底线·工具风格</p>
+  </section>
+
+</div>
+</body>
+</html>

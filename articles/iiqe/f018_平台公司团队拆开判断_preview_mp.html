@@ -1,160 +1,39 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>飞哥公众号文章</title>
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; margin: 0 auto; padding: 20px 0;">
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-    background-color: #ffffff;
-    color: #374151;
-    line-height: 1.75;
-    letter-spacing: 0.5px;
-    font-size: 16px;
-  }
-
-  .container {
-    max-width: 677px;
-    margin: 0 auto;
-    background: #ffffff;
-    padding: 20px 0;
-  }
-
-  @media (max-width: 600px) {
-    .container {
-      padding: 0;
-    }
-  }
-
-  #copy-btn {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    z-index: 999;
-    background: #ffffff;
-    border: 1.5px solid rgba(222,115,86,0.35);
-    border-radius: 20px;
-    padding: 7px 16px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #DE7356;
-    cursor: pointer;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.2s;
-    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
-    white-space: nowrap;
-  }
-  #copy-btn:hover {
-    background: #DE7356;
-    color: #ffffff;
-    border-color: #DE7356;
-  }
-  #copy-btn.copied {
-    background: #22C55E;
-    color: #ffffff;
-    border-color: #22C55E;
-  }
-</style>
-<script>
-  function copyArticle() {
-    var btn = document.getElementById('copy-btn');
-    var container = document.querySelector('.container');
-    if (!container) return;
-
-    // 优先用 ClipboardItem 写 text/html，保留富文本格式
-    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
-      var html = container.innerHTML;
-      var blob = new Blob([html], {type: 'text/html'});
-      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
-      navigator.clipboard.write([
-        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
-      ]).then(function() {
-        showCopied(btn);
-      }).catch(function() {
-        fallbackCopy(btn, container);
-      });
-    } else {
-      fallbackCopy(btn, container);
-    }
-  }
-
-  function fallbackCopy(btn, container) {
-    // 创建临时选区覆盖 container
-    var range = document.createRange();
-    range.selectNodeContents(container);
-    var sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-    try {
-      document.execCommand('copy');
-      showCopied(btn);
-    } catch(e) {
-      alert('复制失败，请手动 Ctrl+A / Cmd+A 全选后复制');
-    }
-    sel.removeAllRanges();
-  }
-
-  function showCopied(btn) {
-    btn.classList.add('copied');
-    btn.innerHTML = '✓ 已复制';
-    setTimeout(function() {
-      btn.classList.remove('copied');
-      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>一键复制';
-    }, 2000);
-  }
-</script>
-</head>
-<body>
-<button id="copy-btn" onclick="copyArticle()">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-  一键复制
-</button>
-<div class="container">
-
-  <section style="margin: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(15,61,46, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
-    <section style="padding: 32px 28px 28px;">
-      <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+  <div style="margin: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(15,61,46, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <div style="padding: 32px 28px 28px;">
+      <div style="display: block; align-items: center; margin-bottom: 24px;">
         <span style="width: 6px; height: 6px; background: #0F3D2E; border-radius: 50%; display: inline-block;"></span>
         <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #0F3D2E;">BREAKING</span>
-        <span style="flex: 1; height: 1px; background: linear-gradient(to right, rgba(15,61,46, 0.15), transparent);"></span>
+        <span style="width: auto; height: 1px; background: #F1F5F2;"></span>
         <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.07</span>
-      </section>
-      <section style="display: flex; align-items: center; gap: 20px;">
-        <section style="flex: 1;">
+      </div>
+      <div style="display: block; align-items: center; ">
+        <div style="width: auto;">
           <p style="font-size: 26px; font-weight: 900; color: #111827; margin: 0; line-height: 1.1; letter-spacing: -1px;">保险公司、销售区域、团队：拆开判断</p>
-          <section style="width: 48px; height: 3px; background: linear-gradient(to right, #0F3D2E, #E8956D); border-radius: 2px; margin: 12px 0;"></section>
-          <p style="font-size: 13px; color: #9CA3AF; margin: 0; line-height: 1.7; letter-spacing: 0.5px;">为什么"平台"概念会误导你 + 3 层结构决策框架</p>
-        </section>
-      </section>
-    </section>
-  </section>
+          <div style="width: 48px; height: 3px; background: linear-gradient(to right, #0F3D2E, #E8956D); border-radius: 2px; margin: 12px 0;"></div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">定位：判断（3 层拆分 + 何时了解）</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">定位：判断（4 层拆分 + 何时了解）</p>
   <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">上线 Phase：Phase 3</p>
-  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">用途：帮选团队的人分清"保险公司/销售区域/团队"是 3 个不同层级，<strong style="font-weight: 900; color: #111827;">不要混为一谈</strong></p>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">版本：v2（参考《选择篇：帮你做出更理性的职业选择》手册重写）</p>
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">用途：帮选团队的人分清"从业模式 / 保险公司 / 销售区域 / 团队"是 4 个不同层级，<strong style="font-weight: 900; color: #111827;">不要混为一谈</strong></p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">版本：v3（在 v2 基础上，参考飞书《选择篇》第 4/6/8/10 节重写保险公司、销售区域、新增团队交流）</p>
+  <div style="height: 2px; background: #E8EFEA; margin: 24px 0;"></div>
 
-  <section style="margin: 36px 0 18px;">
-    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <section style="padding-bottom: 6px;">
+  <div style="margin: 36px 0 18px;">
+    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <div style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
-      </section>
-      <section style="display: block;">
+      </div>
+      <div style="display: block;">
         <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">适用对象</h2>
-      </section>
-    </section>
-  </section>
+      </div>
+    </div>
+  </div>
   <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">已经在比较不同保险公司 / 销售区域 / 团队</span></li>
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">发现"同一个销售区域不同团队体验差别很大"</span></li>
@@ -162,25 +41,25 @@
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">不知道应该重点看哪个层级</span></li>
   </ul>
   <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不适用：还没考 IIQE 的人，本篇是选团队专属。</p>
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+  <div style="height: 2px; background: #E8EFEA; margin: 24px 0;"></div>
 
-  <section style="margin: 36px 0 18px;">
-    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <section style="padding-bottom: 6px;">
+  <div style="margin: 36px 0 18px;">
+    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <div style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
-      </section>
-      <section style="display: block;">
+      </div>
+      <div style="display: block;">
         <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、为什么必须拆开</h2>
-      </section>
-    </section>
-  </section>
+      </div>
+    </div>
+  </div>
   <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">很多人选团队时<strong style="font-weight: 900; color: #111827;">把保险公司、销售区域、团队混在一起</strong>，导致：</p>
   <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">因为喜欢某个团队，加入后发现<strong style="font-weight: 900; color: #111827;">销售区域的制度不适合自己</strong></span></li>
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">因为公司名气大，忽略了<strong style="font-weight: 900; color: #111827;">具体团队的实际氛围</strong></span></li>
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">因为团队氛围好，忽略了<strong style="font-weight: 900; color: #111827;">保险公司层面的稳定性风险</strong></span></li>
   </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">实际上，<strong style="font-weight: 900; color: #111827;">这三层解决的是不同问题</strong>：</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">实际上，<strong style="font-weight: 900; color: #111827;">这些层级解决的是不同问题</strong>：</p>
   <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
     <thead>
       <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
@@ -191,13 +70,18 @@
     </thead>
     <tbody>
       <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">从业模式</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">Agent 还是 Broker</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">想做"深度专业"还是"宽度覆盖"</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
         <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">保险公司</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">产品体系、品牌背书、监管合规</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">产品体系、品牌背书、监管合规、财务稳健</td>
         <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">想不想用这家公司的产品</td>
       </tr>
       <tr style="border-bottom: 1px solid #E5E7EB;">
         <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">销售区域</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">制度文化、资源投入、运营风格</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">制度文化、资源投入、培养节奏</td>
         <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">想不想在这个区域做事</td>
       </tr>
       <tr style="border-bottom: 1px solid #E5E7EB;">
@@ -207,19 +91,64 @@
       </tr>
     </tbody>
   </table>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ <strong style="font-weight: 900; color: #111827;">关键提醒</strong>：很多人听到"平台"这个词会有不同理解。有人把"平台"理解成保险公司，有人理解成销售区域，有人理解成 App/IT 系统。<strong style="font-weight: 900; color: #111827;">为了避免混淆，本篇统一用"保险公司/销售区域/团队"三层结构，不用"平台"这个词。</strong></p>
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ <strong style="font-weight: 900; color: #111827;">关键提醒</strong>：很多人听到"平台"这个词会有不同理解。有人把"平台"理解成保险公司，有人理解成销售区域，有人理解成 App/IT 系统。<strong style="font-weight: 900; color: #111827;">为了避免混淆，本篇统一用"从业模式 / 保险公司 / 销售区域 / 团队"四层结构，不用"平台"这个词。</strong></p>
+  <div style="height: 2px; background: #E8EFEA; margin: 24px 0;"></div>
 
-  <section style="margin: 36px 0 18px;">
-    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <section style="padding-bottom: 6px;">
+  <div style="margin: 36px 0 18px;">
+    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <div style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
-      </section>
-      <section style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、为什么先看保险公司，再看销售区域和团队</h2>
-      </section>
-    </section>
-  </section>
+      </div>
+      <div style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、为什么先看从业模式（Agent 还是 Broker）</h2>
+      </div>
+    </div>
+  </div>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">选择顺序的第一步：先决定做 Agent 还是 Broker，再去看具体公司。</strong></p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这是飞书《选择篇》第 4 节的核心理念——很多人跳过这一步，直接比"哪家保险公司好"，但其实<strong style="font-weight: 900; color: #111827;">两类路径的判断逻辑完全不同</strong>。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">2.1 保险代理人（Agent）</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">Agent，也称专属代理人（Tied Agent），与某一家保险公司签约，<strong style="font-weight: 900; color: #111827;">只能销售该公司的产品</strong>。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">优势</strong>：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">背靠保险公司品牌，客户信任度起点较高</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">有完整的公司培训体系、产品资料和运营支持</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">产品线聚焦，深度研究难度相对可控</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">客户服务有公司体系兜底</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">结构性限制</strong>：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">可售卖的产品范围受限</strong>：只能成交自家产品——若客户需求在自家产品里确实找不到最合适选项，Agent 可以推荐，但无法售卖</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">职业流动性受限</strong>：若未来想转换平台或公司，客户资源通常难以同步转移</li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">2.2 保险经纪人（Broker）</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">Broker 持有香港监管机构认可的经纪人牌照，<strong style="font-weight: 900; color: #111827;">可以同时代理多家保险公司的产品</strong>。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">优势</strong>：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">可以销售多家保险公司的产品</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">对多个公司的产品线有横向理解，学习门槛更高</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">结构性缺点</strong>：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">规模与资源受限</strong>：Broker 公司普遍小于保险公司，缺乏后者强大的品牌背书、培训体系和资源支持</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">监管要求相对宽松，进入门槛较低</strong>：持牌门槛低于保险公司，专业水平参差不齐</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">香港保险业历史上曾有最大经纪公司康宏，一度上市最终还是倒闭——经纪公司的抗风险能力整体弱于保险公司</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">2.3 对新人来说，哪个更适合</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">核心判断标准</strong>：</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">你更愿意"深度吃透一家公司的产品体系，做到极致专业"，还是"广泛了解多家公司产品，但对每家的深度都有限"？</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你资源集中在某一类客户（比如长期服务的高净值人群），Agent 路径更合适。如果你的人脉和需求高度多样化，Broker 路径可能更灵活——但你需要承担更多独立学习的责任。</p>
+  <div style="height: 2px; background: #E8EFEA; margin: 24px 0;"></div>
+
+  <div style="margin: 36px 0 18px;">
+    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <div style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </div>
+      <div style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、为什么先看保险公司，再看销售区域和团队</h2>
+      </div>
+    </div>
+  </div>
   <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">选择的顺序不能错：保险公司 → 销售区域 → 团队。</strong></p>
   <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">在保险行业里：</p>
   <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
@@ -229,38 +158,38 @@
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">在销售区域之下，才是具体的 Agent 个人，以及 Agent 自主招募组建的小<strong style="font-weight: 900; color: #111827;">团队</strong>（通常几人到几十人）</span></li>
   </ul>
   <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">所以，<strong style="font-weight: 900; color: #111827;">同样是"在这家公司做"</strong>，落在不同销售区域，体验和结果可能截然不同。</p>
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+  <div style="height: 2px; background: #E8EFEA; margin: 24px 0;"></div>
 
-  <section style="margin: 36px 0 18px;">
-    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <section style="padding-bottom: 6px;">
-        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
-      </section>
-      <section style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、什么时候开始观察 3 层</h2>
-      </section>
-    </section>
-  </section>
+  <div style="margin: 36px 0 18px;">
+    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <div style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </div>
+      <div style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、什么时候开始观察 4 层</h2>
+      </div>
+    </div>
+  </div>
   <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">路径 A：考牌后再观察（传统）</h3>
 
-  <section style="background: #2B2622; border-radius: 11px; padding: 18px; margin: 18px 0; overflow-x: auto; font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace; font-size: 12px; line-height: 1.6; color: #E5E7EB;">
-<pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;"><code>IIQE 通过 → 申请 个人中介人牌照 → 找挂靠公司 → 选择销售区域 → 选择团队</code></pre>
-  </section>
+  <div style="background: #2B2622; border-radius: 11px; padding: 18px; margin: 18px 0; overflow-x: auto; font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace; font-size: 12px; line-height: 1.6; color: #E5E7EB;">
+<pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;"><code>IIQE 通过 → 申请个人中介人牌照 → 决定 Agent/Broker → 找挂靠公司 → 选择销售区域 → 选择团队</code></pre>
+  </div>
 
   <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">适合：想专心备考、不想被外界打扰的人。</p>
   <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">路径 B：备考期就观察（推荐）</h3>
 
-  <section style="background: #2B2622; border-radius: 11px; padding: 18px; margin: 18px 0; overflow-x: auto; font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace; font-size: 12px; line-height: 1.6; color: #E5E7EB;">
-<pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;"><code>备考 IIQE → 同时观察保险公司 / 销售区域 / 团队 3 层
+  <div style="background: #2B2622; border-radius: 11px; padding: 18px; margin: 18px 0; overflow-x: auto; font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace; font-size: 12px; line-height: 1.6; color: #E5E7EB;">
+<pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;"><code>备考 IIQE → 同时观察 4 层结构
    ↓
 理解各层差异，**为通过后的选择做铺垫**
    ↓
 通过 IIQE → 已有观察基础 → 更快做正确选择</code></pre>
-  </section>
+  </div>
 
   <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么推荐路径 B</strong>：</p>
   <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">3 层的判断需要时间，<strong style="font-weight: 900; color: #111827;">不是一次对话能完成的</strong></span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">4 层的判断需要时间，<strong style="font-weight: 900; color: #111827;">不是一次对话能完成的</strong></span></li>
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">备考期是天然的"观察窗口"</span></li>
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">提前观察 = 通过后不慌</span></li>
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">同时可以<strong style="font-weight: 900; color: #111827;">借力销售区域的备考资源</strong>（资料、模拟系统、同伴交流）</span></li>
@@ -272,81 +201,56 @@
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">任何保险公司 / 销售区域 / 团队的观察方法<strong style="font-weight: 900; color: #111827;">对所有选项都适用</strong></span></li>
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">不要因为提前接触就感觉"必须加入"某个团队</span></li>
   </ul>
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+  <div style="height: 2px; background: #E8EFEA; margin: 24px 0;"></div>
 
-  <section style="margin: 36px 0 18px;">
-    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <section style="padding-bottom: 6px;">
-        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
-      </section>
-      <section style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、保险公司（看 5 件事 + 5 个观察信号）</h2>
-      </section>
-    </section>
-  </section>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">4.1 看什么</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看什么</strong>：</p>
+  <div style="margin: 36px 0 18px;">
+    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <div style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </div>
+      <div style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、保险公司：看长期结构，不是看名气</h2>
+      </div>
+    </div>
+  </div>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不要问"它火不火"，要问"它稳不稳"。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">很多人最容易被这些信息吸引：</p>
   <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">产品线结构（长期 / 一般 / 投连 / MPF）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">主力产品（储蓄险 / 重疾险 / 财富传承）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">品牌历史（成立年限、市场地位）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">品牌知名度</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">广告曝光</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">市场热度</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">身边人提得多不多</span></li>
   </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这些信息不是完全没用，但它们都无法回答一个更重要的问题：</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这家公司，值不值得你把未来几年甚至几十年的职业信用放上去？</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">你不是在选一份短期工作，而是在把自己的时间、声誉、客户关系，绑定在一个长期系统里。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5.1 财务与资本稳健性</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看</strong>：它是否具备长期履约的基础？是否有足够的稳定性穿越市场周期？</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：保险公司不稳定 = 你做的事可能突然断。这是<strong style="font-weight: 900; color: #111827;">保险公司最核心的判断维度</strong>。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5.2 投资风格是否稳健</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看</strong>：它更偏向稳健经营，还是为了漂亮收益承担过高波动？是否存在明显长期错配风险？</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">激进投资 + 长期承诺，往往是风险组合。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5.3 历史产品兑现实绩</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看</strong>：不要只看今天在卖什么，而要回头看几年前、十几年前的产品后来发生了什么。</p>
   <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">保险公司决定<strong style="font-weight: 900; color: #111827;">你卖什么产品</strong></span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">产品线决定<strong style="font-weight: 900; color: #111827;">客户群体</strong></span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">品牌决定<strong style="font-weight: 900; color: #111827;">客户初始信任度</strong></span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是否长期相对稳定</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是否频繁调整预期或引发争议</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">真正稳健的保险公司，老产品不一定"看起来很赚"，但通常能平稳走完周期</span></li>
   </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">4.2 看什么</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看什么</strong>：</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5.4 合规与监管记录</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看</strong>：合规部门设置、合规培训频率、违规处理流程、反洗钱和 KYC 执行。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：合规是保险行业的<strong style="font-weight: 900; color: #111827;">生存底线</strong>。保险公司合规松散 = 个人风险高。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5.5 长期取向与服务逻辑</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看</strong>：这家公司是否真正重视长期服务？是否愿意为长期客户关系投入系统资源？</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">还是更偏向：</p>
   <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">财务稳健性（信用评级、偿付能力比率）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">监管记录</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">公开披露的业绩</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">强前端销售</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">高短期产出</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">服务被视为成本而非核心价值</span></li>
   </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">保险公司不稳定 = 你做的事可能突然断</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">这是<strong style="font-weight: 900; color: #111827;">保险公司最核心的判断维度</strong></span></li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">4.3 看什么</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看什么</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">新人培训体系（覆盖到第几年）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">持续教育（PE-CPD）支持</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">客户开发资源（线索、活动）</span></li>
-  </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">培训决定<strong style="font-weight: 900; color: #111827;">你能不能成长起来</strong></span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">资源决定<strong style="font-weight: 900; color: #111827;">你能不能获客</strong></span></li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">4.4 看什么</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看什么</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">主力客户群体（高净值 / 中产 / 跨境）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">业务重心（储蓄 / 重疾 / 财富传承）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是否支持跨产品销售</span></li>
-  </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">不同方向对应不同客户资源需求</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">你的人脉和资源是否匹配这家公司的定位</span></li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">4.5 看什么</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看什么</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">合规部门设置</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">合规培训频率</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">违规处理流程</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">反洗钱和 KYC 执行</span></li>
-  </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">合规是保险行业的<strong style="font-weight: 900; color: #111827;">生存底线</strong></span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">保险公司合规松散 = 个人风险高</span></li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">4.6 5 个可观察信号</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">长期从业者，一定要看清楚这家公司<strong style="font-weight: 900; color: #111827;">鼓励什么、忽视什么</strong>。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">你最终要选的，不是"今天看起来最亮眼的公司"，而是那个：几年后，你依然敢把客户托付给它的系统。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5.6 5 个可观察信号</h3>
   <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">备考期间，你可以从以下公开信号观察保险公司：</p>
   <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
     <thead>
@@ -357,8 +261,8 @@
     </thead>
     <tbody>
       <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">公司年报 / 公开数据</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">搜索引擎、行业报告、新闻</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">年报 / 中报 / 偿付能力比率</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">搜索引擎、行业报告、新闻。<strong style="font-weight: 900; color: #111827;">重点：偿付比率必须结合产品结构看</strong>——储蓄型产品为主的 150-300% 属正常；保障型产品为主的可能偏低但合理</td>
       </tr>
       <tr style="border-bottom: 1px solid #E5E7EB;">
         <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">信用评级</td>
@@ -369,311 +273,117 @@
         <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">IA 公告、香港保监局新闻</td>
       </tr>
       <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">招聘信息</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">招聘平台（看要求和待遇）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">历史产品资料</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">老产品条款、历史分红/收益公告、多年的变化轨迹——重点是<strong style="font-weight: 900; color: #111827;">长期行为是否一致、是否克制</strong></td>
       </tr>
       <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">行业口碑</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">行业群、同行评价（注意主观性）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">老从业者的具体经历</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">不要只听态度判断，而要问具体事件（市场波动时公司如何处理、争议时站哪边）</td>
       </tr>
     </tbody>
   </table>
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+  <div style="height: 2px; background: #E8EFEA; margin: 24px 0;"></div>
 
-  <section style="margin: 36px 0 18px;">
-    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <section style="padding-bottom: 6px;">
-        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
-      </section>
-      <section style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、销售区域（看 4 件事 + 5 个观察信号）</h2>
-      </section>
-    </section>
-  </section>
-
-  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #0F3D2E; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(15,61,46, 0.08);">
-    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-      <span style="font-size: 18px; line-height: 1;">💡</span>
-      <span style="font-size: 16px; font-weight: 900; color: #0F3D2E; letter-spacing: -0.2px;"><strong style="font-weight: 900; color: #111827;">为什么单独看销售区域</strong>：</span>
-    </section>
-    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">同一保险公司下，不同销售区域的资源投入、管理风格、文化差异<strong style="font-weight: 900; color: #111827;">可能非常大</strong>。所以"加入某保险公司"远远不够，<strong style="font-weight: 900; color: #111827;">还要看具体哪个销售区域</strong>。</p>
-  </section>
-
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5.1 看什么</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看什么</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">销售区域战略重点</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">销售区域在不同业务线的投入</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">对新业务的态度</span></li>
-  </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">方向决定<strong style="font-weight: 900; color: #111827;">你的成长路径</strong></span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">选错方向 = 投入大量时间后发现要走另一条</span></li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5.2 看什么</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看什么</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">公司价值观是否成文</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">内部沟通风格（开放 / 等级森严）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">对从业者的态度（工具 / 资源）</span></li>
-  </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">文化影响<strong style="font-weight: 900; color: #111827;">你的工作感受</strong></span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">文化与你不匹配会持续消耗</span></li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5.3 看什么</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看什么</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">培训频率（每周 / 每月）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">培训内容（产品 / 销售 / 合规）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">培训形式（线下 / 线上 / 实战）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">新人培训周期（覆盖到第几年）</span></li>
-  </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">培训质量决定<strong style="font-weight: 900; color: #111827;">你的成长速度</strong></span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">新人期支持决定<strong style="font-weight: 900; color: #111827;">前 1-2 年能否站稳</strong></span></li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5.4 看什么</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看什么</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">资源分配（线索、活动、广告）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">团队管理与领导力培训</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">内部晋升机制</span></li>
-  </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">资源决定<strong style="font-weight: 900; color: #111827;">你展业的环境</strong></span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">晋升机制决定<strong style="font-weight: 900; color: #111827;">你的长期路径</strong></span></li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5.5 5 个可观察信号</h3>
-  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
-    <thead>
-      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
-        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">信号</th>
-        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">观察方式</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">销售区域官网 / 价值观</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">区域官网"关于我们"</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">区域年报 / 媒体新闻</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">搜索"销售区域名 + 保险公司名"</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">区域活动 / 公开课程</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">销售区域公开讲座、活动</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">区域成员评价</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">公开评价、离职分享</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">区域领导风格</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">看区域总监的公开发言</td>
-      </tr>
-    </tbody>
-  </table>
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
-
-  <section style="margin: 36px 0 18px;">
-    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <section style="padding-bottom: 6px;">
+  <div style="margin: 36px 0 18px;">
+    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <div style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
-      </section>
-      <section style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、团队（看 5 件事 + 5 个观察信号）</h2>
-      </section>
-    </section>
-  </section>
+      </div>
+      <div style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、销售区域：看培养逻辑和留存，而不是结果数字</h2>
+      </div>
+    </div>
+  </div>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不要只看结果数字，要从培养逻辑、节奏压力、合规过程、留存稳定去看。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.1 培养逻辑</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看</strong>：这个销售区域有没有清晰的新人成长路径，还是更多依赖"先进来，做起来再说"？</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">真正有培养逻辑的销售区域，通常会明确：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">前 3–6 个月该做什么</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">12 个月内的合理状态是什么</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">新人应该先建立哪些基础能力</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果一个销售区域无法清楚回答这些问题，那你要警惕：<strong style="font-weight: 900; color: #111827;">你可能只是被期待尽快出结果</strong>。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.2 节奏与压力逻辑</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看</strong>：这个销售区域，对新人是否有给予足够的成长时间？</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">健康的新人培养逻辑，通常包含以下特征：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">前期允许"不能出单"的阶段</strong>：专业基础知识、产品理解、客户沟通技巧都需要时间建立，不是一入职就能变现</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">目标设定与成长阶段匹配</strong>：新人期目标更多是"学习进度"而非"业绩数字"</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">不以恐惧驱动</strong>：如果主要驱动逻辑是"不出单就会被淘汰""排名垫底很丢脸"，长期下来会形成焦虑文化，而不是成长文化</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">有留人记录</strong>：问一下"在这里做满一年的新人，通常是什么时候开始有稳定收入的？"——真正有耐心的销售区域，通常能回答这个问题</li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">高要求不等于高质量，高压力也不等于高成长。一个健康的销售区域，会有要求，但不会让你长期处在失控状态。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.3 合规与过程</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看</strong>：这个销售区域是否真的重视合规、边界、过程、复盘？还是更多停留在口头层面？</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果一个销售区域只看结果，而对过程和边界缺乏耐心，那长期一定会把风险转嫁给从业者。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.4 留存与稳定</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看</strong>：在这个销售区域里，真正做了三年以上、状态稳定的人多不多？</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">你可以问一个很朴素的问题：</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">真正适合长期发展的销售区域，一定能留得下人。</strong></p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果一个销售区域长期依赖"不断招新人"来维持热度，而稳定留下来的人很少，那你就要非常谨慎。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.5 资源与文化匹配</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看</strong>：资源分配（线索、活动、广告）、内部晋升机制、培训频率和内容、价值观是否成文。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">判断销售区域，不是找"最猛的地方"，而是找：<strong style="font-weight: 900; color: #111827;">最不容易把人走形的地方</strong>。</p>
+  <div style="height: 2px; background: #E8EFEA; margin: 24px 0;"></div>
 
-  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #0F3D2E; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(15,61,46, 0.08);">
-    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-      <span style="font-size: 18px; line-height: 1;">💡</span>
-      <span style="font-size: 16px; font-weight: 900; color: #0F3D2E; letter-spacing: -0.2px;"><strong style="font-weight: 900; color: #111827;">为什么单独看团队</strong>：</span>
-    </section>
-    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">团队是日常具体环境。即使在同一个销售区域，不同团队的带教节奏、学习氛围、领导风格<strong style="font-weight: 900; color: #111827;">差异极大</strong>。</p>
-  </section>
-
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.1 看什么</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看什么</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是否有专门的带教老师</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">带教节奏（多久一次沟通）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">带教内容（产品 / 客户 / 合规）</span></li>
-  </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">带教质量决定<strong style="font-weight: 900; color: #111827;">新人期能不能站稳</strong></span></li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.2 看什么</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看什么</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是否有备考资料</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是否有模拟考试系统</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是否提供学习小组</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是否有同伴交流</span></li>
-  </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">备考期有团队支持，<strong style="font-weight: 900; color: #111827;">通过率明显更高</strong></span></li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.3 看什么</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看什么</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">团队每周固定学习时间</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">团队内部案例分享</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">团队内部复盘机制</span></li>
-  </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">学习节奏决定<strong style="font-weight: 900; color: #111827;">长期成长曲线</strong></span></li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.4 看什么</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看什么</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">团队成员之间是否互帮互助</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是否经常集体活动</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是否相互推荐客户</span></li>
-  </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">氛围好 = 学习效率高、心态更稳</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">氛围差 = 长期消耗</span></li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.5 看什么</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">看什么</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">团队长的从业经历</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">团队长的领导风格</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">团队长是否还在一线</span></li>
-  </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">为什么重要</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">团队长决定<strong style="font-weight: 900; color: #111827;">团队的真实气质</strong></span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">团队长不在一线 = 团队可能松散</span></li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.6 5 个可观察信号</h3>
-  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
-    <thead>
-      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
-        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">信号</th>
-        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">观察方式</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">团队长风格</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">一次面谈 / 视频沟通</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">团队成员互动</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">参加团队活动 / 沙龙</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">团队成员状态</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">看他们的工作节奏和情绪</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">团队历史</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">团队长背景、团队成立年限</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #E5E7EB;">
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">团队真实氛围</td>
-        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">在团队群里潜水观察</td>
-      </tr>
-    </tbody>
-  </table>
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
-
-  <section style="margin: 36px 0 18px;">
-    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <section style="padding-bottom: 6px;">
+  <div style="margin: 36px 0 18px;">
+    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <div style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 08</span>
-      </section>
-      <section style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">七、3 个层级的关系</h2>
-      </section>
-    </section>
-  </section>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">关系 1：自上而下的"约束"</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">保险公司制度约束销售区域，销售区域制度约束团队，团队具体执行。</p>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">如果保险公司不稳</strong>：销售区域再好也没用</p>
-  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">如果销售区域不行</strong>：团队再好也难长久</p>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">关系 2：自下而上的"影响"</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">团队会影响销售区域内部的某些做法，销售区域会影响保险公司的需求。</p>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">但</strong>：这种自下而上的影响很慢，不可靠</p>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">关系 3：判断顺序</h3>
+      </div>
+      <div style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">七、团队：和团队交流时，重点听什么、问什么</h2>
+      </div>
+    </div>
+  </div>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">团队的真实面貌，不在自我介绍里，而在互动细节里。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">和团队交流时，不要只听他们"讲得多好"，而要听他们<strong style="font-weight: 900; color: #111827;">如何回应你的判断与提问</strong>。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">一个团队是否适合长期发展，往往不是在自我介绍里暴露，而是在<strong style="font-weight: 900; color: #111827;">互动细节</strong>里显现。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">7.1 你要重点听什么</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">观察对方是否愿意帮助你判断，而不是催你决定：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">回答是否具体，还是始终停留在空话</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是否愿意承认困难和不确定性</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是否欢迎你反复提问</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是否尊重你的节奏，而不是急于推进</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是否反复强调长期主义、边界与责任</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你感受到的，是被理解、被尊重、被允许思考，那通常是一个健康信号。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">7.2 你建议主动问什么</h3>
 
-  <section style="background: #2B2622; border-radius: 11px; padding: 18px; margin: 18px 0; overflow-x: auto; font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace; font-size: 12px; line-height: 1.6; color: #E5E7EB;">
-<pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;"><code>先判断保险公司（产品、品牌、合规、财务）
-   ↓
-再判断销售区域（资源、文化、培训、晋升）
-   ↓
-最后判断团队（带教、氛围、节奏、领导）</code></pre>
-  </section>
+  <div style="background: #2B2622; border-radius: 11px; padding: 18px; margin: 18px 0; overflow-x: auto; font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace; font-size: 12px; line-height: 1.6; color: #E5E7EB;">
+<pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;"><code>你们最常劝退哪一类人？
+前 3–6 个月，你们最看重新人什么？
+如果一年没有明显结果，通常会发生什么？
+在你们这里，真正留下来的人有什么共性？
+团队更强调结果，还是过程？
+如果我问题很多，你们欢迎吗？
+你们怎么看待慢成长？
+出现错误或问题时，通常如何处理？</code></pre>
+  </div>
 
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">判断顺序不能颠倒</strong>。</p>
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">一个值得加入的团队，前期一定会帮助你想清楚，而不是害怕你想清楚。</strong></p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">7.3 团队不适合的常见信号</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">一上来就催促"今天就决定""现在锁名额"</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">拒绝回答具体问题，只讲大方向和机会</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">把所有失败都归因于"个人不够努力"</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">团队内没有做满 3 年的成员，或流动性异常高</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">对合规、边界、培训体系含糊其辞</span></li>
+  </ul>
+  <div style="height: 2px; background: #E8EFEA; margin: 24px 0;"></div>
 
-  <section style="margin: 36px 0 18px;">
-    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <section style="padding-bottom: 6px;">
+  <div style="margin: 36px 0 18px;">
+    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <div style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 09</span>
-      </section>
-      <section style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">八、3 个常见判断错误</h2>
-      </section>
-    </section>
-  </section>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">错误 1：只看团队不看销售区域</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">症状</strong>：因为某个团队特别好，加入后才发现销售区域制度不合理</p>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">问题</strong>：团队再好，销售区域不好也撑不久</p>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">错误 2：只看销售区域不看保险公司</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">症状</strong>：因为销售区域气氛好，没考虑保险公司是否稳定</p>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">问题</strong>：销售区域好不代表背后的保险公司稳</p>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">错误 3：把团队当全部</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">症状</strong>：认为"选对团队就万事大吉"</p>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">问题</strong>：团队是日常环境，但<strong style="font-weight: 900; color: #111827;">长期稳定靠保险公司和销售区域</strong></p>
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
-
-  <section style="margin: 36px 0 18px;">
-    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <section style="padding-bottom: 6px;">
-        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 10</span>
-      </section>
-      <section style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">九、关于"先选团队再考牌"的几点说明</h2>
-      </section>
-    </section>
-  </section>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">这种方式适合谁</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">适合：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">已经决定长期从业</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">想借助团队资源备考（资料 / 模拟系统 / 同期交流）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">愿意在备考期就开始观察 3 层</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">不希望"考过再找"的匆忙</span></li>
-  </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不适合：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">还在犹豫要不要考</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">不希望被外界打扰备考</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">想专心备考后再考虑选择</span></li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">注意事项</h3>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">观察不等于绑定</strong>：可以先了解，再决定</li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">任何团队都适用</strong>：不偏向任何具体公司或团队</li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">资料分享合规</strong>：遵守版权规则，不传播未授权内容</li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">不要"白嫖"</strong>：借用了资源要认真投入，离开要合理</li>
-  </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">合规边界</h3>
+      </div>
+      <div style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">八、观察时的合规边界</h2>
+      </div>
+    </div>
+  </div>
   <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">❌ 不点名任何公司、团队、品牌</span></li>
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">❌ 不暗示"加入某团队 = 更易通过"</span></li>
@@ -681,44 +391,45 @@
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">❌ 不把资料分享写成"入群条件"</span></li>
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">❌ 不在文章末尾"邀请加入团队"</span></li>
   </ul>
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">任何观察方法，对所有选项都适用</strong>。如果你发现某团队给你的方法只适用于他们自己，那就要警惕了。</p>
+  <div style="height: 2px; background: #E8EFEA; margin: 24px 0;"></div>
 
-  <section style="margin: 36px 0 18px;">
-    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <section style="padding-bottom: 6px;">
-        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 11</span>
-      </section>
-      <section style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">十、和"读这篇文章"的关系</h2>
-      </section>
-    </section>
-  </section>
+  <div style="margin: 36px 0 18px;">
+    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <div style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 10</span>
+      </div>
+      <div style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">九、和"读这篇文章"的关系</h2>
+      </div>
+    </div>
+  </div>
   <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">你现在应该清楚了：</p>
   <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">保险公司 / 销售区域 / 团队是<strong style="font-weight: 900; color: #111827;">3 个不同层级</strong>，必须拆开判断</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">保险公司 = 产品、品牌、合规、财务</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">销售区域 = 资源、文化、培训、晋升</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">团队 = 带教、氛围、节奏、领导</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">判断顺序：保险公司 → 销售区域 → 团队，<strong style="font-weight: 900; color: #111827;">不能颠倒</strong></span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">备考期可以同时观察 3 层，<strong style="font-weight: 900; color: #111827;">为通过后的选择做铺垫</strong></span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">从业模式（Agent 还是 Broker）、保险公司、销售区域、团队是<strong style="font-weight: 900; color: #111827;">4 个不同层级</strong>，必须拆开判断</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">判断顺序：从业模式 → 保险公司 → 销售区域 → 团队</strong>，不能颠倒</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">保险公司 = 长期结构（财务、投资风格、历史兑付、合规、长期取向），不是看名气</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">销售区域 = 培养逻辑、节奏压力、合规过程、留存稳定、资源匹配</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">团队 = 互动细节——重点听"是否帮助你判断"，重点问"最常劝退谁、慢成长怎么看待"</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">备考期可以同时观察 4 层，<strong style="font-weight: 900; color: #111827;">为通过后的选择做铺垫</strong></span></li>
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">任何具体选择应基于<strong style="font-weight: 900; color: #111827;">充分了解后的判断</strong>，不是被压力推动</span></li>
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">不要再用"平台"这个词</strong>——直接说"保险公司"或"销售区域"，更准确</li>
   </ul>
   <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你想用问题判断团队 → 看 <a href="f017_选择团队前应该问的8个问题.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f017 选择团队前应该问的 8 个问题</a></p>
   <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你想判断自己是否适合 → 看 <a href="f019_不适合IIQE长期从业的5种信号.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f019 不适合 IIQE 长期从业的 5 种信号</a></p>
   <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你想看选择篇完整版 → 参考飞书文档《选择篇：帮你做出更理性的职业选择》</p>
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+  <div style="height: 2px; background: #E8EFEA; margin: 24px 0;"></div>
 
-  <section style="margin: 36px 0 18px;">
-    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <section style="padding-bottom: 6px;">
-        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 12</span>
-      </section>
-      <section style="display: block;">
+  <div style="margin: 36px 0 18px;">
+    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <div style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 11</span>
+      </div>
+      <div style="display: block;">
         <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">官方信息来源</h2>
-      </section>
-    </section>
-  </section>
+      </div>
+    </div>
+  </div>
   <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">香港保险业监管局（IA）</span></li>
   </ul>
@@ -726,44 +437,41 @@
   <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">国际信用评级机构（标普 / 穆迪 / 惠誉）</span></li>
   </ul>
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+  <div style="height: 2px; background: #E8EFEA; margin: 24px 0;"></div>
 
-  <section style="margin: 36px 0 18px;">
-    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <section style="padding-bottom: 6px;">
-        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 13</span>
-      </section>
-      <section style="display: block;">
+  <div style="margin: 36px 0 18px;">
+    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <div style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 12</span>
+      </div>
+      <div style="display: block;">
         <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">下一步</h2>
-      </section>
-    </section>
-  </section>
+      </div>
+    </div>
+  </div>
   <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">判断自己是否适合</strong>：看 <a href="f019_不适合IIQE长期从业的5种信号.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f019</a></li>
     <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">回到目录</strong>：<a href="f000_IIQE总入口.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f000 IIQE 总入口</a></li>
   </ul>
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
   <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">本内容仅供参考，保险公司/销售区域/团队的选择是个人决定，本篇提供的是结构化判断框架。</strong> 实际选择应结合自身情况、各层级真实情况和长期规划，建议多观察、多接触、谨慎决策。</p>
 
-  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 32px 0 28px;"></section>
+  <div style="height: 2px; background: #E8EFEA; margin: 32px 0 28px;"></div>
 
-  <section style="margin: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(15,61,46, 0.12); text-align: center;">
+  <div style="margin: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(15,61,46, 0.12); text-align: center;">
 
     <p style="font-size: 14px; color: #0F3D2E; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
     <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
     <p style="font-size: 14px; color: #0F3D2E; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">👉 喜欢我们的内容？</p>
     <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
 
-  </section>
+  </div>
 
 
 
-  <section style="text-align: center; padding: 4px 0 32px;">
-    <p style="font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; letter-spacing: 0.3px; white-space: pre-line;">港通+
-内地↔香港跨境问题的中文索引入口</p>
-    <p style="font-size: 14px; color: #BBBBBB; margin: 0; letter-spacing: 0.5px;">结构优先·入口导向·合规底线·工具风格</p>
-  </section>
+  <div style="text-align: center; padding: 16px 16px 32px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+  <p style="font-size: 18px; font-weight: 800; color: #1E3A5F; margin: 0 0 8px; letter-spacing: 1px;">港通+</p>
+  <p style="font-size: 14px; font-weight: 500; color: #555; margin: 0 0 4px; letter-spacing: 0.5px;">内地↔香港跨境问题的中文索引入口</p>
+  <p style="font-size: 12px; font-weight: 400; color: #999; margin: 0; letter-spacing: 0.8px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p>
+</div>
 
 </div>
-</body>
-</html>

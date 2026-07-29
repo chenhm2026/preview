@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>飞哥公众号文章</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #ffffff;
+    color: #374151;
+    line-height: 1.75;
+    letter-spacing: 0.5px;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 20px 0;
+  }
+
+  @media (max-width: 600px) {
+    .container {
+      padding: 0;
+    }
+  }
+
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover {
+    background: #DE7356;
+    color: #ffffff;
+    border-color: #DE7356;
+  }
+  #copy-btn.copied {
+    background: #22C55E;
+    color: #ffffff;
+    border-color: #22C55E;
+  }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.container');
+    if (!container) return;
+
+    // 优先用 ClipboardItem 写 text/html，保留富文本格式
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function() {
+        showCopied(btn);
+      }).catch(function() {
+        fallbackCopy(btn, container);
+      });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+
+  function fallbackCopy(btn, container) {
+    // 创建临时选区覆盖 container
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    try {
+      document.execCommand('copy');
+      showCopied(btn);
+    } catch(e) {
+      alert('复制失败，请手动 Ctrl+A / Cmd+A 全选后复制');
+    }
+    sel.removeAllRanges();
+  }
+
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '✓ 已复制';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>一键复制';
+    }, 2000);
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div class="container">
+
+  <section style="margin: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(15,61,46, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #0F3D2E; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #0F3D2E;">BREAKING</span>
+        <span style="flex: 1; height: 1px; background: linear-gradient(to right, rgba(15,61,46, 0.15), transparent);"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.07</span>
+      </section>
+      <section style="display: flex; align-items: center; gap: 20px;">
+        <section style="flex: 1;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; margin: 0; line-height: 1.1; letter-spacing: -1px;">IIQE 成绩查询、合格标准与补考安排</p>
+          <section style="width: 48px; height: 3px; background: linear-gradient(to right, #0F3D2E, #E8956D); border-radius: 2px; margin: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; margin: 0; line-height: 1.7; letter-spacing: 0.5px;">电脑机考当场出成绩 / 笔试遥距 5-7 天 / 70% 通过线</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">定位：清单（3 种考试形式的成绩查询 + 合格标准 + 补考 + 后续牌照申请）</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">上线 Phase：Phase 2</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">用途：让考生知道怎么查成绩、没过怎么补考、考过后怎么申请牌照（关键步骤）</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">版本：v2（按"电脑机考/笔试/遥距监考"3 种形式区分）</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">适用对象</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">已经考完 IIQE，等成绩</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">想知道怎么查成绩</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">担心没考过想了解补考政策</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">考过后想了解申请牌照的下一步（<strong style="font-weight: 900; color: #111827;">这是多数新人最容易忽略的关键环节</strong>）</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不适用：还没考的人，先看 <a href="f012_IIQE考试当天流程.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f012 考试当天流程</a>。</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、3 种考试形式速查</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">IIQE 考试有 3 种形式，<strong style="font-weight: 900; color: #111827;">每种形式的成绩查询方式、公布时间、合格标准都不同</strong>。</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">形式</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">简称</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">考位</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">成绩公布</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">查询方式</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">适用对象</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">电脑机考</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">CSME</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">PEAK 中心考场</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">考后 <strong style="font-weight: 900; color: #111827;">1 小时</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">系统下载成绩通知</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">在港、习惯电脑操作</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">纸笔考</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">PPME</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">PEAK 中心考场</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">考后 <strong style="font-weight: 900; color: #111827;">5 个完整工作日</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">PEAK 账号查 + 邮件</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">在港、习惯纸质、担心电脑操作</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">遥距监考</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">远程</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">自己家/办公室</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">考后 <strong style="font-weight: 900; color: #111827;">5-7 个工作日</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">PEAK 账号查 + 邮件</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">不在港、行动不便、希望减少出门</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ <strong style="font-weight: 900; color: #111827;">关键提醒</strong>：3 种形式的<strong style="font-weight: 900; color: #111827;">合格标准一致</strong>（70%），但<strong style="font-weight: 900; color: #111827;">成绩公布时间和查询方式不同</strong>。报名前确认好选哪种形式，避免考完后不知道去哪里查成绩。</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、按形式区分：成绩公布时间</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">2.1 电脑机考（CSME）</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">成绩公布时间</strong>：考试结束 <strong style="font-weight: 900; color: #111827;">1 小时</strong> 后</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">来源</strong>：PEAK 官方 FAQ A1</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">最快出成绩的形式</strong></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">适合：考完后想快速知道结果的人</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">2.2 纸笔考（PPME）</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">成绩公布时间</strong>：考试后 <strong style="font-weight: 900; color: #111827;">5 个完整工作日</strong> 起</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">来源</strong>：PEAK 官方 FAQ A1</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">注意</strong>：5 个<strong style="font-weight: 900; color: #111827;">完整工作日</strong>（不含周末和公众假期）</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">例：周三考 → 下周三左右；周五考 → 下周五左右</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">2.3 遥距监考</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">成绩公布时间</strong>：考后 <strong style="font-weight: 900; color: #111827;">5-7 个工作日</strong></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">来源</strong>：PEAK 官方公告</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">比 PPME 多 1-2 个工作日（人工监考审核）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">适合：不在港、不方便到 PEAK 中心的人</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">时间速查表</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">考试日期</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">电脑机考</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">纸笔考</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">遥距监考</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">周一考</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">当天 1 小时后</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">下下周一左右</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">下下周三左右</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">周三考</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">当天 1 小时后</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">下周三左右</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">下下周五左右</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">周五考</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">当天 1 小时后</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">下下周五左右</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">下下下周二左右</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">注</strong>：以上为估算，实际以 PEAK 系统通知为准。</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、按形式区分：成绩查询方法</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">3.1 电脑机考（CSME）</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">查询步骤</strong>：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">考完后 1 小时登录 PEAK 账号</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">进入"Exam Result Checking"系统</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">直接下载 Score Report（PDF 格式）</strong></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">结果公布后 3 个月内可重新下载</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">特点</strong>：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">✅ 最快（1 小时）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">✅ 系统直接下载，无需等邮件</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">⚠️ 记得打印 + 备份（3 个月后系统可能清档）</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">3.2 纸笔考（PPME）</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">查询方法 1：PEAK 官方系统</strong></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">5 个工作日后登录 PEAK 账号</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">进入"Exam Result Checking"系统</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">查看 Score Report</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">可下载并打印成绩单（3 个月内有效）</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">查询方法 2：邮件通知</strong></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">注册时用的邮箱会收到成绩单</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">不要忽略 PEAK 发来的邮件</strong>（可能在垃圾邮件箱）</li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">查不到成绩怎么办</strong>：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">5 个完整工作日后还未查到 → 联系 PEAK 客服：2919 1467 / 1468 / 1478</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">邮箱：cpdc@vtc.edu.hk</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">保留好考试确认邮件</strong>（含考试编号）</li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">3.3 遥距监考</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">查询方法 1：PEAK 官方系统</strong></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">与 PPME 相同，登录 PEAK 账号查询</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">查询方法 2：邮件通知</strong></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">监考审核完成后会发邮件</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">邮件可能延迟</strong>（比 PPME 多 1-2 个工作日）</li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">查不到成绩怎么办</strong>：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">7 个工作日后还未查到 → 联系 PEAK 客服</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">特别说明是"遥距监考"形式</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">保留好考试确认邮件 + 监考录像确认（如有）</span></li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、成绩单内容</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">无论哪种形式，成绩单通常包含：</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">项目</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">考试名称</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">你考的具体卷别</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">考试形式</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">CSME / PPME / 遥距监考</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">考试日期</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">实际考试日期</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">成绩</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">Pass / Fail</strong>（不公布具体分数）</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">重要</strong>：PEAK 官方<strong style="font-weight: 900; color: #111827;">不公布具体分数</strong>，只显示 PASS/FAIL。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">所以：不要问"我考了多少分"——只关心"过没过"。</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、合格标准</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5.1 统一标准</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">70% 正确率</strong>（PEAK 官方 FAQ B2）</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">所有卷别一致</strong>：Paper I / II / III / V / VI 都是 70%</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">不公布具体分数</strong>，只显示 Pass / Fail</li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5.2 3 种形式的标准差异</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">形式</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">题目数量</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">答题方式</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">及格线</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">备注</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">电脑机考</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">通常 50-80 题</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">鼠标点选</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">70%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">系统自动判分</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">纸笔考</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">通常 50-80 题</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">填涂答题卡</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">70%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">人工 + 机器判分</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">遥距监考</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">通常 50-80 题</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">电脑操作（监考下）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">70%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">监考员监督 + 系统判分</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">关键</strong>：3 种形式的<strong style="font-weight: 900; color: #111827;">及格线都是 70%</strong>，没有"哪种形式更容易过"。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5.3 成绩有效期</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">IIQE 通过成绩通常<strong style="font-weight: 900; color: #111827;">长期有效</strong>（具体期限以 PEAK 官方为准）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">过期需重新考试</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">建议</strong>：通过后尽快申请个人中介人牌照，不要拖太久</li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、如果通过了（关键步骤！）</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">⚠️ 新人最常忽略：通过 ≠ 可以直接展业</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">通过 IIQE 后，通常需要向 IA 申请个人中介人牌照（Technical Representative 或 Individual Insurance Agent）才能正式展业。</strong></p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.1 个体保险中介人牌照体系（IA 监管）</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">香港保险中介人（个人）主要分两类：</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">类型</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">中文</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">适用</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">Individual Insurance Agent</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">个人保险代理人</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">与某家保险公司签约，专属代理</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">Technical Representative (Agent / Broker)</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">业务代表（代理 / 经纪）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">受雇于代理公司或经纪公司</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">共同点</strong>：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">都必须通过 IIQE 相关卷别</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">都必须满足 IA 的"Fit and Proper"（适足人）准则</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">都需要通过挂靠公司申请，<strong style="font-weight: 900; color: #111827;">个人不能独立申请</strong></span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.2 IA 的"Fit and Proper"评估要点</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">IA 根据《保险业条例》第 64G 条评估申请人是否"适足"，主要看：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">学术 / 专业资格</strong>：IIQE 通过证明</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">品格与诚信</strong>：是否有犯罪记录（特别是欺诈、贪污、金融犯罪）</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">财务状况</strong>：是否处于未解除破产</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">声誉</strong>：过往从业记录是否合规</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">能力</strong>：能否胜任中介人工作</li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.3 申请流程（5 步）</h3>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;"># 步骤 1：找到挂靠的保险公司 / 代理公司 / 经纪公司</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">这是<strong style="font-weight: 900; color: #111827;">最关键的一步</strong></span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">个人中介人牌照必须挂在某家公司名下</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">个人<strong style="font-weight: 900; color: #111827;">不能独立申请</strong></span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">通过挂靠公司由其代为提交 IA</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;"># 步骤 2：准备申请材料</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">通常需要（以挂靠公司要求为准）：</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">材料</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">IIQE 通过证明</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">PEAK 颁发的成绩单</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">有效身份证件</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港澳通行证 / 护照 / 香港身份证</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">个人简历</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">含教育和工作经历</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">学历证明</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">毕业证 / 学位证</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">公司要求的其他文件</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">由挂靠公司通知</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;"># 步骤 3：通过公司提交申请</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">由挂靠公司代为向 IA 提交</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">等待 IA 审核</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">审核周期由 IA 决定</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;"># 步骤 4：获得牌照</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">审核通过后，IA 颁发牌照</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">个人<strong style="font-weight: 900; color: #111827;">通常不需要直接缴年费</strong></span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">年费通常由挂靠的代理 / 经纪公司承担</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;"># 步骤 5：开始展业</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">在挂靠公司授权范围内销售产品</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">每年完成 PE-CPD 持续训练维持牌照有效</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">6.4 时间预估</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">IA 未公布标准时长</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">实际周期<strong style="font-weight: 900; color: #111827;">取决于挂靠公司流程</strong>（不同公司差异较大）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">建议咨询挂靠公司获取预估时间</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">重要提示</strong>：上述流程基于 IA 公开监管框架，<strong style="font-weight: 900; color: #111827;">实际申请细节以挂靠公司和 IA 当年规定为准</strong>。新人不要自己摸索，第一步应该是联系挂靠公司获取详细指引。</p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 08</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">七、PE-CPD 持续训练（每年必做）</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">通过 IIQE 并获得牌照后，<strong style="font-weight: 900; color: #111827;">不是结束</strong>。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">PE-CPD 要求</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">每年需完成一定时数</strong>的 PE-CPD 课程</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">时数因中介人类型和年度政策而异</strong>（具体以 IA 当年公告为准）</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">课程由 IA 认可的培训机构提供</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">不完成的后果</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">牌照可能<strong style="font-weight: 900; color: #111827;">失效</strong></span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">影响继续展业的资格</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">港通+ 建议</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">每年提前规划 PE-CPD 时数</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">选择 IA 认可的培训机构</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">保留培训记录</span></li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 09</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">八、如果没通过</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">1. 不要气馁</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">IIQE 不是"一次定终身"</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">多数考生需要 1-2 次才能通过</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">这次没通过，下次更有针对性</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">2. 分析原因</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是<strong style="font-weight: 900; color: #111827;">没掌握</strong>？</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是<strong style="font-weight: 900; color: #111827;">没发挥好</strong>？</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是<strong style="font-weight: 900; color: #111827;">时间不够</strong>？</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">3. 申请补考</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">PEAK 通常允许补考</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">可能需要等待一定时间</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">需要重新缴纳考试费</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">4. 调整备考策略</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">重点补薄弱章节</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">改进答题节奏</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">必要时延长备考周期</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">5. 补考次数限制</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">PEAK 官方 FAQ 未明确说明补考次数限制</strong></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">但每次都需要重新缴费</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">建议补考前充分准备，避免反复重考</span></li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 10</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">九、补考政策</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">政策要点</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">一旦报名成功，不可改期、不可取消、不可退款或转让</strong>（PEAK 官方 FAQ A5）</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">每次补考需重新缴费</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">报名流程与首次相同</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">部分考场允许当场预约下次补考日期</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">⚠️ 重要提示</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">这一条对新人很关键</strong>：PEAK 现在的政策比很多老资料上写的更严格。</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">报名后<strong style="font-weight: 900; color: #111827;">不能改期</strong>（即使是临时有事）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">报名后<strong style="font-weight: 900; color: #111827;">不能取消</strong></span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">报名后<strong style="font-weight: 900; color: #111827;">不能退款</strong></span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">只能<strong style="font-weight: 900; color: #111827;">重新报名一次新的考试</strong></span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">建议</strong>：报名前确认好时间和状态，不要匆忙。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">补考前的准备</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">错题分析</strong>：明确上次哪里失误</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">重点突破</strong>：集中补薄弱章节</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">模拟考试</strong>：至少做 2 套完整模拟</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">不要急于补考</strong>：充分准备再上</li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 11</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">十、成绩有效期与续期</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">成绩有效期</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">IIQE 通过成绩通常<strong style="font-weight: 900; color: #111827;">长期有效</strong>（具体期限以官方为准）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">过期需要重新考试</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">牌照续期</h3>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">牌照<strong style="font-weight: 900; color: #111827;">每年需要续期</strong></span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">未完成 PE-CPD 可能影响续期</span></li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 12</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">十一、复盘这次考试</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">考完后花 30 分钟复盘：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 这次考试<strong style="font-weight: 900; color: #111827;">哪里做得好</strong>？</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 这次考试<strong style="font-weight: 900; color: #111827;">哪里失误</strong>？</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 如果再考一次，我会<strong style="font-weight: 900; color: #111827;">改什么</strong>？</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 这套备考方法<strong style="font-weight: 900; color: #111827;">对我有效吗</strong>？</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 下一步该怎么走？（考过 → 申请个人中介人牌照；没过 → 补考）</span></li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 13</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">十二、和"读这篇文章"的关系</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">你现在应该清楚了：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">IIQE 有 3 种考试形式</strong>：电脑机考（CSME）/ 纸笔考（PPME）/ 遥距监考</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">成绩公布时间不同</strong>：CSME 1 小时 / PPME 5 工作日 / 遥距 5-7 工作日</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">合格标准统一</strong>：70% 正确率，所有形式、所有卷别都一样</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">不公布具体分数</strong>，只显示 Pass / Fail</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">通过 IIQE 只是第一步</strong>，必须申请牌照才能展业</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">牌照类型</strong>：Individual Insurance Agent 或 Technical Representative</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">申请流程</strong>：找挂靠公司 → 准备材料 → 公司代申请 → IA 审核 → 获牌</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">个人<strong style="font-weight: 900; color: #111827;">通常不需直接缴年费</strong>，由挂靠公司承担</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">PE-CPD 每年必做</strong>，时数以 IA 当年规定为准</li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">PEAK 报名政策严格：<strong style="font-weight: 900; color: #111827;">不可改期、不可取消、不可退款</strong></span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">没通过可以补考，<strong style="font-weight: 900; color: #111827;">重新缴费</strong></span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你想知道考完之后怎么选 → 看 <a href="f016_考完IIQE之后能做什么.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f016 考完 IIQE 之后</a></p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你想看回总入口 → <a href="f000_IIQE总入口.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f000 IIQE 总入口</a></p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 14</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">官方信息来源</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">PEAK Examination Centre IIQE 报名</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="https://www.vtc.edu.hk/cpdc/econline/" style="color: #0F3D2E; text-decoration: underline;">https://www.vtc.edu.hk/cpdc/econline/</a></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">PEAK 官方 FAQ（2024-04 起）</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="https://www.peak.edu.hk/exam/en/doc/website_FAQ_IIQE_MPFE_en_202403.pdf" style="color: #0F3D2E; text-decoration: underline;">https://www.peak.edu.hk/exam/en/doc/website_FAQ_IIQE_MPFE_en_202403.pdf</a></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">香港保险业监管局（IA）从业指引</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="https://www.ia.org.hk/" style="color: #0F3D2E; text-decoration: underline;">https://www.ia.org.hk/</a></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">IA 持续训练（PE-CPD）</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="https://www.ia.org.hk/en/supervision/reg_ins_intermediaries/" style="color: #0F3D2E; text-decoration: underline;">https://www.ia.org.hk/en/supervision/reg_ins_intermediaries/</a></p>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 15</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">下一步</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">考完怎么选</strong>：看 <a href="f016_考完IIQE之后能做什么.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f016 考完 IIQE 之后</a></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">回到目录</strong>：<a href="f000_IIQE总入口.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f000 IIQE 总入口</a></li>
+  </ul>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">本内容仅供参考，IIQE 成绩公布时间、合格标准、补考政策、牌照申请流程以 PEAK Examination Centre 和香港保险业监管局（IA）官方最新公告为准。</strong> 政策可能调整，建议定期查阅官方页面。</p>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 32px 0 28px;"></section>
+
+  <section style="margin: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(15,61,46, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #0F3D2E; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #0F3D2E; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; letter-spacing: 0.3px; white-space: pre-line;">港通+
+内地↔香港跨境问题的中文索引入口</p>
+    <p style="font-size: 14px; color: #BBBBBB; margin: 0; letter-spacing: 0.5px;">结构优先·入口导向·合规底线·工具风格</p>
+  </section>
+
+</div>
+</body>
+</html>

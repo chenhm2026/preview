@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>f021 · IIQE Paper III 长期险备考重点（预览版·一键复制）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; margin: 0 auto; padding: 20px 0;">
+
+  <section style="margin: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(15,61,46, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; margin-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #0F3D2E; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #0F3D2E;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: linear-gradient(to right, rgba(15,61,46, 0.15), transparent);"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.07</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; margin: 0; line-height: 1.1; letter-spacing: -1px;">IIQE Paper III 备考重点：长期险 4 类产品 + 高频章节突破</p>
+          <section style="width: 48px; height: 3px; background: linear-gradient(to right, #0F3D2E, #E8956D); border-radius: 2px; margin: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; margin: 0; line-height: 1.7; letter-spacing: 0.5px;">长期险占 IIQE 5 卷中最复杂的产品结构，掌握 4 类核心产品</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+<section style="text-align: center; font-size: 14px; color: #A0926B; padding: 0 0 12px;">📖 全文 3294 字 · 约 11 分钟</section>
+<section style="background: #FBF6EC; border-left: 4px solid #0F3D2E; border-radius: 8px; overflow: hidden; padding: 0 0 28px 0;"><section style="padding: 18px 22px;"><section style="padding-bottom: 10px;"><span style="font-size: 14px; color: #0F3D2E; font-weight: bold; letter-spacing: 1px;">📌 本期导读</span></section><section><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">本文用 4 类产品 + 6 张对比表 + 3 周 42 小时时间表，帮你把 IIQE Paper III 备考重点收成可执行清单。适用于已经决定要考 P3 的从业者，按周推进即可。</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">---</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">🌟 <strong style="font-weight: 900; color: #111827;">感恩阅读到这一行</strong></p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">喜欢我们的内容？</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">- ⭐ 星标港通+ — 第一时间接收更新</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">---</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;"><em style="font-style: italic; color: #4B5563;">港通+ / 内地↔香港跨境问题的中文索引入口 / 结构优先 · 入口导向 · 合规底线 · 工具风格</em></p></section></section></section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">本文按 PEAK 官方 2024-03 研习手册整理 IIQE Paper III 备考重点，覆盖 4 类核心产品特征、章节权重（声明：PEAK 未公开权重，下表为基于研习资料整理）、高频考点、易混淆点与 3 周备考时间表。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">适用对象</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">已通过 Paper I（保险原理）、Paper II（一般业务）想拿全 IIQE 资格的代理</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">内地赴港需长期险资格的保险代理 / 经纪</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">想强化长期险产品条款与核保的从业者</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">财顾家庭办公室团队成员（涉港长期险配置）</span></li>
+  </ul>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、Paper III 是什么</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">PEAK 官方对 Paper III 的硬性参数（来源：PEAK 研习手册 2024-03 / PEAK FAQ）：</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">项目</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">数据</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">卷名</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">Long Term Insurance / 长期保险</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">时长</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1 小时 15 分钟（75 分钟）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">题目数</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">50 道单项选择题（4 选 1）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">通过分数</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">70%（PEAK FAQ B2）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">考试语言</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中英双语</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">考试形式</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">CSME 电脑化 或 PPME 纸笔</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">成绩公布</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">仅显示 PASS / FAIL，分数不公开（PEAK FAQ B3）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">上限次数</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">每卷最多 4 次（PEAK 资格规定）</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">每题平均 1.5 分钟，长阅读题需预留 3 分钟。PEAK 不公开分数，意味着备考只看通过线——任一章节失分不可补救。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、Paper III 章节权重</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">声明：PEAK 未公开 Paper III 章节权重分布。下表基于 PEAK 研习手册 2024-03 目录体量、公开样题频次、P1 / P2 既有考友反馈综合整理，仅供时间分配参考。</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">章节</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">题目数（约）</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">权重（约）</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">优先级</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">寿险产品条款与实务</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">11</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">22%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐⭐⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">长期险定价原理与准备金</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">8</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">16%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐⭐⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">监管框架（IA 对长期险要求）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">7</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">14%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐⭐⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">投保与核保流程</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">6</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">12%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">理赔实务</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">5</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">10%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">税务处理</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">5</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">10%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">重疾险与年金专题</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">4</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">8%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">消费者保障与投诉处理</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">4</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">8%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">合计</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">50</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">100%</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">—</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">投保与核保 / 理赔 / 税务 三章占比合计 32%，与 P1 的核保章节权重一致，是 P3 拉开分数差的关键。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、4 类核心产品详解</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">3.1 寿险（Life Insurance）</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">产品特征</strong></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">终身寿险（Whole Life）：保障终身，含现金价值，保费固定或弹性</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">定期寿险（Term Life）：纯保障，保障期内身故给付，无现金价值</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">万能寿险（Universal Life）：保费、死亡给付可调整，分项计息</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">主要考点</strong></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">终身寿险 vs 定期寿险 vs 万能寿险 给付条件对比</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">万能寿险的保费结构（保费 = 死亡成本 + 储蓄部分）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">保单贷款（Policy Loan）与退保现金价值（CSV）计算</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">不可争议条款（Incontestability，通常生效于保单 2 年后）</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">易混淆点</strong>：万能寿险 ≠ 投资相连寿险（ILP）。万能寿险含身故给付，ILP 仅投资基金单位无固定身故给付（详见 PART 06）。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">3.2 储蓄险（Endowment / 储蓄分红险）</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">产品特征</strong></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">保费缴付期常见 5 / 10 / 18 / 25 年</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">满期给付（保额 + 红利）或身故给付</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">红利分为归原红利（Reversionary Bonus）与终期红利（Terminal Bonus）</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">主要考点</strong></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">归原红利 vs 终期红利的非保证属性与提取方式</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">现金价值、红利累积、复利结构</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">储蓄险的早期退保损失（前期现金价值 < 已缴保费）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">「5 年储蓄险」与「终身储蓄险」年期选项</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">3.3 重疾险（Critical Illness / 危疾保险）</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">产品特征</strong></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">给付条件：确诊指定疾病即一次性给付保额</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">等待期（Waiting Period）：常见 90 天（部分癌症 60 天）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">多重赔付：癌症 / 心脏病 / 中风可多次赔付（间隔期常见 1–3 年）</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">主要考点</strong></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">等待期内出险的处理（一般退回保费，不赔保额）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">早期重疾（Early Stage）与多重赔付触发条件</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">原位癌（Carcinoma-in-situ）与癌症定义差异</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">「保额还原」条款（如有）</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">易混淆点</strong>：重疾险 ≠ 医疗险（详见 PART 06）。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">3.4 年金（Annuity）</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">产品特征</strong></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">即期年金（Immediate Annuity）：趸交保费后立刻开始给付</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">递延年金（Deferred Annuity）：趸交或期缴保费，约定起算日开始给付</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">给付期：终身 / 固定年期（如 10 / 15 / 20 年保证期）</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">主要考点</strong></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">趸交（Single Premium）vs 期缴（Regular Premium）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">给付期选择（终身 vs 固定年期）对每月年金金额的影响</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">年金税务（在港需申报，详见 PART 03 章节）</span></li>
+  </ul>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、3 个核心学习方法</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">方法 1：先看产品对比表，再学条款细节</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">把 PART 06 的对比表打印贴墙，每次学习新章节前先扫一遍——80% 的 P3 题目本质是「产品 A vs 产品 B 在某条件下的差异」。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">方法 2：用真实案例记给付条件</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">举例：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">「30 岁男，投保终身寿险 100 万保额，10 年后自杀身故」→ 是否给付？（一般可赔，因已超 2 年不可争议期）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">「55 岁女，投保重疾险 80 天后确诊肺癌」→ 是否给付？（等待期内一般退回保费）</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">案例题比纯条款题在 P3 中占比明显。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">方法 3：用计算器练保费 / 现金价值</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">PEAK 规定可使用 <strong style="font-weight: 900; color: #111827;">non-programmable 电子计算器</strong>（不可编程、不可联网、不可文字储存）。备考期每周末做 10 题保费 / 现金价值计算，熟练后 P3 计算题 90 秒内完成。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、易混淆点对比</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">表 1：寿险三类对比</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">终身寿险</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">定期寿险</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">万能寿险</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">保障期</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">终身</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">固定年期</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">终身</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">现金价值</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">有</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">无</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">有</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">保费</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">固定 / 高</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">纯风险 / 低</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">弹性，可调</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">给付</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">身故保额</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">身故保额</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">身故保额（金额可调）</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">表 2：三类寿险保费结构对比</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">传统寿险</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">万能寿险</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">投资相连寿险 (ILP)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">保费分项</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">单一保费</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">死亡成本 + 储蓄</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">全额投资基金</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">投资风险</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">保险公司承担</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">保单持有人承担</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">保单持有人承担</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">身故给付</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">固定保额</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">账户价值或保额取大</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">账户价值 / 105% 保费（较低者）</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">表 3：定期寿险 vs 终身寿险 vs 储蓄险</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">定期寿险</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">终身寿险</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">储蓄险</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">给付时机</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">期内身故</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">终身身故</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">满期或身故</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">保额 vs 保费</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高保额低保费</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中保额中保费</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中保额较高保费</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">年期选项</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">10/20/30 年</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">终身</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">5/10/18/25 年</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">表 4：重疾险 vs 医疗险</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">重疾险</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">医疗险</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">给付条件</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">确诊指定疾病</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">实际医疗费用</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">给付方式</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">一次性</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">实报实销</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">等待期</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">90 天（部分癌症 60 天）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">通常 30 天</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">续保</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">长期 / 终身</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">一年期，可能不保证续保</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">表 5：即期年金 vs 递延年金</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">即期年金</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">递延年金</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">起算时间</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">趸交后立刻</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">趸交 / 期缴后约定日</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">适用人群</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">已退休</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">临近退休或中年规划</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">趸交 vs 期缴</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">多为趸交</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">趸交或期缴皆可</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">表 6：归原红利 vs 终期红利</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">归原红利</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">终期红利</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">公布频次</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">每年公布</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">公布频次不固定</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">现金提取</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">可</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">一般不可，需退保</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">非保证属性</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">非保证</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">非保证</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、3 周备考时间安排</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">周次</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">时长</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">重点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">第 1 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">14 小时</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">4 类产品条款 + PART 06 对比表通读</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">第 2 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">14 小时</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">定价 / 准备金 / IA 监管框架 + 重疾 + 年金专题</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">第 3 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">14 小时</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">核保 / 理赔 / 税务 + 模拟题 3 套 + 错题回顾</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">合计 42 小时。每日 2 小时、连续 21 天可完成。<strong style="font-weight: 900; color: #111827;">3 周内必须做完至少 3 套完整 50 题模拟</strong>（CSME 介面或纸笔皆可）。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 08</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">七、下一步</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">文章</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">状态</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="../f000_IIQE_总入口_v1.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f000 IIQE 总入口</a></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 已上线</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="../f003_IIQE_有哪些卷_v1.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f003 IIQE 有哪些卷</a></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 已上线</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="../f014_IIQE_P1备考重点_v1.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f014 Paper I 备考重点</a></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 已上线</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="../f015_IIQE_PaperII一般保险备考重点_v1.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f015 Paper II 备考重点</a></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 已上线</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">f021 Paper III 备考重点（本文）</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 本篇</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="../f022_IIQE_PaperV投连险备考重点_v1.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f022 Paper V 备考重点</a></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">🔜 同一系列</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="../f023_MPFE强积金备考重点_v1.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f023 MPFE 强积金备考重点</a></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">📅 独立系列</td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 32px 0 28px;"></section>
+
+  <section style="margin: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(15,61,46, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #0F3D2E; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #0F3D2E; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; letter-spacing: 0.3px; white-space: pre-line;">我是 Sidney，一个实干派的记录者</p>
+    <p style="font-size: 14px; color: #BBBBBB; margin: 0; letter-spacing: 0.5px;">知行合一 · 不制造焦虑 · 聚焦真实价值</p>
+  </section>
+
+</section>
+</div>
+</body>
+</html>

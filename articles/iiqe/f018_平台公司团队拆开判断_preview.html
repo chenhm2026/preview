@@ -72,14 +72,35 @@
     }
   }
   function fallbackCopy(btn, container) {
+    // 多策略 fallback: Range+execCommand → textarea+execCommand → 弹窗手动复制
     var range = document.createRange();
     range.selectNodeContents(container);
     var sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
-    try { document.execCommand('copy'); showCopied(btn); }
-    catch(e) { alert('复制失败，请手动 Ctrl+A / Cmd+A 全选后复制'); }
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
     sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 2: textarea 包裹
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 3: 弹窗手动复制（终极兜底）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
   }
   function showCopied(btn) {
     btn.classList.add('copied');

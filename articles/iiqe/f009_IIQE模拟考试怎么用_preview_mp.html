@@ -1,62 +1,305 @@
-<div style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; margin: 0 auto; padding: 20px 0;">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>公众号推送版（一键复制）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>飞哥公众号文章</title>
+<style>
+  * {
+    padding: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-  <div style="margin: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(15,61,46, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
-    <div style="padding: 32px 28px 28px;">
-      <div style="display: block; align-items: center; margin-bottom: 24px;">
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #ffffff;
+    color: #374151;
+    line-height: 1.75;
+    letter-spacing: 0.5px;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 677px;
+    padding: 0 auto;
+    background: #ffffff;
+    padding: 20px 0;
+  }
+
+  @media (max-width: 600px) {
+    .container {
+      padding: 0;
+    }
+  }
+
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    display: block;
+    align-items: center;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover {
+    background: #DE7356;
+    color: #ffffff;
+    border-color: #DE7356;
+  }
+  #copy-btn.copied {
+    background: #22C55E;
+    color: #ffffff;
+    border-color: #22C55E;
+  }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.container');
+    if (!container) return;
+
+    // 优先用 ClipboardItem 写 text/html，保留富文本格式
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function() {
+        showCopied(btn);
+      }).catch(function() {
+        fallbackCopy(btn, container);
+      });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+
+  function fallbackCopy(btn, container) {
+    // 创建临时选区覆盖 container
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    try {
+      document.execCommand('copy');
+      showCopied(btn);
+    } catch(e) {
+      alert('复制失败，请手动 Ctrl+A / Cmd+A 全选后复制');
+    }
+    sel.removeAllRanges();
+  }
+
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '✓ 已复制';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>一键复制';
+    }, 2000);
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<section class="container">
+
+  <section style="padding: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(15,61,46, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; padding-bottom: 24px;">
         <span style="width: 6px; height: 6px; background: #0F3D2E; border-radius: 50%; display: inline-block;"></span>
         <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #0F3D2E;">BREAKING</span>
-        <span style="width: auto; height: 1px; background: linear-gradient(to right, rgba(15,61,46, 0.15), transparent);"></span>
+        <span style="width: auto; height: 1px; background: #DDE7E2;"></span>
         <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.07</span>
-      </div>
-      <div style="display: block; align-items: center; ">
-        <div style="width: auto;">
-          <p style="font-size: 26px; font-weight: 900; color: #111827; margin: 0 0 12px; line-height: 1.2; letter-spacing: -1px;">港险考牌-备考｜IIQE 模拟考试系统怎么用：发现薄弱环节</p>
-          <div style="width: 48px; height: 3px; background: linear-gradient(to right, #0F3D2E, #E8956D); border-radius: 2px; margin: 12px 0;"></div>
-          <p style="font-size: 13px; color: #9CA3AF; margin: 0; line-height: 1.7; letter-spacing: 0.5px;">模拟考试的最大价值不是"测分数"，而是**暴露你不知道的薄弱**。</p>
-        </div>
-      </div>
-    </div>
-  </div>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; padding: 0; line-height: 1.1; letter-spacing: -1px;">IIQE 模拟考试系统怎么用：发现薄弱环节</p>
+          <section style="width: 48px; height: 3px; background: #0F3D2E;; border-radius: 2px; padding: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; padding: 0; line-height: 1.7; letter-spacing: 0.5px;">模拟考试的最大价值不是"测分数"，而是暴露你不知道的薄弱</p>
+        </section>
+      </section>
+    </section>
+  </section>
 
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">定位：方法（用模拟系统查薄弱）</p>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">上线 Phase：Phase 2</p>
-  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">用途：让备考的人能正确使用模拟考试系统，避免"为了刷题而刷题"</p>
-  <div style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></div>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><p style="text-align:center;color:#9CA3AF;font-size:13px;letter-spacing:1px;padding:8px 0 16px 0;">📖 全文 1794 字 · 约 6 分钟</p></p>
 
-  <div style="margin: 36px 0 18px;">
-    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <div style="padding-bottom: 6px;">
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #0F3D2E;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
-      </div>
-      <div style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">适用对象</h2>
-      </div>
-    </div>
-  </div>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">已经在备考 IIQE</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">想用模拟考试查薄弱</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">不确定模拟考试应该什么时候做、怎么做</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">做了模拟但不知道下一步怎么走</span></li>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">适用对象</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">已经在备考 IIQE</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">想用模拟考试查薄弱</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">不确定模拟考试应该什么时候做、怎么做</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">做了模拟但不知道下一步怎么走</span></li>
   </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不适用：还没开始系统学习的人，先看 <a href="f008_IIQE通用备考方法.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f008 通用备考方法</a>。</p>
-  <div style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></div>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不适用：还没开始系统学习的人，先看 <a href="f008_IIQE通用备考方法.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f008 通用备考方法</a>。</p>
+  <section style="height: 2px; background: #C2D4CC; padding: 24px 0;"></section>
 
-  <div style="margin: 36px 0 18px;">
-    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <div style="padding-bottom: 6px;">
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #0F3D2E;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
-      </div>
-      <div style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、必须先知道：模拟题从哪里来</h2>
-      </div>
-    </div>
-  </div>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">重要事实</strong>：<strong style="font-weight: 900; color: #111827;">IIQE 不公开真题</strong>，PEAK 官方不提供历年考卷。</p>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">模拟题的实际来源</h3>
-  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、必须先知道：模拟题从哪里来</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">重要事实</strong>：<strong style="font-weight: 900; color: #111827;">IIQE 不公开真题</strong>，PEAK 官方不提供历年考卷。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">模拟题的实际来源</h3>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
     <thead>
-      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+      <tr style="background: #FFF5F0;;">
         <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">来源</th>
         <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">真实性</th>
         <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">说明</th>
@@ -90,166 +333,166 @@
       </tr>
     </tbody>
   </table>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">关键判断标准</h3>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">来源不明</strong>：不要信</li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">承诺"保过"或"押题"</strong>：不要信</li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">能讲清楚"对应大纲哪一章"</strong>：相对可信</li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">PEAK 官方或认可机构出版</strong>：可信</li>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">关键判断标准</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">来源不明</strong>：不要信</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">承诺"保过"或"押题"</strong>：不要信</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">能讲清楚"对应大纲哪一章"</strong>：相对可信</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">PEAK 官方或认可机构出版</strong>：可信</li>
   </ul>
-  <div style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></div>
+  <section style="height: 2px; background: #C2D4CC; padding: 24px 0;"></section>
 
-  <div style="margin: 36px 0 18px;">
-    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <div style="padding-bottom: 6px;">
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #0F3D2E;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
-      </div>
-      <div style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、模拟考试的 3 个作用</h2>
-      </div>
-    </div>
-  </div>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">作用 1：发现薄弱环节</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">模拟考试的最大价值不是"测分数"，而是<strong style="font-weight: 900; color: #111827;">暴露你不知道的薄弱</strong>。</p>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">做得好的章节 → 模拟题也做得好</p>
-  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">做得差的章节 → 模拟题也差</p>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">模拟考试相当于"体检"，告诉你哪里需要重点治疗。</p>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">作用 2：熟悉题型和时间压力</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">IIQE Paper I 实际考试（PEAK 官方）：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">75 道选择题</strong>（4 选 1）</li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">120 分钟</strong></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">通过分数 70%</strong>（不公布具体分数）</li>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、模拟考试的 3 个作用</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">作用 1：发现薄弱环节</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">模拟考试的最大价值不是"测分数"，而是<strong style="font-weight: 900; color: #111827;">暴露你不知道的薄弱</strong>。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">做得好的章节 → 模拟题也做得好</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">做得差的章节 → 模拟题也差</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">模拟考试相当于"体检"，告诉你哪里需要重点治疗。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">作用 2：熟悉题型和时间压力</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">IIQE Paper I 实际考试（PEAK 官方）：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">75 道选择题</strong>（4 选 1）</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">120 分钟</strong></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">通过分数 70%</strong>（不公布具体分数）</li>
   </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">模拟考试帮你：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">适应<strong style="font-weight: 900; color: #111827;">120 分钟连续答题</strong></span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">找到自己的<strong style="font-weight: 900; color: #111827;">最佳答题节奏</strong>（建议提前 15 分钟做完，留检查时间）</span></li>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">模拟考试帮你：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">适应<strong style="font-weight: 900; color: #111827;">120 分钟连续答题</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">找到自己的<strong style="font-weight: 900; color: #111827;">最佳答题节奏</strong>（建议提前 15 分钟做完，留检查时间）</span></li>
   </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不模拟直接上场，很容易出现"时间不够"或"前紧后松"。</p>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">作用 3：建立考试心态</h3>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">习惯"不能查资料"的答题环境</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">习惯"做完就交"的不可逆</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">减少真实考场的紧张感</span></li>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不模拟直接上场，很容易出现"时间不够"或"前紧后松"。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">作用 3：建立考试心态</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">习惯"不能查资料"的答题环境</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">习惯"做完就交"的不可逆</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">减少真实考场的紧张感</span></li>
   </ul>
-  <div style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></div>
+  <section style="height: 2px; background: #C2D4CC; padding: 24px 0;"></section>
 
-  <div style="margin: 36px 0 18px;">
-    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <div style="padding-bottom: 6px;">
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #0F3D2E;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
-      </div>
-      <div style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、什么时候做模拟考试</h2>
-      </div>
-    </div>
-  </div>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">❌ 不推荐：起步阶段做模拟</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">刚起步学习（步骤 1-2），知识还没掌握，做模拟只会得到"很多不会"的结果，<strong style="font-weight: 900; color: #111827;">没有实际价值</strong>。</p>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">✅ 推荐：强化阶段开始做模拟</h3>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">完成 60-70% 的章节学习后</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">至少做完 1 轮章节练习题</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">进入"查漏补缺"阶段</span></li>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、什么时候做模拟考试</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">❌ 不推荐：起步阶段做模拟</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">刚起步学习（步骤 1-2），知识还没掌握，做模拟只会得到"很多不会"的结果，<strong style="font-weight: 900; color: #111827;">没有实际价值</strong>。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">✅ 推荐：强化阶段开始做模拟</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">完成 60-70% 的章节学习后</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">至少做完 1 轮章节练习题</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">进入"查漏补缺"阶段</span></li>
   </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">推荐次数：2-3 套完整模拟</h3>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">第 1 套：暴露薄弱</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">第 2 套：检验改进</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">第 3 套（如需要）：考前最终确认</span></li>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">推荐次数：2-3 套完整模拟</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">第 1 套：暴露薄弱</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">第 2 套：检验改进</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">第 3 套（如需要）：考前最终确认</span></li>
   </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">不建议超过 5 套</strong>：做得太多反而会陷入"机械记忆答案"，失去模拟价值。</p>
-  <div style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></div>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">不建议超过 5 套</strong>：做得太多反而会陷入"机械记忆答案"，失去模拟价值。</p>
+  <section style="height: 2px; background: #C2D4CC; padding: 24px 0;"></section>
 
-  <div style="margin: 36px 0 18px;">
-    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <div style="padding-bottom: 6px;">
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #0F3D2E;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
-      </div>
-      <div style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、怎么做模拟考试（流程）</h2>
-      </div>
-    </div>
-  </div>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">步骤 1：准备真实环境</h3>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">找连续 2 小时不被打扰的时间（Paper I 时长 120 分钟）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">准备纸笔（虽然考场不允许自带，但练习时可用来打草稿）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">关闭手机、参考资料、笔记</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">计时开始</span></li>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、怎么做模拟考试（流程）</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">步骤 1：准备真实环境</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">找连续 2 小时不被打扰的时间（Paper I 时长 120 分钟）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">准备纸笔（虽然考场不允许自带，但练习时可用来打草稿）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">关闭手机、参考资料、笔记</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">计时开始</span></li>
   </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">步骤 2：按真实考试节奏做</h3>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">不要中途停顿</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">不要查资料</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">遇到不确定的题先标记，做完再回头看</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">时间到立即交卷（即使没做完）</span></li>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">步骤 2：按真实考试节奏做</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">不要中途停顿</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">不要查资料</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">遇到不确定的题先标记，做完再回头看</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">时间到立即交卷（即使没做完）</span></li>
   </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">步骤 3：立即对答案（不要拖到第二天）</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">模拟的核心是"立即反馈"。拖到第二天，错题的"痛感"消失，分析效果打折。</p>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">步骤 4：错题分析（最重要）</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">每道错题都问：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是<strong style="font-weight: 900; color: #111827;">不会</strong>（知识盲区）？</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是<strong style="font-weight: 900; color: #111827;">模糊</strong>（多个答案都能选）？</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是<strong style="font-weight: 900; color: #111827;">理解错题意</strong>（没看懂题目）？</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是<strong style="font-weight: 900; color: #111827;">计算/记忆错</strong>（会的但做错）？</span></li>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">步骤 3：立即对答案（不要拖到第二天）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">模拟的核心是"立即反馈"。拖到第二天，错题的"痛感"消失，分析效果打折。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">步骤 4：错题分析（最重要）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">每道错题都问：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是<strong style="font-weight: 900; color: #111827;">不会</strong>（知识盲区）？</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是<strong style="font-weight: 900; color: #111827;">模糊</strong>（多个答案都能选）？</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是<strong style="font-weight: 900; color: #111827;">理解错题意</strong>（没看懂题目）？</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">是<strong style="font-weight: 900; color: #111827;">计算/记忆错</strong>（会的但做错）？</span></li>
   </ul>
-  <div style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></div>
+  <section style="height: 2px; background: #C2D4CC; padding: 24px 0;"></section>
 
-  <div style="margin: 36px 0 18px;">
-    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <div style="padding-bottom: 6px;">
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #0F3D2E;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
-      </div>
-      <div style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、模拟考试来源选择</h2>
-      </div>
-    </div>
-  </div>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">来源 1：PEAK 官方资料（最权威）</h3>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">PEAK 官网偶有 "Sample Questions"</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">PEAK Study Notes 配套题（如购买）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">优先用 PEAK 官方题</strong>，但通常题量有限</li>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、模拟考试来源选择</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">来源 1：PEAK 官方资料（最权威）</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">PEAK 官网偶有 "Sample Questions"</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">PEAK Study Notes 配套题（如购买）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">优先用 PEAK 官方题</strong>，但通常题量有限</li>
   </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">来源 2：自建模拟题（最实用）</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">根据官方大纲，<strong style="font-weight: 900; color: #111827;">自己出题自己做</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">每章出 10-20 道题</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">题型按真实考试风格（4 选 1 选择题）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">找备考群伙伴互相出题</span></li>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">来源 2：自建模拟题（最实用）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">根据官方大纲，<strong style="font-weight: 900; color: #111827;">自己出题自己做</strong>：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">每章出 10-20 道题</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">题型按真实考试风格（4 选 1 选择题）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">找备考群伙伴互相出题</span></li>
   </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">来源 3：第三方题库（按需）</h3>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">部分付费题库提供 IIQE 模拟题</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">选择时查看口碑和题源真实性</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">警惕非官方"真题"</strong>——很可能不是真的</li>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">来源 3：第三方题库（按需）</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">部分付费题库提供 IIQE 模拟题</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">选择时查看口碑和题源真实性</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">警惕非官方"真题"</strong>——很可能不是真的</li>
   </ul>
-  <div style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></div>
+  <section style="height: 2px; background: #C2D4CC; padding: 24px 0;"></section>
 
-  <div style="margin: 36px 0 18px;">
-    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <div style="padding-bottom: 6px;">
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #0F3D2E;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
-      </div>
-      <div style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、模拟结果怎么用</h2>
-      </div>
-    </div>
-  </div>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">第一步：算分（粗略）</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不追求精确分数，<strong style="font-weight: 900; color: #111827;">关注错的章节分布</strong>：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">错题集中在 1-2 章 → 这章需要重学</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">错题分散在多章 → 整体复盘不够</span></li>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、模拟结果怎么用</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">第一步：算分（粗略）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不追求精确分数，<strong style="font-weight: 900; color: #111827;">关注错的章节分布</strong>：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">错题集中在 1-2 章 → 这章需要重学</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">错题分散在多章 → 整体复盘不够</span></li>
   </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">第二步：找薄弱章节</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">示例</strong>（基于 公开资料整理，仅作格式参考）：</p>
-  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">第二步：找薄弱章节</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">示例</strong>（基于 公开资料整理，仅作格式参考）：</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
     <thead>
-      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+      <tr style="background: #FFF5F0;;">
         <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">章节</th>
         <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">题数（参考）</th>
         <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">错题数</th>
@@ -281,139 +524,144 @@
       </tr>
     </tbody>
   </table>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">注意</strong>：Paper I 的章节题数分布来自 公开资料整理，PEAK 官方未公开具体章节权重。实际章节题数请以 PEAK 当期大纲为准。</p>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">第三步：针对性补救</h3>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">高错题率章节 → 回到笔记重新学一遍</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">中错题率章节 → 整理高频考点，做专项练习</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">低错题率章节 → 保持复习节奏，不需特别关注</span></li>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">注意</strong>：Paper I 的章节题数分布来自 公开资料整理，PEAK 官方未公开具体章节权重。实际章节题数请以 PEAK 当期大纲为准。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">第三步：针对性补救</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">高错题率章节 → 回到笔记重新学一遍</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">中错题率章节 → 整理高频考点，做专项练习</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">低错题率章节 → 保持复习节奏，不需特别关注</span></li>
   </ul>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">第四步：再做 1 套模拟验证</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">隔 1-2 周再做 1 套模拟，<strong style="font-weight: 900; color: #111827;">对比前后错题分布</strong>，看补救是否有效。</p>
-  <div style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></div>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">第四步：再做 1 套模拟验证</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">隔 1-2 周再做 1 套模拟，<strong style="font-weight: 900; color: #111827;">对比前后错题分布</strong>，看补救是否有效。</p>
+  <section style="height: 2px; background: #C2D4CC; padding: 24px 0;"></section>
 
-  <div style="margin: 36px 0 18px;">
-    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <div style="padding-bottom: 6px;">
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #0F3D2E;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 08</span>
-      </div>
-      <div style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">七、模拟中常见 3 个错误</h2>
-      </div>
-    </div>
-  </div>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">错误 1：把模拟当"测分数"</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">模拟考试不是"测我能得多少分"，而是"找我还差什么"。</p>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">正确心态</strong>：模拟考砸了是好事，因为它暴露了真实的薄弱。</p>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">错误 2：模拟完只看分数</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">模拟完只看了"我得了 65 分"或"我得了 85 分"，<strong style="font-weight: 900; color: #111827;">没分析错的题为什么错</strong>。</p>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">正确做法</strong>：每道错题必须分析，记录到错题本。</p>
-  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">错误 3：模拟时间不真实</h3>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">用碎片时间做模拟、中间查资料、做了一半休息 → 完全失去模拟价值。</p>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">正确做法</strong>：严格按真实考试时间和环境做（120 分钟不间断）。</p>
-  <div style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></div>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">七、模拟中常见 3 个错误</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">错误 1：把模拟当"测分数"</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">模拟考试不是"测我能得多少分"，而是"找我还差什么"。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">正确心态</strong>：模拟考砸了是好事，因为它暴露了真实的薄弱。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">错误 2：模拟完只看分数</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">模拟完只看了"我得了 65 分"或"我得了 85 分"，<strong style="font-weight: 900; color: #111827;">没分析错的题为什么错</strong>。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">正确做法</strong>：每道错题必须分析，记录到错题本。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">错误 3：模拟时间不真实</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">用碎片时间做模拟、中间查资料、做了一半休息 → 完全失去模拟价值。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">正确做法</strong>：严格按真实考试时间和环境做（120 分钟不间断）。</p>
+  <section style="height: 2px; background: #C2D4CC; padding: 24px 0;"></section>
 
-  <div style="margin: 36px 0 18px;">
-    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <div style="padding-bottom: 6px;">
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #0F3D2E;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 09</span>
-      </div>
-      <div style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">八、模拟考试 checklist</h2>
-      </div>
-    </div>
-  </div>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">每次模拟前检查：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 连续 120 分钟不被打扰</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 关闭手机、参考资料、笔记</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 准备好纸笔</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 设定计时</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 中途不停顿</span></li>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">八、模拟考试 checklist</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">每次模拟前检查：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 连续 120 分钟不被打扰</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 关闭手机、参考资料、笔记</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 准备好纸笔</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 设定计时</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 中途不停顿</span></li>
   </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">模拟后立即做：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 对答案（不要拖）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 错题分析（每个错题问"为什么错"）</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 错题记录到错题本</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 找出薄弱章节</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 制定补救计划</span></li>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">模拟后立即做：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 对答案（不要拖）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 错题分析（每个错题问"为什么错"）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 错题记录到错题本</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 找出薄弱章节</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">[ ] 制定补救计划</span></li>
   </ul>
-  <div style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></div>
+  <section style="height: 2px; background: #C2D4CC; padding: 24px 0;"></section>
 
-  <div style="margin: 36px 0 18px;">
-    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <div style="padding-bottom: 6px;">
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #0F3D2E;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 10</span>
-      </div>
-      <div style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">九、和"读这篇文章"的关系</h2>
-      </div>
-    </div>
-  </div>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">你现在应该清楚了：</p>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">PEAK 官方不公开真题</strong>，模拟题主要靠 PEAK 资料 + 自建 + 可信第三方</li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">模拟考试<strong style="font-weight: 900; color: #111827;">不是测分数</strong>，是<strong style="font-weight: 900; color: #111827;">找薄弱</strong></span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">60-70% 学习完成后再做模拟，太早没用</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">模拟完必须立即分析错题，记录原因</span></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">用 2-3 套模拟形成"暴露薄弱 → 补救 → 验证"循环</span></li>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">九、和"读这篇文章"的关系</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">你现在应该清楚了：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">PEAK 官方不公开真题</strong>，模拟题主要靠 PEAK 资料 + 自建 + 可信第三方</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">模拟考试<strong style="font-weight: 900; color: #111827;">不是测分数</strong>，是<strong style="font-weight: 900; color: #111827;">找薄弱</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">60-70% 学习完成后再做模拟，太早没用</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">模拟完必须立即分析错题，记录原因</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">用 2-3 套模拟形成"暴露薄弱 → 补救 → 验证"循环</span></li>
   </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你想避坑 → 看 <a href="f010_IIQE备考误区与时间陷阱.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f010 备考误区与时间陷阱</a></p>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你想了解考试当天 → 看 <a href="f012_IIQE考试当天流程.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f012 考试当天流程</a></p>
-  <div style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></div>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你想避坑 → 看 <a href="f010_IIQE备考误区与时间陷阱.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f010 备考误区与时间陷阱</a></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你想了解考试当天 → 看 <a href="f012_IIQE考试当天流程.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f012 考试当天流程</a></p>
+  <section style="height: 2px; background: #C2D4CC; padding: 24px 0;"></section>
 
-  <div style="margin: 36px 0 18px;">
-    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <div style="padding-bottom: 6px;">
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #0F3D2E;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 11</span>
-      </div>
-      <div style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">官方信息来源</h2>
-      </div>
-    </div>
-  </div>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">PEAK Examination Centre IIQE 页面</span></li>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">官方信息来源</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">PEAK Examination Centre IIQE 页面</span></li>
   </ul>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="http://www.peak.edu.hk/exam/en/iiqe" style="color: #0F3D2E; text-decoration: underline;">http://www.peak.edu.hk/exam/en/iiqe</a></p>
-  <div style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></div>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="http://www.peak.edu.hk/exam/en/iiqe" style="color: #0F3D2E; text-decoration: underline;">http://www.peak.edu.hk/exam/en/iiqe</a></p>
+  <section style="height: 2px; background: #C2D4CC; padding: 24px 0;"></section>
 
-  <div style="margin: 36px 0 18px;">
-    <div style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
-      <div style="padding-bottom: 6px;">
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #0F3D2E;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
         <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 12</span>
-      </div>
-      <div style="display: block;">
-        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">下一步</h2>
-      </div>
-    </div>
-  </div>
-  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">避坑</strong>：看 <a href="f010_IIQE备考误区与时间陷阱.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f010 备考误区与时间陷阱</a></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">冲刺</strong>：看 <a href="f011_IIQE考前1周冲刺清单.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f011 考前 1 周冲刺清单</a></li>
-    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">回到目录</strong>：<a href="f000_IIQE总入口.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f000 IIQE 总入口</a></li>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">下一步</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">避坑</strong>：看 <a href="f010_IIQE备考误区与时间陷阱.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f010 备考误区与时间陷阱</a></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">冲刺</strong>：看 <a href="f011_IIQE考前1周冲刺清单.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f011 考前 1 周冲刺清单</a></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">回到目录</strong>：<a href="f000_IIQE总入口.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f000 IIQE 总入口</a></li>
   </ul>
-  <div style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></div>
-  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">本内容仅供参考，IIQE 模拟题来源以 PEAK Examination Centre 官方资料和可信渠道为准。</strong> 实际使用应根据学习进度和薄弱情况调整节奏，建议结合备考群交流形成稳定的模拟习惯。</p>
+  <section style="height: 2px; background: #C2D4CC; padding: 24px 0;"></section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">本内容仅供参考，IIQE 模拟题来源以 PEAK Examination Centre 官方资料和可信渠道为准。</strong> 实际使用应根据学习进度和薄弱情况调整节奏，建议结合备考群交流形成稳定的模拟习惯。</p>
 
-  <div style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 32px 0 28px;"></div>
+  <section style="height: 2px; background: #C2D4CC; padding: 32px 0 28px;"></section>
 
-  <div style="margin: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(15,61,46, 0.12); text-align: center;">
+  <section style="padding: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(15,61,46, 0.12); text-align: center;">
 
-    <p style="font-size: 14px; color: #0F3D2E; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
-    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
-    <p style="font-size: 14px; color: #0F3D2E; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">👉 喜欢我们的内容？</p>
-    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+    <p style="font-size: 14px; color: #0F3D2E; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #0F3D2E; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
 
-  </div>
+  </section>
 
 
 
-  <div style="text-align: center; padding: 4px 0 32px;">
-    <p style="font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; letter-spacing: 0.3px; white-space: pre-line;">港通+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 15px; font-weight: 700; color: #1a1a1a; padding: 0 0 4px; letter-spacing: 0.3px; white-space: pre-line;">港通+
 内地↔香港跨境问题的中文索引入口</p>
-    <p style="font-size: 14px; color: #BBBBBB; margin: 0; letter-spacing: 0.5px;">结构优先·入口导向·合规底线·工具风格</p>
-  </div>
+    <p style="font-size: 14px; color: #BBBBBB; padding: 0; letter-spacing: 0.5px;">结构优先·入口导向·合规底线·工具风格</p>
+  </section>
 
+</section>
+</body>
+</html>
 </div>
+</body>
+</html>

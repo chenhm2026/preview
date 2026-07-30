@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>f023 · MPFE 强积金备考重点（预览版·一键复制）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; margin: 0 auto; padding: 20px 0;">
+
+  <section style="margin: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(15,61,46, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; margin-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #0F3D2E; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #0F3D2E;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: linear-gradient(to right, rgba(15,61,46, 0.15), transparent);"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.07</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; margin: 0; line-height: 1.1; letter-spacing: -1px;">MPFE 备考重点：强积金 6 大模块 + 5 类核准基金</p>
+          <section style="width: 48px; height: 3px; background: linear-gradient(to right, #0F3D2E, #E8956D); border-radius: 2px; margin: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; margin: 0; line-height: 1.7; letter-spacing: 0.5px;">MPFE 是独立于 IIQE 的强制资格考，主理人 / 中介人考这卷才能卖强积金产品</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+<section style="text-align: center; font-size: 14px; color: #A0926B; padding: 0 0 12px;">📖 全文 3762 字 · 约 13 分钟</section>
+<section style="background: #FBF6EC; border-left: 4px solid #0F3D2E; border-radius: 8px; overflow: hidden; padding: 0 0 28px 0;"><section style="padding: 18px 22px;"><section style="padding-bottom: 10px;"><span style="font-size: 14px; color: #0F3D2E; font-weight: bold; letter-spacing: 1px;">📌 本期导读</span></section><section><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">本文用 6 大模块 + 5 类核准基金 + 4 张对比表 + 3 周 48 小时时间表，帮你把 MPFE 备考重点收成可执行清单。MPFE 与 IIQE 不可互认，必须独立备考。</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">---</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">🌟 <strong style="font-weight: 900; color: #111827;">感恩阅读到这一行</strong></p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">喜欢我们的内容？</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">- ⭐ 星标港通+ — 第一时间接收更新</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">---</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;"><em style="font-style: italic; color: #4B5563;">港通+ / 内地↔香港跨境问题的中文索引入口 / 结构优先 · 入口导向 · 合规底线 · 工具风格</em></p></section></section></section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">本文按 PEAK 官方 2024-03 强积金研习资料整理 MPFE（Mandatory Provident Fund Examination）备考重点，覆盖 6 大核心模块、5 类核准投资基金、强制性供款计算、章节权重（声明：PEAK 未公开权重）、易混淆点与 3 周备考时间表。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">适用对象</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">主理人（Principal）/ 业务代表（Representative）准备注册强积金中介人</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">已通过 IIQE 一卷或多卷、想拓展强积金业务的代理 / 经纪</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">内地赴港做家庭办公室 / 财顾业务需了解强积金的从业者</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">公司 HR 团队成员（涉雇主供款合规）</span></li>
+  </ul>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、MPFE 是什么</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">MPFE 不是 IIQE 5 卷中的任何一卷，是 PEAK 管理的<strong style="font-weight: 900; color: #111827;">独立资格考试</strong>。PEAK 同时管理 IIQE 5 卷 + MPFE 1 卷共 6 卷。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">PEAK 官方对 MPFE 的硬性参数（来源：PEAK 强积金研习资料 2024-03 / PEAK FAQ）：</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">项目</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">数据</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">考试名</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">Mandatory Provident Fund Examination / 强积金计划考试</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">时长</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">2 小时</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">题目数</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">80 道单项选择题（4 选 1）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">通过分数</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">70%（PEAK FAQ B2）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">考试语言</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中英双语</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">考试形式</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">CSME 电脑化 或 PPME 纸笔</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">成绩公布</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">仅显示 PASS / FAIL，分数不公开（PEAK FAQ B3）</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">与 IIQE 的关系</strong>：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">不可互认——考过 P1/P2/P3/P5 不等于通过 MPFE</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">但 MPFE 与 IIQE 5 卷中任一卷都可用同一身份报名（无需重新注册）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">同时持有 IIQE + MPFE 是做完整香港保险 + 强积金业务的硬门槛</span></li>
+  </ul>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、MPFE 章节权重</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">声明：PEAK 未公开 MPFE 章节权重分布。下表基于 PEAK 强积金研习资料 2024-03 版目录体量与公开样题频次整理。</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">章节</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">题目数（约）</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">权重（约）</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">优先级</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">MPF 制度概论</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">10</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">12.5%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐⭐⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">强积金计划类型（集成 / 行业 / 雇主赞助）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">10</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">12.5%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐⭐⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">受托人 / 保管人 / 投资经理</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">14</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">17.5%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐⭐⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">强积金投资（5 类核准基金）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">14</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">17.5%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐⭐⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">供款与权益</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">14</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">17.5%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐⭐⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">强积金中介人监管</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">10</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">12.5%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">投诉处理与消费者保障</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">8</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">10%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">⭐⭐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">合计</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">80</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">100%</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">—</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">5 大章节（除投诉与监管）各占 12.5–17.5%，<strong style="font-weight: 900; color: #111827;">分布相对均匀</strong>——不能像 IIQE 那样集中时间攻高频章节，必须全面复习。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、6 大核心模块详解</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">4.1 MPF 制度概论（Introduction to MPF System）</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">覆盖内容</strong></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">强积金由来：1995 年《强制性公积金计划条例》（Cap. 485）立法</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">覆盖范围：年满 18–64 岁雇员 / 自雇人士</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">豁免人士：家佣、海外雇员等</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">高频考点</strong></p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">Cap. 485 立法时间（1995 年）+ 实施时间（2000 年 12 月 1 日）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">哪些人不受强积金覆盖</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">「有关入息」（Relevant Income）定义</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">4.2 强积金计划类型（Types of MPF Schemes）</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">3 大类型</strong>：</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">类型</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">适用对象</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">特点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">集成信托计划（Master Trust）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">多个雇主共同参与</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港主流，约 90% 市场</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">行业计划（Industry Scheme）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">临时工 / 饮食业 / 建造业</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">专为流动性高的雇员设计</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">雇主赞助计划（Employer Sponsored Scheme）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">单一大雇主</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">专门为某公司定制</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">考点</strong>：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">集成信托计划 vs 行业计划的转换规则</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">雇主赞助计划的"单一雇主"条件</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">4.3 受托人 / 保管人 / 投资经理</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">3 个角色的责任分工是 MPFE 高频题：</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">角色</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">主要责任</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">资格要求</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">受托人（Trustee）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">计划管理、成员登记、基金保管监督</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">公司受托人需 ≥ HK$1.5 亿净资产</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">保管人（Custodian）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">计划资产保管、独立于受托人</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">银行或持牌金融机构</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">投资经理（Investment Manager）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">基金日常投资管理</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">在港成立法团、≥ HK$1,000 万净资产、证监会第 9 类牌照</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">4.4 强积金投资（MPF Investment）</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">5 类核准投资基金</strong>（PEAK 官方分类）：</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">基金</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">风险</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">主要投资</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">股票基金（Equity Fund）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">全球股票</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">债券基金（Bond Fund）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中低</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">定息证券</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">混合资产基金（Mixed Assets Fund）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">股票 + 债券</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">货币市场基金（Money Market Fund）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">低</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">短期存款 / 货币工具</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">保证基金（Guaranteed Fund）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">低</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">提供本金或回报保证</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">考点</strong>：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">投资政策陈述书（IPS）必备内容（PEAK 强积金研习资料第 5.5 节）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">投资标准与限制（5.7 节）：分散化、风险管控</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">对投资经理的转授权限制</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">4.5 供款与权益</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">强制性供款规则</strong>（2026 年现行口径）：</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">项目</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">数据</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">雇主供款</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">雇员「有关入息」× 5%</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">雇员供款</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">雇员「有关入息」× 5%（月薪 ≥ HK$7,100）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">「有关入息」上限</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HK$30,000 / 月</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">月薪 < HK$7,100</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">雇员无需供款，雇主仍需供款</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">自雇人士</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">按有关入息 5% 供款（上限 HK$1,500 / 月）</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">权益归属</strong>：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">雇主供款部分：按"渐进式归属比例"（5 年内离职，逐步从 0% 增至 100%）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">雇员供款部分：100% 归成员所有</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">强制性供款：仅在 65 岁退休、永久离港、死亡、完全丧失行为能力、小量结余等特定条件下可提取</span></li>
+  </ul>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">4.6 强积金中介人监管</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">监管架构</strong>：</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">监管方</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">角色</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">MPFA（强制性公积金计划管理局）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">主监管</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">IA（保险业监管局）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">跨监管（如中介人涉保险产品）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">证监会（SFC）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">投资经理牌照</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">中介人操守要求</strong>：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">须注册为强积金中介人</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">须遵守 MPFA 发出的《强积金中介人操守要求》</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">须向雇主 / 成员提供清晰披露文件</span></li>
+  </ul>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、3 个核心学习方法</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">方法 1：先看角色分工图，再学制度</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">MPFE 30% 的题目考「谁负责什么」。把"受托人 / 保管人 / 投资经理"三角关系手画 3 遍，所有制度题就位。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">方法 2：5 类基金对比表作为记忆锚点</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">把 PART 04.4 的 5 类核准基金对比表（风险 / 投资 / 适合人群）打印贴墙。MPFE 18% 的题目本质是「X 基金 vs Y 基金在 Z 条件下的差异」。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">方法 3：供款计算题练习</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">PEAK 允许 non-programmable 计算器。MPFE 高频计算题：</p>
+  <ul style="margin: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">「月薪 HK$25,000，雇主 + 雇员各供多少？」→ 双方各 HK$1,250（5% × 25,000）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">「月薪 HK$35,000，雇主 + 雇员各供多少？」→ 双方各 HK$1,500（5% × 30,000 上限）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">「自雇人士年入 HK$400,000，月供款多少？」→ HK$1,500 / 月（达上限）</span></li>
+    <li style="margin: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0F3D2E; font-weight: bold;">•</span><span style="color: #374151;">「5 年后离职，雇主供款归属比例多少？」→ 按渐进表（约 50–80%）</span></li>
+  </ul>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">每周末做 5–10 题，3 周内可覆盖常见题型。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、易混淆点对比</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">表 1：MPFE vs IIQE Paper III</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">MPFE</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">IIQE Paper III</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">监管考试</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">PEAK 强积金</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">PEAK IIQE</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">考卷范围</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">强积金单一主题</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">长期险（寿险 / 重疾 / 年金）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">互认</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">不互认</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">不互认</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">同时持有</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">卖强积金 + 长期险产品的硬门槛</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">—</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">表 2：3 类强积金计划对比</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">集成信托</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">行业计划</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">雇主赞助</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">适用</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">多数雇员</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">临时工 / 流动性高雇员</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">单一大雇主</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港占比</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">约 90%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">约 8%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">约 2%</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">转换规则</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">可转换其他集成信托</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">受限</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">一般不可转换</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">表 3：受托人 vs 保管人 vs 投资经理</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">角色</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">核心职责</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">资格要求</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">受托人</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">计划管理、成员登记、资产监督</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">≥ HK$1.5 亿净资产</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">保管人</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">资产保管（独立于受托人）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">银行 / 持牌金融机构</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">投资经理</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">基金日常投资管理</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">证监会第 9 类牌照</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0F3D2E; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0F3D2E33;">表 4：强制性供款 vs 自愿性供款</h3>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">强制性供款</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">自愿性供款</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">供款比例</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">雇主 + 雇员各 5%</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">自愿决定</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">归属</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">雇主部分按渐进比例</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">100% 归成员</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">提取条件</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">65 岁退休 / 永久离港等特定条件</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">较灵活</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">税务处理</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">不计入应课税入息</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">可享扣税（TVC 等）</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、3 周备考时间安排</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">周次</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">时长</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">重点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">第 1 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">16 小时</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">MPF 制度 + 3 类计划 + 角色分工</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">第 2 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">16 小时</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">强积金投资（5 类基金）+ IPS + 投资限制</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">第 3 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">16 小时</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">供款与权益 + 中介人监管 + 模拟题 3 套 + 错题回顾</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">合计 48 小时。每日 2–3 小时、连续 21 天完成。<strong style="font-weight: 900; color: #111827;">3 周内必须做完至少 3 套完整 80 题模拟</strong>。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #0F3D2E, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 08</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">七、下一步</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; margin: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: linear-gradient(135deg, #FFF5F0, #ECFEFF);">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">文章</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">状态</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="../f000_IIQE_总入口_v1.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f000 IIQE 总入口</a></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 已上线</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="../f003_IIQE_有哪些卷_v1.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f003 IIQE 有哪些卷</a></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 已上线</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="../f014_IIQE_P1备考重点_v1.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f014 Paper I 备考重点</a></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 已上线</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="../f015_IIQE_PaperII一般保险备考重点_v1.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f015 Paper II 备考重点</a></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 已上线</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="../f021_IIQE_PaperIII长期险备考重点_v1.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f021 Paper III 备考重点</a></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 已上线</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="../f022_IIQE_PaperV投连险备考重点_v1.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f022 Paper V 备考重点</a></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 已上线</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">f023 MPFE 强积金备考重点（本文）</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 本篇</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="../f024_主理人业务代表注册流程_v1.md" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">f024 主理人 / 业务代表注册流程</a></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">📅 待写</td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 24px 0;"></section>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(15,61,46, 0.3), transparent); margin: 32px 0 28px;"></section>
+
+  <section style="margin: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(15,61,46, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #0F3D2E; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #0F3D2E; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; letter-spacing: 0.3px; white-space: pre-line;">我是 Sidney，一个实干派的记录者</p>
+    <p style="font-size: 14px; color: #BBBBBB; margin: 0; letter-spacing: 0.5px;">知行合一 · 不制造焦虑 · 聚焦真实价值</p>
+  </section>
+
+</section>
+</div>
+</body>
+</html>

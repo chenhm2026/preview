@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>公众号推送版（一键复制）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; padding: 0 auto; padding: 20px 0;">
+
+  <section style="padding: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(232,180,184, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; padding-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #E8B4B8; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #E8B4B8;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: #FBF1F2;"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.08</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; padding: 0; line-height: 1.1; letter-spacing: -1px;">两地混合产检安排</p>
+          <section style="width: 48px; height: 3px; background: #E8B4B8;; border-radius: 2px; padding: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; padding: 0; line-height: 1.7; letter-spacing: 0.5px;">这篇解决超港生娃的关键问题</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">适用：在内地生活、准备去香港生，或「香港产检过几轮、之后回内地养胎」的港宝爸妈</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">信息核对日期：<strong style="font-weight: 900; color: #111827;">2026-08-04</strong> ｜ 主要取自<a href="https://www.fhs.gov.hk/sc_chi/main_ser/process.html" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">卫生署家庭健康服务</a>、<a href="https://www.ha.org.hk/visitor/fees_and_charges.asp?lang=CHIGB" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">医院管理局</a>、<a href="https://www.chinacdc.cn/" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">中国疾控中心</a>、深圳各大医院公开信息</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 政策和收费会调整，出发前建议再点一次官方链接确认</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这是一篇<strong style="font-weight: 900; color: #111827;">策略型</strong>指南，不讲单边怎么约（香港预约见 [B2 产检篇]，内地建档见下文第三节），重点回答：<strong style="font-weight: 900; color: #111827;">两地怎么搭配、哪些检查必须在香港做、时间怎么分配。</strong></p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、香港和内地孕产检的关键差异</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">先拉一张表，把两边体系的本质区别对齐了再看怎么分。</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">香港</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">内地（以深圳为例）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">建档</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">公立新症：凭转介信 + 身份证 + 住址证明在 HA Go「预约通」登记</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">凭身份证（或居住证）+ B 超单在选定医院建册，领《母子健康手册》</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">费用</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">符合资格：公立产检基本免费；私家每次 $800–$2,500</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">有生育保险：大部分项目统筹支付；自费产检套餐约 ¥100–¥400/次</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">检查频率</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">公立约每 4–6 周一次（后期加密），但公立每次不一定照 B 超</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">一般 28 周前每月一次、29–36 周每两周一次、37 周后每周一次，B 超频率高于香港公立</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">B 超机会</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">公立：除非高风险或医生认为有必要，未必次次照；私家：每次可照</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">公立医院 B 超频率较高，很多医院每次产检都能开</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">NIPT（无创 DNA）</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港版（如敏儿安 T21）：最早 <strong style="font-weight: 900; color: #111827;">10 周</strong>可做，覆盖近百项，约 HK$5,000–$8,000</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">内地版：一般 <strong style="font-weight: 900; color: #111827;">12 周后</strong>可做，基础三项目约 ¥1,000–¥2,000；部分医院有升级版</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">报告通用性</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港公立医院一般不直接采纳内地检查报告</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">深圳部分医院（如港大深圳医院）会参考香港报告</td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、哪些检查最好在香港做、哪些可以在内地补</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">按孕周梳理，告诉你每项检查的"归属建议"和原因。</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">孕周</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">检查项目</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">建议在哪做</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">原因</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">6–8 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">确认怀孕（B 超看胎心、排除宫外孕）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">两边都可以</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港私家速度最快、可即时拿转介信；深圳三甲医院也很快且便宜</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">8–10 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">首次产检 + 血常规 + 传染病筛查</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">最好是香港</strong>（如果打算在港分娩）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港公立系统需要自己的初检记录建档，转介信也得是香港注册医生开的</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">10 周+</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">NIPT（无创 DNA）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">按需求选</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">要全面筛查 + 早出结果 → 香港；只要基础三项 + 省钱 → 内地。注意：内地版一般 12 周才给做</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">11–13 周+6 天</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">NT 检查 + 早唐筛查（OSCAR）</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">建议香港</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">时限性最强的检查之一，必须在 11–13 周+6 天内完成。如果打算在港分娩，建议在香港公立系统做，确保记录连贯。内地也能做 NT，但香港公立可能需要自己的 OSCAR 数据</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">18–22 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">结构超声波（大排畸）</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">建议香港</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">整个孕期最关键的一次排畸，必须在有经验的中心做。香港私家医院的设备和技术口碑很好，报告详细。内地三甲医院也能做，但如果打算在港分娩，建议在香港做，确保主诊医生能看到原始影像和报告</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">24–28 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">妊娠糖尿病筛查（饮糖水 OGTT）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">两边都可以</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">标准流程，哪边方便就去哪边，带报告回港即可</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">28 周+</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">常规产检 + 胎监</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">以分娩地为主</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">28 周后检查频率加密，来回折腾不现实，建议固定在分娩医院做</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">35–37 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">乙型链球菌（GBS）筛查</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">必须在分娩医院</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">结果直接影响分娩时要不要打抗生素，不能跨院替代</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">关键原则</strong>：如果计划在港分娩 → NT + 结构超声波这两次「不可逆」的筛查建议在香港做，确保主诊医生有完整一手数据；其余常规产检和血检可以根据方便程度在两边灵活分配。如果计划在内地分娩 → 全程在选定内地医院做就好，香港的检查结果带过去给医生参考。</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、内地建档和预约产检怎么走（以深圳为例）</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你打算在内地做部分产检，或是后期回内地养胎，下面是实操流程。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">3.1 第一步：建档（建册）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">在深圳，建档也叫「建册」，就是领《深圳市母子健康手册》，一般在孕 <strong style="font-weight: 900; color: #111827;">8–14 周</strong>时办理。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">需要材料</strong>（非深户也能办）：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">孕妇身份证（原件+复印件）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">B 超单（需显示胎心胎芽）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">居住证或社区居住证明（非深户籍建议带上，部分医院不强制）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">夫妻双方身份证（部分医院要求）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">如有社保卡 / 生育登记证明，一并带上（涉及报销）</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">流程</strong>：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">关注目标医院微信公众号 → 预约挂号 → 产科 → 孕妇建册门诊</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">按预约时间到院 → 填《母子健康手册》→ 基础检查（血压、体重）→ 医生问诊开检查单</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">建册当天一般需要空腹（首次抽血项目多），建议上午去</span></li>
+  </ul>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">3.2 第二步：预约后续产检</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">建册后，每次产检在医院的微信公众号或 App 上预约产科门诊即可，跟香港 HA Go 的用法类似。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">3.3 推荐医院（深圳港人常去的）</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">香港大学深圳医院（港大深圳医院）</strong>：最受港人欢迎的三甲医院，部分医生可用粤语沟通，对香港检查报告的接受度较高。国际医疗中心（IMC）可预约产科。蛇口片区、福田区都方便。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">深圳市妇幼保健院</strong>（红荔 / 福强院区）：深圳老牌妇幼专科，产科量大、经验丰富，建档需尽早预约（热门医院可能孕 6–8 周就要排）。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">蛇口人民医院</strong>：深圳涉外医疗服务量最大的医院之一，港澳居民就医经验丰富，前海蛇口自贸区覆盖。</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 热门医院建档名额有限，建议验出怀孕后就先打听目标医院的建档时间窗口，别等到 12 周再约。</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、典型混合产检节奏举例</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">咱们群里不少妈妈的实际节奏是「前期在深圳、中期飞香港做关键筛查、后期再回深圳」。下面给两个常见场景的参考时间线，帮你直观感受怎么排。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">场景一：内地生活、去香港生</h3>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">时间</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">在哪</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">做什么</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">孕 6–8 周（确认怀孕）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">深圳</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">三甲医院 B 超确认胎心 → 领 B 超单，顺便咨询建册</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">孕 8–9 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">找私家妇产科医生首诊 → 开转介信 + 做首次血检（香港建档用）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">孕 10 周（可选）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">做 NIPT（香港版敏儿安 T21），最早 10 周即可</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">孕 11–13 周+6 天</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">NT + OSCAR 早唐</strong>，时限最紧，不能错过窗口</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">孕 18–22 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">结构超声波（大排畸）</strong>，最关键的一次</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">孕 24–28 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">深圳/香港皆可</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">饮糖水 OGTT，哪边方便就去哪边</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">孕 28 周前</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">搞定分娩预约确认书（妈妈无香港身份证的才需要，过关要用，见 B4 待产篇）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">孕 28 周后</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">深圳</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">常规产检 + 胎监在深圳做，回港只跑分娩</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">这个节奏的好处</strong>：关键筛查全部在香港做，医生有完整一手数据；后期不折腾，每次产检成本低且频率可以更高（深圳公立 B 超机会多于香港公立）。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">场景二：大半程在香港、后期回深圳养胎</h3>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">时间</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">在哪</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">做什么</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">孕 6–8 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">私家首诊 + 开转介信，公立 HA Go 约新症</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">孕 8–28 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">按香港公立排程走，每 4–6 周一次</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">孕 28 周前</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">深圳</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">在深圳选定医院建册（可以产检后再建，但要留够时间）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">孕 28 周后</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">深圳</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">加密产检（每两周→每周）在深圳做</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">孕 35–37 周</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">回港做 GBS 筛查（必须在分娩医院）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">分娩</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">—</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">这个节奏的好处</strong>：孕期前大半程在香港，跟主诊医生关系连贯；后期回深圳养胎舒适方便，产检加密也不累。</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、过来人的小提醒</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">① NT 窗口期只有两周多，别拖。</strong> 11 周零天到 13 周 6 天，一拖就过去了——得提前约好香港的检查，不是临出发再约。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">② 深圳 B 超频率高是好事，但别重复做。</strong> 同一项检查（比如大排畸）在两地各做一次是浪费时间和钱，提前想好分项方案。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">③ 两地报告要自己整理好。</strong> 深圳医生看不懂英文报告很正常，重要的香港检查结果可以请医生写一份中文小结，或自己口头转述关键数据。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">④ GBS 筛查别"到时候再说"。</strong> 35–37 周必须在分娩医院做——如果你全程在深圳产检、计划回港生，第 35 周就得回港报到。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">⑤ 28 周红线不只是入境（妈妈无香港身份证才涉及），也是"在哪产检"的分水岭。</strong> 28 周之后来回跑不现实，必须做出选择——胎监和常规产检 28 周后就固定在一个地方。</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、官方链接（2026-08-04 逐条实测可打开）</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">用途</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">链接</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港产前服务整合安排（母婴健康院转医管局）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.fhs.gov.hk/sc_chi/main_ser/process.html" style="color: #E8B4B8; text-decoration: underline;">https://www.fhs.gov.hk/sc_chi/main_ser/process.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HA Go 手机程式下载与「预约通」</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.ha.org.hk/hkch/Patients/Apps" style="color: #E8B4B8; text-decoration: underline;">https://www.ha.org.hk/hkch/Patients/Apps</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">医管局专科门诊搜寻（产科，代码 460）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.ha.org.hk/visitor/ha_isf_result.asp?lang=ENG&service_code_id=460" style="color: #E8B4B8; text-decoration: underline;">https://www.ha.org.hk/visitor/ha_isf_result.asp?lang=ENG&service_code_id=460</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">医管局收费表</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.ha.org.hk/visitor/fees_and_charges.asp?lang=CHIGB" style="color: #E8B4B8; text-decoration: underline;">https://www.ha.org.hk/visitor/fees_and_charges.asp?lang=CHIGB</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">单非孕妇在港分娩安排（食物及卫生局公告）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.fhb.gov.hk/cn/press_and_publications/press/2013/press130717a.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.fhb.gov.hk/cn/press_and_publications/press/2013/press130717a.htm</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">怀孕后期内地孕妇入境规定</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.gov.hk/sc/residents/immigration/control/clearance.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.gov.hk/sc/residents/immigration/control/clearance.htm</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港大深圳医院官网（产科预约与IMC查询）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.hku-szh.org/" style="color: #E8B4B8; text-decoration: underline;">https://www.hku-szh.org/</a></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">电话查询</strong></p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">医管局通用查询：<strong style="font-weight: 900; color: #111827;">(852) 2300 6555</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">卫生署家庭健康服务热线：<strong style="font-weight: 900; color: #111827;">2833 0111</strong></span></li>
+  </ul>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这份指南只做信息整理和路径梳理，不替代官方咨询。个案情况（非婚生、特殊身份、高危妊娠等）请直接联系医管局或卫生署。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">有更新或你实操中发现出入，欢迎在群里说一声，我来订正。</p>
+
+  <section style="height: 2px; background: #F8E8EA; padding: 32px 0 28px;"></section>
+
+    <section style="padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(232,180,184, 0.12);"><p style="font-size: 14px; color: #E8B4B8; font-weight: 700; line-height: 1.9; padding: 0 0 10px; text-align: center;">🌟 感恩每一次的相遇与陪伴。</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 10px; text-align: center;">既然看到这里了，如果觉得不错，随手点个赞、在看，也可以转给身边需要的朋友，让这份价值继续传递。</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 10px; text-align: center;">如果想第一时间收到推送，也可以给我个<span style="color: #E8B4B8; font-weight: 700;">星标★</span>～</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0; text-align: center;">谢谢你看到这里，我们，下一次再见。</p></section>
+
+
+
+  <section style="text-align: center; padding: 4px 16px 32px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;"><p style="font-size: 18px; font-weight: 800; color: #1E3A5F; padding: 0 0 8px; letter-spacing: 1px;">港通+</p><p style="font-size: 14px; font-weight: 500; color: #555; padding: 0 0 4px; letter-spacing: 0.5px;">内地→香港跨境问题的中文索引口口</p><p style="font-size: 12px; font-weight: 400; color: #999; padding: 0; letter-spacing: 0.8px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p></section>
+
+</section>
+</div>
+</body>
+</html>

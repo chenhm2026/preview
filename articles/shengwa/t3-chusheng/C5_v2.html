@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>公众号推送版（一键复制）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; padding: 0 auto; padding: 20px 0;">
+
+  <section style="padding: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(232,180,184, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; padding-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #E8B4B8; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #E8B4B8;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: #FBF1F2;"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.08</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; padding: 0; line-height: 1.1; letter-spacing: -1px;">港宝身份证办理流程</p>
+          <section style="width: 48px; height: 3px; background: #E8B4B8;; border-radius: 2px; padding: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; padding: 0; line-height: 1.7; letter-spacing: 0.5px;">这篇解决超港生娃的关键问题</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">适用：港宝满 11 岁须申领香港身份证</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">信息核对日期：<strong style="font-weight: 900; color: #111827;">2026-08-03</strong> ｜ 全部取自香港入境事务处官网（<a href="https://www.immd.gov.hk/hks/" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">immd.gov.hk</a>）与香港政府一站通（<a href="https://www.gov.hk/sc/" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">gov.hk</a>）</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">文末所有链接均已逐条实测可打开，如遇失效请在群里说一声，我来更新</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 政策和收费会调整，出发前建议再点一次<a href="https://www.immd.gov.hk/hks/" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">入境处官网</a>确认</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、这是什么，为什么要办</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">香港身份证是香港居民的身份凭据。根据《人事登记条例》，<strong style="font-weight: 900; color: #111827;">年满 11 岁的香港居民必须登记领取身份证</strong>。</p>
+
+  <section style="padding: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #E8B4B8; border-radius: 0 12px 12px 0; ">
+    <section style="display: block; align-items: center; padding-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #E8B4B8; letter-spacing: -0.2px;">重要：未满 11 岁一般<strong style="font-weight: 900; color: #111827;">不用</strong>办身份证——<strong style="font-weight: 900; color: #111827;">除非</strong>你之前已替宝宝办了特区护照：未持有永久身份证的儿童获发护照时，会<strong style="font-weight: 900; color: #111827;">一并获发身份证</strong>（见 C3 护照篇的 ROP3）。所以有些港宝 11 岁前其实已经有身份证了。本篇讲的是「按法定年龄 11 岁申领」这条路径。</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; padding: 0;"></p>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">11 岁拿到身份证后，能解锁很多事：走「出入境简化计划」免回港证往返内地澳门、开户、报读学校、各类身份验证等都用得上。</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、什么时候办（有法定期限）</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">年满 11 岁生日后的 30 天内</strong>必须登记领取。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">如果生日当时身在香港以外，须在<strong style="font-weight: 900; color: #111827;">返港后 30 天内</strong>申请。</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">须<strong style="font-weight: 900; color: #111827;">先预约</strong>，预约期最长 96 个工作天——所以建议<strong style="font-weight: 900; color: #111827;">提前约</strong>，别卡到生日才约。</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 逾期申请身份证属违法，可被检控及罚款（最高 HK$5,000）。这个 30 天是硬期限，不是弹性的。</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、怎么办</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">先预约</strong>：互联网（<a href="https://www.gov.hk/sc/residents/immigration/idcard/hkic/bookregidcard.htm）／" style="color: #E8B4B8; text-decoration: underline;">https://www.gov.hk/sc/residents/immigration/idcard/hkic/bookregidcard.htm）／</a> 入境处流动应用程式 ／ 电话 <strong style="font-weight: 900; color: #111827;">2598 0888</strong></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">亲身</strong>到人事登记办事处办理；<strong style="font-weight: 900; color: #111827;">11 岁申领须由父/母或合法监护人陪同</strong></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">现场拍证件照（或自带符合规格照片），录入资料、采指纹、领证</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">注：合资格的 18 岁以上人士可用总部自助服务站免预约换证，但<strong style="font-weight: 900; color: #111827;">11 岁首次申领必须预约 + 亲身 + 监护人陪同</strong>，不适用自助。</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、要带什么（11 岁申领儿童身份证）</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">[ ] 儿童的<strong style="font-weight: 900; color: #111827;">出生证明书</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">[ ] <strong style="font-weight: 900; color: #111827;">身份证明</strong>：有效旅行证件 / 护照，或学校文件（载姓名、出生日期、相片并经学校盖印认证，如学生手册、学校记录卡）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">[ ] 以往身份证（如有）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">[ ] 陪同的父/母或合法监护人：<strong style="font-weight: 900; color: #111827;">香港身份证或有效旅行证件</strong>；如为合法监护人，另备<strong style="font-weight: 900; color: #111827;">监护证明文件</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">[ ] 智能身份证规格的<strong style="font-weight: 900; color: #111827;">相片</strong>（现场可拍，或自带符合规格的照片）</span></li>
+  </ul>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、去哪儿办（人事登记办事处）</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">办事处</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">地址</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">电话</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港岛人事登记办事处</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港湾仔告士打道 7 号入境事务大楼 8 楼（港铁湾仔站 A5 出口）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">(852) 3547 2300</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">九龙人事登记办事处</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">九龙深水埗长沙湾道 303 号长沙湾政府合署 3 楼（港铁深水埗站 C1 出口）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">(852) 2150 7933</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">将军澳人事登记办事处</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">新界将军澳宝邑路 61 号入境事务处总部行政大楼 3 楼（登记）／1 楼（领证）（港铁将军澳站 B1 出口）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">(852) 2824 6111</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">火炭人事登记办事处</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">新界火炭乐景街 2 至 18 号银禧荟 4 楼 405–407 号铺位（港铁火炭站 C 出口）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">(852) 2653 3116</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">屯门人事登记办事处</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">新界屯门兆麟街 19 号屯门兆麟政府综合大楼 3 楼（轻铁三圣站）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">(852) 2653 1035</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">元朗人事登记办事处</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">新界元朗桥乐坊 2 号元朗政府合署 1 楼（港铁朗屏站 E 出口）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">(852) 2475 4114</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">各办事处办公时间一般为周一至五 9:00–16:30、周六 9:00–12:30（将军澳周一至五 8:45–16:30、周六 9:00–11:30），周日及公众假期休息。最新详情以官网为准：<a href="https://www.immd.gov.hk/hks/contactus/person-registration.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/contactus/person-registration.html</a></p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、花多少钱 / 多久</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">项目</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">费用</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">首次登记香港永久性居民身份证</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">免费</strong></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">补发身份证（遗失 / 毁灭）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HK$370</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">补发身份证（损坏 / 污损）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HK$370</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">补发身份证（改动内容）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HK$460</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">处理时间</strong>：一般 <strong style="font-weight: 900; color: #111827;">5 个工作天</strong>；完成后于下一个工作天领取。</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">七、过来人的小技巧</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">① 先翻翻宝宝有没有身份证。</strong> 11 岁前若已办护照，很可能已经一并拿了身份证（ROP3），别白跑一趟。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">② 提前约，别卡 30 天。</strong> 预约期长达 96 个工作天，生日前后尽早约；逾期可能遭检控及罚款。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">③ 预约当天须已满 11 岁。</strong> 系统要求申请当天生日已到，否则不获处理。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">④ 带齐出生证明 + 学校文件。</strong> 没身份证的儿童，学校文件（盖印认证相片）可当身份证明。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">⑤ 照片可现场拍，但排队。</strong> 人多时等得久，可自带符合智能身份证规格的照片。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">⑥ 监护人陪同 + 关系证明。</strong> 11 岁申领必须父母/监护人陪同，带好身份证明和（如适用）监护文件。</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 08</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">八、容易踩的坑</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">以为 11 岁前一定要办</strong> —— 一般不用，除非办护照时已一并拿了。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">错过 30 天期限</strong> —— 逾期可能违法并罚款，这条是硬的。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">预约时未满 11 岁</strong> —— 当天须满 11 岁，否则不办。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">没监护人陪同</strong> —— 11 岁申领须父母/合法监护人陪同。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">以为要交钱</strong> —— 首次登记免费。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">证件 / 学校文件没带齐</strong> —— 会被退，白跑。</li>
+  </ul>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 09</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">九、官方链接（2026-08-03 逐条实测可打开）</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">用途</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">链接</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">登记或补领香港身份证（11–17 岁申请）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.immd.gov.hk/hks/services/hkid/reg_replace.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/services/hkid/reg_replace.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">网上预约申领身份证（人事登记办事处）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.gov.hk/sc/residents/immigration/idcard/hkic/bookregidcard.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.gov.hk/sc/residents/immigration/idcard/hkic/bookregidcard.htm</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">各人事登记办事处地址及服务范围</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.immd.gov.hk/hks/contactus/person-registration.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/contactus/person-registration.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">入境处收费表（身份证费用）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.immd.gov.hk/hks/services/fee-tables/index.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/services/fee-tables/index.html</a></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">电话查询</strong></p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">入境处查询热线：<strong style="font-weight: 900; color: #111827;">(852) 2824 6111</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">预约热线：<strong style="font-weight: 900; color: #111827;">2598 0888</strong></span></li>
+  </ul>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这份指南只做信息整理和路径梳理，不替代官方咨询。个案情况（非婚生、父母身份特殊等）请直接联系入境处或就近人事登记办事处。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">有更新或你实操中发现出入，欢迎在群里说一声，我来订正。</p>
+
+  <section style="height: 2px; background: #F8E8EA; padding: 32px 0 28px;"></section>
+
+    <section style="padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(232,180,184, 0.12);"><p style="font-size: 14px; color: #E8B4B8; font-weight: 700; line-height: 1.9; padding: 0 0 10px; text-align: center;">🌟 感恩每一次的相遇与陪伴。</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 10px; text-align: center;">既然看到这里了，如果觉得不错，随手点个赞、在看，也可以转给身边需要的朋友，让这份价值继续传递。</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 10px; text-align: center;">如果想第一时间收到推送，也可以给我个<span style="color: #E8B4B8; font-weight: 700;">星标★</span>～</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0; text-align: center;">谢谢你看到这里，我们，下一次再见。</p></section>
+
+
+
+  <section style="text-align: center; padding: 4px 16px 32px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;"><p style="font-size: 18px; font-weight: 800; color: #1E3A5F; padding: 0 0 8px; letter-spacing: 1px;">港通+</p><p style="font-size: 14px; font-weight: 500; color: #555; padding: 0 0 4px; letter-spacing: 0.5px;">内地→香港跨境问题的中文索引口口</p><p style="font-size: 12px; font-weight: 400; color: #999; padding: 0; letter-spacing: 0.8px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p></section>
+
+</section>
+</div>
+</body>
+</html>

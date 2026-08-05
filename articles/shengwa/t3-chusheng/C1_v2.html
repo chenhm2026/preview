@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>公众号推送版（一键复制）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; padding: 0 auto; padding: 20px 0;">
+
+  <section style="padding: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(232,180,184, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; padding-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #E8B4B8; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #E8B4B8;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: #FBF1F2;"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.08</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; padding: 0; line-height: 1.1; letter-spacing: -1px;">港宝出生纸办理流程</p>
+          <section style="width: 48px; height: 3px; background: #E8B4B8;; border-radius: 2px; padding: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; padding: 0; line-height: 1.7; letter-spacing: 0.5px;">这篇解决超港生娃的关键问题</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">适用：在香港公立/私家医院顺利分娩的家庭</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">信息核对日期：<strong style="font-weight: 900; color: #111827;">2026-08-03</strong> ｜ 全部取自香港入境事务处官网（<a href="https://www.immd.gov.hk/hks/" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">immd.gov.hk</a>）与香港政府一站通（<a href="https://www.gov.hk/sc/" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">gov.hk</a>）</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">文末所有链接均已逐条实测可打开，如遇失效请在群里说一声，我来更新</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 政策和收费会调整，出发前建议再点一次<a href="https://www.immd.gov.hk/hks/" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">入境处官网</a>确认</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、这件事是什么，为什么不能拖</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">宝宝在香港出生，<strong style="font-weight: 900; color: #111827;">不是自动就有身份的</strong>。得由你去入境处做「出生登记」，登记完才能领那张<strong style="font-weight: 900; color: #111827;">出生登记记项的核证副本</strong>——也就是大家俗称的<strong style="font-weight: 900; color: #111827;">「出生纸」</strong>。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这张纸是后面所有事情的根：回港证、特区护照、回乡证、内地那边的手续，全部要凭它。没有它，一步都走不动。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">法律层面是硬性的</strong>。入境处官网（<a href="https://www.immd.gov.hk/hks/services/birth-death/Registration_of_a_Birth.html" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">出生登记专页</a>）原文写着：</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">根据香港法例第 174 章《生死登记条例》第 7 条，父母须在婴儿出生后 42 天内，向出生登记处办理登记。若有人刻意不依从法例办理婴儿出生登记，即属违法，一经定罪，最高罚款港币 2,000 元或入狱六个月。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">而且逾期还会影响孩子后续的医疗、教育、福利权益。说白了：这不是"建议尽快"，是<strong style="font-weight: 900; color: #111827;">法定期限</strong>。</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、时间线：什么时候能办、什么时候必须办</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">节点</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">宝宝出生</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">医院会以<strong style="font-weight: 900; color: #111827;">电子方式</strong>把「新生婴儿出生呈报表」传给出生登记处</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">医院呈报完成后</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">你才能开始预约/办理。<strong style="font-weight: 900; color: #111827;">没呈报是办不了的</strong></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">出生后 42 天内</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">法定期限，<strong style="font-weight: 900; color: #111827;">这段时间办登记免费</strong></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">42 天后 ~ 1 年内</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">还能办，但要交登记费 <strong style="font-weight: 900; color: #111827;">HK$140</strong></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">满 1 年后</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">必须先获生死登记官批准，登记费 <strong style="font-weight: 900; color: #111827;">HK$680</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">关键前置条件</strong>：<a href="https://www.immd.gov.hk/hks/services/birth-death/Registration_of_a_Birth.html" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">官网</a>明确写「预约前，父母应先向婴儿出生的医院查询，以确保有关的新生婴儿呈报表已送交有关的出生登记处。预约时，父母须提供与新生婴儿呈报表上相符的资料，否则将不能进行预约。」</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">⚠️ 缴费与呈报时间的关系</strong></p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">很多家庭以为「医院会自动呈报，等着就行」——但有一个关键环节容易忽略：<strong style="font-weight: 900; color: #111827;">医院呈报出生资料的时间，跟是否结清医疗费用直接挂钩。</strong> 医管局早在 2007 年 3 月已发出新闻公报明确这一安排，原文如下：</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">任何嬰兒的父母如能夠儘早清繳所有醫療費用，公立醫院便會儘快將嬰兒的出生資料呈報出生登記處，嬰兒的父母最快可於繳清費用七個工作天後前往出生登記處辦理領取出生證明書。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">→ <a href="https://www.info.gov.hk/gia/general/200703/22/P200703220231.htm" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">医管局新闻公报全文（2007 年 3 月 22 日）</a></p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">公报还说明，即使欠费，医管局仍须按法例在婴儿出生后 <strong style="font-weight: 900; color: #111827;">35 天（五个星期）</strong> 内将资料提交入境处——但那个是兜底时限，不是你家宝宝的"可办时间"。想早拿出生纸，<strong style="font-weight: 900; color: #111827;">出院时就把费用结清</strong>，然后等约 7 个工作天去办登记。</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、两条路：网上办 vs 亲身去</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">路径 A：网上办（够条件的话，强烈推荐）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">五个条件必须全中，缺一个都走不了网上：</strong></p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">申报人必须是宝宝的<strong style="font-weight: 900; color: #111827;">父亲或母亲</strong>本人</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">宝宝父母其中<strong style="font-weight: 900; color: #111827;">一方是香港永久性居民</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">宝宝是<strong style="font-weight: 900; color: #111827;">婚生子女</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">在宝宝出生后 <strong style="font-weight: 900; color: #111827;">42 天内</strong>办</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">申报人已成功注册成为<strong style="font-weight: 900; color: #111827;">「智方便+」</strong>手机 App 用户（香港政府的数字身份，得提前弄好）</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">网上办要上传什么：</strong></p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">填妥出生登记所需资料</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">宝宝父亲及母亲的<strong style="font-weight: 900; color: #111827;">香港身份证 / 旅行证件副本</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">宝宝父母的<strong style="font-weight: 900; color: #111827;">结婚证书副本</strong>（只适用于在香港以外地方结婚的。如果结婚证不是中文或英文写的，还要上传核证翻译本）</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">多久出结果</strong>：登记处收齐所有资料文件后，一般 <strong style="font-weight: 900; color: #111827;">3 个工作天内</strong>完成（不含你确认「表格 1」的时间；工作天指周一至周五，公众假期除外）。完成后会发邮件通知你，出生纸可以领取或邮寄。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">官方备注：繁忙时段或个案复杂时，未必能达标。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">入口</strong>：网上办理出生登记 → <a href="https://www.gov.hk/sc/residents/immigration/bdmreg/onlinebirthregistration.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.gov.hk/sc/residents/immigration/bdmreg/onlinebirthregistration.htm</a></p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">路径 B：亲身去登记处</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">第一步：先预约。</strong> 网上或电话都行，两个系统都是 <strong style="font-weight: 900; color: #111827;">24 小时免费</strong>服务。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">电话预约：<strong style="font-weight: 900; color: #111827;">2598 0888</strong>（必须用音频电话）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">网上预约：<a href="https://www.gov.hk/sc/residents/immigration/bdmreg/birth/birthreg/bookbirthreg.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.gov.hk/sc/residents/immigration/bdmreg/birth/birthreg/bookbirthreg.htm</a></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">先到先得</strong>，名额有限</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">成功预约后，可在预约日期前更改或取消</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">第二步：省时间的准备。</strong> 可以先在网上预交出生登记所需资料，或者下载填好<strong style="font-weight: 900; color: #111827;">表格 BDR93A</strong>「出生登记所需资料」当天一起带去。注意这只是资料表，不是申请表。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">网上预交资料：<a href="https://www.gov.hk/sc/residents/immigration/bdmreg/birth/birthreg/onlinesubmissionbirthreg.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.gov.hk/sc/residents/immigration/bdmreg/birth/birthreg/onlinesubmissionbirthreg.htm</a></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">表格 BDR93A 下载：<a href="https://www.immd.gov.hk/hks/forms/forms/bdr93a.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/forms/forms/bdr93a.html</a></span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">第三步：当天去办。</strong></p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">宝宝不用去</strong>，不用带上</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">如果宝宝是婚生子女，<strong style="font-weight: 900; color: #111827;">父或母一个人去就行</strong>，不用两个都到</span></li>
+  </ul>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、亲身办要带什么（正本）</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">宝宝是<strong style="font-weight: 900; color: #111827;">婚生子女</strong>，父或母一方带齐这些：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">[ ] <strong style="font-weight: 900; color: #111827;">父母结婚证书</strong>（如果不是中文或英文写的，要一并交核证翻译本）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">[ ] 以下三选一：</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  - 父母<strong style="font-weight: 900; color: #111827;">香港永久性居民身份证</strong>（适用于香港永久性居民）；或</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  - 父母<strong style="font-weight: 900; color: #111827;">香港身份证 + 有效旅行证件</strong>（如护照、签证身份书等，适用于香港居民）；或</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">  - 父母<strong style="font-weight: 900; color: #111827;">抵港时的旅行证件</strong>（如护照、往来港澳通行证等，适用于非香港居民）</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这些文件是用来核实宝宝在《入境条例》（第 115 章）下的香港特区永久性居民身份的，所以别马虎。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">如果证件不是香港入境处签发的，还要一并交复印件存档。</strong></p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">视个案情况，可能还会要你补其他文件。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">如果宝宝是非婚生子女</strong>，想在登记记录里写上父亲姓名，有四种做法（任选其一）：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">父母一起亲身到登记处提出；或</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">母亲亲身去，交母亲本人声明书 + 父亲的法定声明书（确认他是父亲）；或</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">父亲亲身去，交父亲本人声明书 + 母亲的法定声明书（确认该人是父亲）；或</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">凭法庭颁令核证副本办理</span></li>
+  </ul>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、去哪儿办：按宝宝出生的区域对号入座</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">规则</strong>：在宝宝<strong style="font-weight: 900; color: #111827;">出生区域内的分区登记处</strong>，或<strong style="font-weight: 900; color: #111827;">将军澳出生登记处</strong>办理。如果宝宝是在抵达医院/诊疗所前出生的，去<strong style="font-weight: 900; color: #111827;">生死登记总处</strong>；出生已超过 1 年还没登记的，也归总处。</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">登记处</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">地址</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">电话</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">办公时间</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">生死登记总处</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港金钟道 66 号 金钟道政府合署低座 3 楼（港铁金钟站 C1 出口）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">2867 2785</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">一至五 08:45–16:45<br>六 09:00–11:30</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">九龙出生登记处</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">九龙尖沙咀金巴利街 28 号地下低层（港铁尖沙咀站 B2 出口）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">2359 4485</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">一至五 08:45–12:45、14:00–16:45<br>六 09:00–11:30</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">沙田区出生登记处</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">新界沙田上禾輋路 1 号 沙田政府合署 3 楼（港铁沙田站 B 出口）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">2695 1175</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">一至五 08:45–12:45、14:00–16:45<br>六 09:00–11:30</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">将军澳出生登记处</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">新界将军澳宝邑路 61 号 入境事务处总部行政大楼 2 楼</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">3861 8203</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">一至五 08:45–16:30<br>六 09:00–11:30</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">屯门区出生登记处</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">新界屯门兆麟街 19 号 屯门兆麟政府综合大楼地下</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">2618 3789</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">一至五 08:45–12:45、14:00–16:45<br>六 09:00–11:30</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">（周日及公众假期休息。一般查询热线均为 2824 6111）</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">哪家医院归哪个登记处（官网服务区域原文）：</strong></p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">生死登记总处</strong> → 港岛及离岛区：嘉诺撒医院、明德国际医院、玛丽医院、香港港安医院-司徒拔道、养和医院、圣保禄医院、东区尤德夫人那打素医院、港怡医院、长洲医院普通科门诊部，以及坪洲、北南丫、大澳赛马会等普通科门诊诊所；<strong style="font-weight: 900; color: #111827;">以及在抵达医院或诊所前于香港任何其他地方出生的婴儿</strong></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">九龙出生登记处</strong> → 九龙及荃湾区：圣德肋撒医院、广华医院、伊利沙伯医院、基督教联合医院、香港浸信会医院、玛嘉烈医院、香港港安医院-荃湾、宝血医院（明爱）</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">沙田区出生登记处</strong> → 沙田、大埔、粉岭及上水区：威尔斯亲王医院、仁安医院、香港中文大学医院</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">屯门区出生登记处</strong> → 屯门及元朗区：屯门医院</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">将军澳出生登记处</strong> → <strong style="font-weight: 900; color: #111827;">于香港任何分区医院出生的婴儿</strong>（不限区域）</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">各登记处最新地址与办公时间，以官网为准：<a href="https://www.immd.gov.hk/hks/contactus/birth.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/contactus/birth.html</a></p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、花多少钱</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">项目</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">费用</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">出生登记（42 天内）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">免费</strong></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">出生登记（42 天后 ~ 1 年内）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HK$140</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">出生登记（满 1 年后补办）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HK$680</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">出生登记记项的核证副本（出生纸）</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">HK$140 / 份</strong>（本地领取或寄本地）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">「出生登记证明书」表格 3</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">登记时<strong style="font-weight: 900; color: #111827;">免费</strong>领一份（法例第 9(4) 条），需主动索取</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">日后才补领出生纸</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">要先申请翻查记录：特定查册 HK$140 / 一般查册 HK$680，再加副本费 HK$140</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">关于免费的「表格 3」</strong>——入境处官网原文：</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">根据香港法例第 174 章《生死登记条例》第 9(4) 条，任何人根据第 9 条任何一款得以办理出生登记，<strong style="font-weight: 900; color: #111827;">即有权于登记时免费领取符合订明格式的出生登记证明书（表格 3）</strong>。如父母欲领取表格 3，请于网上递交所需资料及文件后联络相关出生登记处。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 注意分清：<strong style="font-weight: 900; color: #111827;">「表格 3」出生登记证明书 ≠ HK$140 的「核证副本」（出生纸）</strong>。表格 3 是登记时的法定免费权益，但<strong style="font-weight: 900; color: #111827;">格式和用途都比核证副本简单</strong>，后续办证件、办内地手续用的是那份 HK$140 的核证副本。所以正确做法是：<strong style="font-weight: 900; color: #111827;">核证副本该买还是要买（建议多买一两份），同时把免费的表格 3 也要过来备用。</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">原文出处（页内搜「9(4)」即可看到）：<a href="https://www.immd.gov.hk/hks/services/birth-death/Registration_of_a_Birth.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/services/birth-death/Registration_of_a_Birth.html</a></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">付款方式</strong></p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">亲身办：现金、易办事、八达通、转数快、内地电子钱包（<strong style="font-weight: 900; color: #111827;">只接受支付宝、微信支付、云闪付 App</strong>）、划线支票或银行本票（抬头写「香港特别行政区政府」）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">网上办选邮寄或亲领：按系统指示缴费</span></li>
+  </ul>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">七、办完出生登记，同一天还能顺手办两件事</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这是很多人不知道、白跑一趟的点。入境处官网（<a href="https://www.immd.gov.hk/hks/services/birth-death/Registration_of_a_Birth.html" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">出生登记专页</a>）「为新生婴儿办理旅行证件的特别安排」原文：</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">在香港出生的新生婴儿在办妥出生登记手续后，如需申请旅行证件（包括回港证及/或香港特别行政区护照），并符合有关申请资格，父、母或合法监护人可凭<strong style="font-weight: 900; color: #111827;">即日签发</strong>的香港出生证明书，在<strong style="font-weight: 900; color: #111827;">同日</strong>（星期一至星期五下午 3 时 30 分前及星期六上午 11 时前，星期日及公众假期除外）<strong style="font-weight: 900; color: #111827;">带同新生婴儿</strong>到<strong style="font-weight: 900; color: #111827;">任何一间入境事务处分区办事处</strong>的接待处办理申请旅行证件的手续。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">要带齐（官方列明五项，缺一样都办不了）</strong>：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">新生婴儿的<strong style="font-weight: 900; color: #111827;">香港出生证明书</strong></span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">   ⚠️ 关键：出生证明书<strong style="font-weight: 900; color: #111827;">第 (11) 项必须是「确定《入境条例》（第 115 章）附表 1 第 2(a) 项」</strong>——这一行就是宝宝永久性居民身份的凭据，领证时当场看一眼</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">新生婴儿<strong style="font-weight: 900; color: #111827;">近照</strong>：回港证需 <strong style="font-weight: 900; color: #111827;">2 张</strong>，特区护照需 <strong style="font-weight: 900; color: #111827;">3 张</strong>（必须是白色背景的彩色照片）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">同意申请的父、母或合法监护人的<strong style="font-weight: 900; color: #111827;">香港身份证或有效旅行证件</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">已填妥的申请表：回港证 → <strong style="font-weight: 900; color: #111827;">ID73A</strong>；特区护照 → <strong style="font-weight: 900; color: #111827;">ID842 + ROP3</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">已填妥的<strong style="font-weight: 900; color: #111827;">副署事项表格 ID641</strong> + 该副署人的身份证明文件副本</span></li>
+  </ul>
+
+  <section style="padding: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #E8B4B8; border-radius: 0 12px 12px 0; ">
+    <section style="display: block; align-items: center; padding-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #E8B4B8; letter-spacing: -0.2px;">关于「副署人」——这一项最多人误会。<strong style="font-weight: 900; color: #111827;">不需要是律师、医生或什么专业人士。</strong> 官方规定是：任何年满 18 岁、认识这个孩子的人都可以做副署人，<strong style="font-weight: 900; color: #111827;">唯一的限制是不能是孩子的父母或监护人本人</strong>。提前找个香港的朋友、亲戚帮忙签一下就行。</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; padding: 0;">另外官方还留了个替代方案：如果孩子已经有<strong style="font-weight: 900; color: #111827;">贴有经学校盖印认证相片的学校证明文件</strong>（载有姓名、出生日期及相片），可以用那个代替 ID641。新生儿显然用不上，但孩子大一点再补办证件时会用到。</p>
+  </section>
+
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 08</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">八、过来人的小技巧（能省时间和跑动的部分）</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这一段不是官方规定，是把官方规则拆开之后能用上的打法。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">① 着急拿出生纸？先把费用结清。</strong></p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">整条链路的起点是医院把「新生婴儿出生呈报表」电子传给登记处——<strong style="font-weight: 900; color: #111827;">这一步没完成，你连预约都约不上</strong>。但这里有个关键环节很多人忽略：医院呈报的时间跟是否结清医疗费用直接挂钩。医管局规定「缴清费用后尽快呈报，最快 7 个工作天可办登记」（见第二节详细说明）。所以出院时别拖账——当场或尽早把医疗费用缴清（可用 HA Go App、一站式电子服务站或缴费处），医院才会把你的呈报表排进优先级。缴清后留意确认呈报已传到登记处，就可以去预约了。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">② 本区约不到号，试将军澳。</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><a href="https://www.immd.gov.hk/hks/services/birth-death/Registration_of_a_Birth.html" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">官网</a>写明将军澳出生登记处的服务区域是「<strong style="font-weight: 900; color: #111827;">于香港任何分区医院出生的婴儿</strong>」——也就是说不管你在哪家医院生的，将军澳都能办。本区名额被抢光时，这是官方给的合法后路。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">③ 42 天名额全满，直接打电话给登记处。</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不用干等系统放号。在平日办公时间内打对应登记处的电话（上面表格里有），跟职员说明你在免费登记期内但约不到号，说明情况。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">④ 一定要约上午的号。</strong></p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">因为「同日办旅行证件」的截止是<strong style="font-weight: 900; color: #111827;">周一至五 15:30 / 周六 11:00</strong>。上午办完出生登记、拿到出生纸，下午才来得及去分区办事处把回港证和护照一起办掉。约到下午的号，这一趟就只能办出生登记，证件要另跑一趟。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">⑤ 出生纸当场多领一两份。</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">每份 HK$140。当场不领，日后补领要<strong style="font-weight: 900; color: #111827;">先交查册费</strong>（特定查册 HK$140）<strong style="font-weight: 900; color: #111827;">再加副本费</strong>（HK$140），等于一份变两份的钱，还要多等。后面办回乡证、内地落户、报读学校都可能要用，多备一两份是划算的。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">⑥ 表格 3 记得主动要。</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">免费，但系统不会自动给你，尤其是网上办的——递交完资料后要<strong style="font-weight: 900; color: #111827;">主动联系对应登记处</strong>索取。别把它当成出生纸的替代品（见第六节说明），是额外多拿一份凭据。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">⑦ 「智方便+」要提前注册。</strong></p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">这是网上办出生登记的硬门槛，注册需要本人验证身份，不是当场就能开通的。想走网上路径的，孕期就把它办好：<a href="https://www.iamsmart.gov.hk/sc/" style="color: #E8B4B8; text-decoration: underline;">https://www.iamsmart.gov.hk/sc/</a></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">⑧ 表格提前下好填好，照片提前拍好。</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">BDR93A、ID73A、ID842、ROP3、ID641，能在家填的都在家填完；新生儿证件照建议提前在专业证件照店拍（说明是香港入境处规格）。到了现场再抓瞎，同日办证的时间窗口就过了。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">⑨ 注意午休时间。</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">九龙、沙田、屯门三个登记处<strong style="font-weight: 900; color: #111827;">中午 12:45–14:00 休息</strong>；生死登记总处（到 16:45）和将军澳（到 16:30）不午休。跨区跑的话把这个算进去。</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 09</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">九、容易踩的坑</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">以为医院会帮你办</strong> —— 医院只负责把「出生呈报表」传给登记处，登记要你自己去。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">过了 42 天才想起来</strong> —— 从免费变 HK$140，超一年变 HK$680 还要审批。这个期限是法定的，不是弹性的。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">没先确认呈报表</strong> —— 医院还没传，你去预约系统资料对不上，直接约不了。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">只办登记没领出生纸</strong> —— 登记和领「核证副本」是两件事。当场不领，以后补领要先交查册费，更麻烦更贵。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">出生纸第 (11) 项没看清</strong> —— 这一项决定宝宝能不能凭它办永居身份相关的证件，拿到手当场核对。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">想同日办证件却卡在时间</strong> —— 周一至五 15:30、周六 11:00 是硬门槛，上午就把出生登记办完才来得及。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">照片规格不对被退</strong> —— 白色背景、彩色、张数够（回港证 2 张 / 护照 3 张）。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">被「副署人要专业人士」的说法误导</strong> —— 满 18 岁、认识孩子、非父母监护人即可。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">把免费的表格 3 当成出生纸</strong> —— 两个不是一回事，办后续手续要的是 HK$140 那份核证副本。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">出院没及时缴清费用</strong> —— 费用没结清，医院不会优先呈报出生资料，直接拖慢拿出生纸的时间。出院当天就缴清，最快 7 个工作天可办登记。</li>
+  </ul>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 10</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">十、官方链接（2026-08-03 逐条实测可打开）</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">用途</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">链接</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">办理出生登记（总说明，含费用/表格3/同日办证件）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.immd.gov.hk/hks/services/birth-death/Registration_of_a_Birth.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/services/birth-death/Registration_of_a_Birth.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">出生及死亡登记 常见问题 FAQ</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.immd.gov.hk/hks/faq/births-deaths-registration.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/faq/births-deaths-registration.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">网上办理出生登记（政府一站通）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.gov.hk/sc/residents/immigration/bdmreg/onlinebirthregistration.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.gov.hk/sc/residents/immigration/bdmreg/onlinebirthregistration.htm</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">网上预约办理出生登记（亲身办用）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.gov.hk/sc/residents/immigration/bdmreg/birth/birthreg/bookbirthreg.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.gov.hk/sc/residents/immigration/bdmreg/birth/birthreg/bookbirthreg.htm</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">网上预交出生登记所需资料</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.gov.hk/sc/residents/immigration/bdmreg/birth/birthreg/onlinesubmissionbirthreg.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.gov.hk/sc/residents/immigration/bdmreg/birth/birthreg/onlinesubmissionbirthreg.htm</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">网上申请翻查出生登记纪录及领取核证副本（日后补领用）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.gov.hk/sc/residents/immigration/bdmreg/birth/birthreg/cprreg.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.gov.hk/sc/residents/immigration/bdmreg/birth/birthreg/cprreg.htm</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">各出生登记处地址、电话及办公时间</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.immd.gov.hk/hks/contactus/birth.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/contactus/birth.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">入境事务处分区办事处（办旅行证件用）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.immd.gov.hk/hks/contactus/branch-office.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/contactus/branch-office.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">入境处收费表（出生登记 / 证件费用）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.immd.gov.hk/hks/services/fee-tables/index.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/services/fee-tables/index.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">表格 BDR93A 出生登记所需资料</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.immd.gov.hk/hks/forms/forms/bdr93a.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/forms/forms/bdr93a.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">表格 ID73A 回港证申请书（16 岁以下）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.immd.gov.hk/hks/forms/forms/id73a.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/forms/forms/id73a.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">表格 ID842 特区护照申请书</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.immd.gov.hk/hks/forms/forms/id842.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/forms/forms/id842.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">表格 ROP3 护照申请附表</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.immd.gov.hk/hks/forms/forms/rop3.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/forms/forms/rop3.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">表格 ID641 副署事项表格（含副署人资格说明）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.immd.gov.hk/hks/forms/forms/id641.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/forms/forms/id641.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">「智方便+」注册（网上办出生登记的前提）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.iamsmart.gov.hk/sc/" style="color: #E8B4B8; text-decoration: underline;">https://www.iamsmart.gov.hk/sc/</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">医管局新生婴儿呈报表安排（缴费与呈报时间关系）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.info.gov.hk/gia/general/200703/22/P200703220231.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.info.gov.hk/gia/general/200703/22/P200703220231.htm</a></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">电话查询</strong></p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">入境处一般查询热线：<strong style="font-weight: 900; color: #111827;">(852) 2824 6111</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">出生登记电邮：<strong style="font-weight: 900; color: #111827;">gro@immd.gov.hk</strong> ／ <strong style="font-weight: 900; color: #111827;">enquiry@immd.gov.hk</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">24 小时预约热线：<strong style="font-weight: 900; color: #111827;">2598 0888</strong></span></li>
+  </ul>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这份指南只做信息整理和路径梳理，不替代官方咨询。个案情况（非婚生、父母身份特殊、证件遗失等）请直接联系入境处或对应登记处。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">有更新或你实操中发现出入，欢迎在群里说一声，我来订正。</p>
+
+  <section style="height: 2px; background: #F8E8EA; padding: 32px 0 28px;"></section>
+
+    <section style="padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(232,180,184, 0.12);"><p style="font-size: 14px; color: #E8B4B8; font-weight: 700; line-height: 1.9; padding: 0 0 10px; text-align: center;">🌟 感恩每一次的相遇与陪伴。</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 10px; text-align: center;">既然看到这里了，如果觉得不错，随手点个赞、在看，也可以转给身边需要的朋友，让这份价值继续传递。</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 10px; text-align: center;">如果想第一时间收到推送，也可以给我个<span style="color: #E8B4B8; font-weight: 700;">星标★</span>～</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0; text-align: center;">谢谢你看到这里，我们，下一次再见。</p></section>
+
+
+
+  <section style="text-align: center; padding: 4px 16px 32px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;"><p style="font-size: 18px; font-weight: 800; color: #1E3A5F; padding: 0 0 8px; letter-spacing: 1px;">港通+</p><p style="font-size: 14px; font-weight: 500; color: #555; padding: 0 0 4px; letter-spacing: 0.5px;">内地→香港跨境问题的中文索引口口</p><p style="font-size: 12px; font-weight: 400; color: #999; padding: 0; letter-spacing: 0.8px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p></section>
+
+</section>
+</div>
+</body>
+</html>

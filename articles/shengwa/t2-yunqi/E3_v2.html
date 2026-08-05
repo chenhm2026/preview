@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>公众号推送版（一键复制）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; padding: 0 auto; padding: 20px 0;">
+
+  <section style="padding: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(232,180,184, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; padding-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #E8B4B8; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #E8B4B8;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: #FBF1F2;"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.08</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; padding: 0; line-height: 1.1; letter-spacing: -1px;">内地生育津贴与产检补贴，港宝家庭怎么领</p>
+          <section style="width: 48px; height: 3px; background: #E8B4B8;; border-radius: 2px; padding: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; padding: 0; line-height: 1.7; letter-spacing: 0.5px;">这篇解决赴港生娃的关键问题</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">适用：在内地参加了生育保险（职工医保含生育险 / 灵活就业医保 / 城乡居民医保）的港宝家庭</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">信息核对日期：<strong style="font-weight: 900; color: #111827;">2026-08-04</strong> ｜ 主要依据：深圳市医疗保障局（<a href="https://hsa.sz.gov.cn/" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">hsa.sz.gov.cn</a>）、国家医保局相关政策文件</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">文末所有链接均已实测可打开，如遇失效请在群里说一声，我来更新</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 各地政策不完全一致，以下以深圳为例；其他城市的请以参保地医保局最新口径为准</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">📌 <strong style="font-weight: 900; color: #111827;">术语小注</strong></p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">生育保险</strong>：五险一金里的"生育险"，由单位缴纳（个人不交）。含两块待遇：生育医疗费（产检+分娩费用报销）+ 生育津贴（产假工资）</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">生育津贴</strong>：通俗说就是"产假工资"，由医保基金打给你，不是单位发</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">产检补贴 / 产前检查费</strong>：生育医疗费里专门用于产检的部分，深圳是定额报销</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">定额报销</strong>：不管实际花了多少，医保按固定金额给你报销</li>
+  </ul>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、这件事是什么——先把两块待遇分开</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">内地生育保险的待遇分两块，很多人混在一起，搞清楚这一点后面就都通了：</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">待遇</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">是什么</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">在香港生/产检有影响吗？</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">生育医疗费</strong>（含产检+分娩）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">报销性质的，只认<strong style="font-weight: 900; color: #111827;">内地定点医疗机构</strong>的费用。香港那边的不报</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ <strong style="font-weight: 900; color: #111827;">有影响</strong>——香港部分不纳入报销</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">生育津贴</strong>（产假工资）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">给妈妈的现金补贴，跟你<strong style="font-weight: 900; color: #111827;">在哪儿生、在哪儿产检都无关</strong>，只看参保条件</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">❌ <strong style="font-weight: 900; color: #111827;">完全不影响</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">群里最多人问的问题"在香港生还能领生育津贴吗"，答案就是上面这个表——<strong style="font-weight: 900; color: #111827;">能领，跟分娩地点无关。</strong></p>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、先对号入座——你属于哪种情况</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">办理之前，先搞清楚你是不是"有资格的那一档"，这决定了你能享受什么：</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">你的情况</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">生育医疗费报销</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">生育津贴</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">在职职工，单位正常交生育险</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 可报</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 可领</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">正在领失业金</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 可报</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 可领</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">灵活就业（自己交医保）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 可报</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">❌ 不享受</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">没工作，用老公的生育险</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">✅ 可报（额度为女职工的一半）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">❌ 不享受</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">没缴任何社保</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">❌</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">❌</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">申领生育津贴的核心门槛</strong>：分娩前连续缴纳生育保险满 <strong style="font-weight: 900; color: #111827;">10 个月</strong>（含生育当月），且申领时仍在正常参保状态。不满 10 个月的，生育津贴要等缴满后才补发。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">出处：深圳市医保局官网个人网上服务系统申领页面明确列出此条件。各地门槛不完全一致（有的城市要求 12 个月），以参保地为准。</p>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、什么时候办——时限很宽松，但别拖</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">事项</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">时限</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">生育津贴</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">分娩次日起 <strong style="font-weight: 900; color: #111827;">3 年内</strong> 均可申请</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">产检费用报销（产前检查费）</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">分娩次日起 <strong style="font-weight: 900; color: #111827;">3 年内</strong></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">分娩住院费用报销</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">分娩次日起 <strong style="font-weight: 900; color: #111827;">3 年内</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">时间很充裕，不用急着月子里去跑。但建议产后 3 个月内办掉，别拖到快过期。</p>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、带什么——材料清单</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">🅐 申领生育津贴（深圳）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">以深圳为例，2025 年 12 月起已支持<strong style="font-weight: 900; color: #111827;">个人直接申请</strong>，不用通过公司。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">必备材料</strong>：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">本人身份证</strong>（原件）</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">出院小结 / 出院记录</strong>（医院盖章原件）</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">   - ⚠️ 香港生的：香港医院出院小结即可，建议同时附一份<strong style="font-weight: 900; color: #111827;">中文翻译件</strong>（找正规翻译公司盖章）</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">本人银行卡</strong>（用于收款）</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">《生育保险待遇申请表》</strong>——线上申请时系统自动生成，线下窗口办理时现场填写</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">香港医院的出院小结通常是英文的，翻译件不用公证，正规翻译公司盖章就行。深圳医保局官方咨询口径：申领时校验情形选"以其他途径已报销"，提交出院小结及翻译件即可。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">🅑 报销产前检查费（深圳）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">必备材料</strong>：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">本人身份证</strong>（原件）</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">内地定点医疗机构的产检发票 + 费用清单</strong>（原件）</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">本人银行卡</strong></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">《生育保险待遇申请表》</strong></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 深圳产检报销是<strong style="font-weight: 900; color: #111827;">定额 2,600 元</strong>，不按实际花费逐张算。所以你只需要一张内地医疗机构的全自费产检发票（金额不限，哪怕只有几百块）就可以申领。但发票和清单必须是<strong style="font-weight: 900; color: #111827;">同一家医院</strong>的。</p>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、去哪儿办——渠道</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">以深圳为例，有三个渠道：</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">渠道</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">怎么进</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">适合</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">「深圳医保」公众号</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">微信搜"深圳医保"→ 底部菜单"掌上办事"→ 找到"生育津贴"或"生育报销"入口</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">最方便，推荐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">深圳市医保局个人网上服务系统</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">浏览器打开 <a href="https://sipub.sz.gov.cn/hspms/" style="color: #E8B4B8; text-decoration: underline;">https://sipub.sz.gov.cn/hspms/</a> → 登录 → 生育保险相关业务</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">电脑操作更方便</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">线下医保经办窗口</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">各区医保分局/行政服务大厅</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">材料复杂或线上走不通时</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">其他城市：搜"XX市医保局"公众号或官网，入口大同小异。也可以直接打 <strong style="font-weight: 900; color: #111827;">12393</strong>（全国医保服务热线）问当地办理渠道。</p>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、能领多少——金额怎么算</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">生育津贴</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">计算公式</strong>：</p>
+
+  <section style="background: #2B2622; border-radius: 11px; padding: 18px; padding: 18px 0; overflow-x: auto; font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace; font-size: 12px; line-height: 1.6; color: #E5E7EB;">
+<pre style="padding: 0; white-space: pre-wrap; word-wrap: break-word;"><code>生育津贴 = 单位上年度职工月平均工资 ÷ 30 × 产假天数</code></pre>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 注意：计发基数是<strong style="font-weight: 900; color: #111827;">你单位</strong>全体职工的上年度月平均工资，<strong style="font-weight: 900; color: #111827;">不是你个人的工资</strong>。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">你工资比单位平均低 → 领到的比工资多，赚了</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">你工资比单位平均高 → 差额由单位补给你（法定义务）</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">产假天数</strong>：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">顺产：98 天</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">难产（剖腹产）：98 + 30 = 128 天</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">多胞胎：每多一胎 +15 天</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">怀孕未满 4 个月流产：15 天</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">怀孕满 4 个月流产：42 天</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">广东省另外还有 80 天奖励假（合计顺产 178 天），但这 80 天由<strong style="font-weight: 900; color: #111827;">单位直接发工资</strong>，不走生育津贴。生育津贴管的是 98/128 天这部分。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">举个实际数字</strong>：</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">单位上年度月均工资 10,000 元，顺产 → 10,000 ÷ 30 × 98 ≈ <strong style="font-weight: 900; color: #111827;">32,667 元</strong>。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">产前检查费（深圳）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">定额 2,600 元</strong>，一次性报销。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">分娩住院费（深圳）</h3>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">分娩方式</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">定额报销</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">顺产</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">3,200 元</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">剖腹产</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">6,000 元</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 这是<strong style="font-weight: 900; color: #111827;">内地定点医疗机构</strong>分娩的报销标准。<strong style="font-weight: 900; color: #111827;">在香港（含所有境外）分娩的医疗费不纳入内地生育保险支付</strong>——全国统一规则。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">港宝家庭大概能拿到多少？快速算一下</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">情况一：在职、深圳产检 + 香港生</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">→ 产检 2,600 元 ✅ + 生育津贴 约 3 万（看单位平均工资）✅ + 分娩费 ❌</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">→ <strong style="font-weight: 900; color: #111827;">合计参考区间：35,000~55,000 元</strong>（差异主要来自单位工资水平）</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">情况二：在职、全流程深圳</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">→ 产检 2,600 元 ✅ + 分娩 3,200/6,000 元 ✅ + 生育津贴 约 3 万 ✅</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">→ <strong style="font-weight: 900; color: #111827;">合计参考区间：38,000~70,000 元</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">情况三：灵活就业（自己交医保）</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">→ 产检 2,600 元 ✅ + 分娩 3,200/6,000 元 ✅ + 生育津贴 ❌</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">→ <strong style="font-weight: 900; color: #111827;">合计参考区间：5,800~8,600 元</strong></p>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">七、避坑提醒——港宝家庭最容易踩的</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">坑①：以为在香港生就不能领生育津贴</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">不能。</strong> 生育津贴跟分娩地点无关，只跟参保条件有关。只要产前连续缴满 10 个月社保，在香港生照样领。深圳医保局官方已明确回复过这个口径。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">坑②：把产检报销和生育津贴混为一谈</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">香港产检费用不纳入内地生育保险报销——但这<strong style="font-weight: 900; color: #111827;">不影响</strong>生育津贴的领取。两块是独立的，各算各的。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">坑③：早期在深圳做产检，但忘了留发票</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">深圳产检报销需要内地的产检发票+清单。如果早期在深圳做了 NT、唐筛等检查，一定要保留好发票原件。丢了的话回医院补打。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">坑④：香港出院小结没有翻译件</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">申领生育津贴时需要出院小结。香港医院出具的是英文版，记得找翻译公司出中文翻译件（不用公证），否则线上申请时材料可能被退回。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">坑⑤：申领时选错了校验情形</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">深圳医保线上系统会让你选"是否已在其他途径报销"。<strong style="font-weight: 900; color: #111827;">在香港生的情况选"以其他途径已报销"即可</strong>，这是官方口径，不用纠结。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">坑⑥：单位不给办，自己以为没辙</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">深圳 2025 年 12 月起已支持<strong style="font-weight: 900; color: #111827;">个人直接申请生育津贴</strong>，不需要单位代办。如果单位不配合，直接走公众号或网上服务系统个人申请。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">坑⑦：生育津贴到账时间不确定</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">生育津贴审核通过后，一般 <strong style="font-weight: 900; color: #111827;">10-20 个工作日</strong>到账，具体看各区审核速度。到账前别反复催，系统里能查进度。</p>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 08</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">八、常见问答</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">Q：两地产检，会影响生育津贴吗？</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">完全不影响。生育津贴只看你的参保记录，不看产检地点。你可以在深圳做几次、香港做几次，津贴照领不误。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">Q：全在香港产检，内地一次没去过，还能报销产检费吗？</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不能。产检报销必须有内地定点医疗机构的发票和清单。如果全在香港产检，产检补贴这部分就放弃了——但生育津贴不受影响。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">Q：我已经领了香港那边的生育津贴，内地还能领吗？</strong></p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">能。两边各算各的，互不影响。内地的生育津贴属于社保待遇，跟你是否在香港领过其他津贴无关。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">Q：顺产和剖腹产，津贴算法一样吗？</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不一样。顺产计 98 天，剖腹产计 128 天（+30 天难产假），金额差不少。香港的出院小结会写清楚分娩方式，这就是申领时的凭证。</p>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 09</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">九、官方链接</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">📜 政策与法规原文</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">文中各处提到的基础规则，都可以在以下政策文件里找到原文条款：</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">文件</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">相关条款</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">链接</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">《中华人民共和国社会保险法》</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">第六章（生育保险）：第五十三条～第五十六条，明确生育保险待遇构成、生育津贴计发基数</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.gov.cn/guoqing/2021-10/29/content_5647616.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.gov.cn/guoqing/2021-10/29/content_5647616.htm</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">《女职工劳动保护特别规定》（国务院令第 619 号）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">第七条（产假天数：顺产 98 天、难产 +15 天）、第八条（生育津贴按单位上年度月均工资由基金支付）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.gov.cn/zhengce/zhengceku/2012-05/07/content_6584.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.gov.cn/zhengce/zhengceku/2012-05/07/content_6584.htm</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">《广东省职工生育保险规定》（省政府令第 287 号，2021.10.1 起施行）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">全文：第十四条第四项明确"在境外就医的"不纳入生育保险支付范围（香港分娩不报的法定依据）；第十五条～第十七条规定津贴计算公式、产假天数、发放方式</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.gd.gov.cn/zwgk/gongbao/2021/23/content/post_3496257.html" style="color: #E8B4B8; text-decoration: underline;">https://www.gd.gov.cn/zwgk/gongbao/2021/23/content/post_3496257.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">深圳市生育保险规定（市医保局官网原文）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">第十四条"在国外或者港澳台地区发生的医疗费用"不纳入生育保险基金支付范围；第十二条职工未就业配偶享受生育医疗费用待遇</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://hsa.sz.gov.cn/gkmlpt/content/5/5538/post_5538852.html" style="color: #E8B4B8; text-decoration: underline;">https://hsa.sz.gov.cn/gkmlpt/content/5/5538/post_5538852.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">深圳生育津贴直发个人政策（2025.12.1 起）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">2025 年 12 月起职工可个人直接申领生育津贴，无需单位代办；申领期限为分娩次日起 3 年内</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://hsa.sz.gov.cn/fzlm/znts/cnyc/content/post_12767105.html" style="color: #E8B4B8; text-decoration: underline;">https://hsa.sz.gov.cn/fzlm/znts/cnyc/content/post_12767105.html</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">深圳医保局关于男职工为未就业配偶报销的官方回复</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">明确职工未就业配偶享受生育医疗费用待遇的法定条件和材料要求</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.sz.gov.cn/hdjlpt/detail?pid=3086888" style="color: #E8B4B8; text-decoration: underline;">https://www.sz.gov.cn/hdjlpt/detail?pid=3086888</a></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">🔗 深圳办理入口</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">深圳市医疗保障局官网：<a href="https://hsa.sz.gov.cn/" style="color: #E8B4B8; text-decoration: underline;">https://hsa.sz.gov.cn/</a></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">深圳医保个人网上服务系统（直接办理生育津贴）：<a href="https://sipub.sz.gov.cn/hspms/" style="color: #E8B4B8; text-decoration: underline;">https://sipub.sz.gov.cn/hspms/</a></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">「深圳医保」微信公众号：微信搜"深圳医保" → 底部菜单"掌上办事"</span></li>
+  </ul>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #E8B4B8; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #E8B4B833;">全国通用</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">国家医保服务平台 App：各应用商店搜索下载</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">国家医保局官网：<a href="https://www.nhsa.gov.cn/" style="color: #E8B4B8; text-decoration: underline;">https://www.nhsa.gov.cn/</a></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">全国医保服务热线：<strong style="font-weight: 900; color: #111827;">12393</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">深圳政务服务热线：<strong style="font-weight: 900; color: #111827;">12345</strong></span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 以上金额和流程以深圳为例（2026 年 8 月确认）。各地标准不完全一致——产检补贴有的城市 1,000 元、有的 2,600 元，生育津贴天数也有差异（各地在 98 天基础上会有不同的地方奖励假）。<strong style="font-weight: 900; color: #111827;">请务必以你参保地的医保局最新政策为准</strong>，办理前拨打 12393 确认。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">香港分娩医疗费不纳入内地生育保险是全国统一的，《广东省职工生育保险规定》第十四条第四项即为法定依据，这一点各地一样，不用重复确认。</p>
+
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
+
+    <section style="padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(232,180,184, 0.12);"><p style="font-size: 14px; color: #E8B4B8; font-weight: 700; line-height: 1.9; padding: 0 0 10px; text-align: center;">🌟 感慵每一次的相遇与陪伴。</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 10px; text-align: center;">既然看到这里了，如果得得不错，随手个赞、在看个么看一朋友，也可身身再身休好，让这份值价值远次送。</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 10px; text-align: center;">如果想一时一时间接送送，也可给我个<span style="color: #E8B4B8; font-weight: 700;">星标★</span>～</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0; text-align: center;">谢谢你看到这里，我们，下一次再见。</p></section>
+
+
+
+  <section style="text-align: center; padding: 4px 16px 32px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;"><p style="font-size: 18px; font-weight: 800; color: #1E3A5F; padding: 0 0 8px; letter-spacing: 1px;">港通+</p><p style="font-size: 14px; font-weight: 500; color: #555; padding: 0 0 4px; letter-spacing: 0.5px;">内地→香港跨境问题的中文索引口口</p><p style="font-size: 12px; font-weight: 400; color: #999; padding: 0; letter-spacing: 0.8px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p></section>
+
+</section>
+</div>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>公众号推送版（一键复制）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; padding: 0 auto; padding: 20px 0;">
+
+  <section style="padding: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(232,180,184, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; padding-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #E8B4B8; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #E8B4B8;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: #FBF1F2;"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.08</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; padding: 0; line-height: 1.1; letter-spacing: -1px;">赴港待产建议</p>
+          <section style="width: 48px; height: 3px; background: #E8B4B8;; border-radius: 2px; padding: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; padding: 0; line-height: 1.7; letter-spacing: 0.5px;">这篇解决超港生娃的关键问题</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">适用：跨境 / 单非港宝家庭，规划赴港待产的时间与落脚</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">信息核对日期：<strong style="font-weight: 900; color: #111827;">2026-08-03</strong> ｜ 主要取自<a href="https://www.gov.hk/sc/residents/immigration/control/clearance.htm" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">政府一站通出入境规定</a>与<a href="https://www.fhb.gov.hk/cn/press_and_publications/press/2013/press130717a.htm" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">食物及卫生局单非安排公告</a></p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">文末所有链接均已逐条实测可打开，如遇失效请在群里说一声，我来更新</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 政策和收费会调整，出发前建议再点一次<a href="https://www.gov.hk/sc/residents/immigration/control/clearance.htm" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">政府一站通出入境规定</a>确认</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">📌 <strong style="font-weight: 900; color: #111827;">术语小注（先认几个词，后面不绕）</strong></p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">双非</strong>：父母双方都<strong style="font-weight: 900; color: #111827;">不是</strong>香港永久性居民。2013 年起公、私医院均不接收双非预约分娩，此路不通。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">单非</strong>：夫妇其中一方是香港永久性居民（常见丈夫港人、妻子内地居民），须通过特别安排在私家医院预约分娩。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">符合资格人士 / 持香港身份证</strong>：医管局界定——持有效香港身份证（<strong style="font-weight: 900; color: #111827;">永久或非永久均可</strong>）且在港通常居住者；连"临时身份证"（身份证收据）也接纳。→ <a href="https://www.ha.org.hk/visitor/fees_and_charges.asp?lang=CHIGB" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">医管局定义</a></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">预约分娩服务确认书</strong>：由香港医院（不是个别医生）签发、证明已预约分娩的文件；28 周以上内地孕妇过关必备，也是赴港待产的"门票"。</li>
+  </ul>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、这篇文章帮你解决什么</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">赴港待产不是「快生了再过去」这么简单。香港对<strong style="font-weight: 900; color: #111827;">怀孕后期（28 周或以上）的内地孕妇入境</strong>有硬规定：必须出示由香港医院签发的「预约分娩服务确认书」，否则可被拒入境。所以「什么时候动身、什么时候把分娩预约搞定、住哪儿」，是整条链路里最该提前算清楚的几步。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 这个 28 周确认书的规定，<strong style="font-weight: 900; color: #111827;">仅适用于妈妈没有香港身份证的情况</strong>。如果妈妈持香港身份证（永久 / 非永久 / 临时身份证收据均可），你就是香港居民，过关不受此项限制，按一般入境规定走即可。下文提到「需要确认书」的地方，都是指妈妈无香港身份证的情况，不再逐处重复。</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、时间线：孕几周该定什么</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">时间</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">该做什么</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">怀孕早期（确认怀孕后）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">单非家庭尽快选定私家医院、递交材料约分娩；符合资格人士走公立产检预约（见 B2）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">怀孕 28 周前</strong></td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><strong style="font-weight: 900; color: #111827;">必须</strong>拿到「预约分娩服务确认书」——这是过关的门票（妈妈无香港身份证的才需要）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">约 37 周（足月前后）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">通常这时才需要人真正在港待产；具体按医生评估和住处距离定</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">预产期前后</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">持确认书 + 通行证过关，到医院入住待产</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">简单记：<strong style="font-weight: 900; color: #111827;">预约确认书要在 28 周前到手，人不一定 28 周就在港，但过关那一刻必须随身带确认书。</strong></p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、决定「提前多久动身」的 3 个因素</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">预约医院是否搞定</strong>：单非必须在私家医院预约并取得确认书（由<strong style="font-weight: 900; color: #111827;">医院</strong>签发，不是个别医生）；费用通常须全数预缴才发确认书，不设退款（除极少数宪报刊登情况外）。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">28 周红线</strong>：确认书 28 周前必须到手，否则 28 周后过关可能被拒。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">产检衔接</strong>：前期产检在内地做、还是来港做，直接决定你需要在香港停留多久。衔接得好，可以晚点动身；衔接不好，得提前来港。</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">单非预约须提交<a href="https://www.fhb.gov.hk/cn/press_and_publications/press/2013/press130717a.htm" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">食物及卫生局规定</a>的正本证明：香港结婚证明书（或内地公证结婚证明）、港人丈夫的香港永久性居民身份证（或香港身份证 + 单程证）、夫妇分别的婚姻及亲子关系宣誓书、同意书授权查核。</p>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、住宿的几种选择 & 怎么选</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">以下列框架与权衡维度；具体「住哪儿、多少钱、怎么找」由 Kay 按自身经验和群友实测补充，我不代写主观推荐。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">亲友家</strong>：成本最低，但要考虑距离医院远近与隐私。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">酒店短租 / 家庭旅馆</strong>：适合预产期前后几周的短期待产，灵活但单价高。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">月租服务式公寓</strong>：适合早于预产期就在港长住，单价划算但要签租约、通勤算清楚。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">关键权衡</strong>：离医院远近 vs 租金；是否需近口岸方便往返内地。</li>
+  </ul>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、地段建议</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">近医院</strong>：发动不慌，尤其预产期临近，路上时间越短越安心。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">近口岸</strong>：方便往返内地做产检、取物、家人往返。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">取舍</strong>：短期待产偏近医院；长期跨境偏近口岸 + 通勤成本可控。</li>
+  </ul>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、出发前清单（过关 + 入院）</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">[ ] <strong style="font-weight: 900; color: #111827;">预约分娩服务确认书</strong>（妈妈无香港身份证的单非家庭必备，过关 + 每次入境都要出示；持香港身份证的妈妈不需要）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">[ ] 往来港澳通行证 + 有效签注</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">[ ] 产检纪录 / 医生检查报告（证明孕周，供口岸人员参考）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">[ ] 结婚证明书（单非）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">[ ] 丈夫香港身份证 / 单程证（单非）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">[ ] 夫妇宣誓书、同意书副本（与医院留底一致）</span></li>
+  </ul>
+
+  <section style="padding: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #E8B4B8; border-radius: 0 12px 12px 0; ">
+    <section style="display: block; align-items: center; padding-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #E8B4B8; letter-spacing: -0.2px;">确认书要<strong style="font-weight: 900; color: #111827;">每次过关都随身</strong>，别锁在行李箱里；口岸人员判断是否在怀孕后期，会参考你带的医生报告。</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; padding: 0;"></p>
+  </section>
+
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">七、踩坑提醒</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">28 周才约分娩</strong> —— 公立医院不收单非，私家也未必有床位。妈妈无香港身份证的话，28 周后过关还可能被拒。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">隐瞒怀孕过关</strong> —— 向入境处人员作虚假陈述属违法，最高罚款 <strong style="font-weight: 900; color: #111827;">HK$15 万及监禁 14 年</strong>。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">双非想闯关产子</strong> —— 2013 年后所有公、私医院均不接收双非预约分娩，此路不通。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">确认书不带身</strong> —— 每次入境都要出示，漏带会被拦。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">只算医疗费不算住宿</strong> —— 在港待产几周的开支往往被低估，预产期前就规划住宿，别等发动才找房。</li>
+  </ul>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 08</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">八、官方衔接入口（2026-08-03 逐条实测可打开）</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">用途</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">链接</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">怀孕后期内地孕妇入境规定（28 周确认书）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.gov.hk/sc/residents/immigration/control/clearance.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.gov.hk/sc/residents/immigration/control/clearance.htm</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">单非孕妇在港分娩安排（食物及卫生局公告）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.fhb.gov.hk/cn/press_and_publications/press/2013/press130717a.htm" style="color: #E8B4B8; text-decoration: underline;">https://www.fhb.gov.hk/cn/press_and_publications/press/2013/press130717a.htm</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">医管局收费表（产科 / 非符合资格收费 / 符合资格定义）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.ha.org.hk/visitor/fees_and_charges.asp?lang=CHIGB" style="color: #E8B4B8; text-decoration: underline;">https://www.ha.org.hk/visitor/fees_and_charges.asp?lang=CHIGB</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">公立产检与产前服务整合安排</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.fhs.gov.hk/sc_chi/main_ser/process.html" style="color: #E8B4B8; text-decoration: underline;">https://www.fhs.gov.hk/sc_chi/main_ser/process.html</a></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">电话查询</strong></p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">入境事务处查询热线：<strong style="font-weight: 900; color: #111827;">(852) 2824 6111</strong></span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">卫生署家庭健康服务热线：<strong style="font-weight: 900; color: #111827;">2833 0111</strong></span></li>
+  </ul>
+  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这份指南只做信息整理和路径梳理，不替代官方咨询。个案情况（身份特殊、emergency 等）请直接联系入境处或所选医院。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">有更新或你实操中发现出入，欢迎在群里说一声，我来订正。</p>
+
+  <section style="height: 2px; background: #F8E8EA; padding: 32px 0 28px;"></section>
+
+    <section style="padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(232,180,184, 0.12);"><p style="font-size: 14px; color: #E8B4B8; font-weight: 700; line-height: 1.9; padding: 0 0 10px; text-align: center;">🌟 感恩每一次的相遇与陪伴。</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 10px; text-align: center;">既然看到这里了，如果觉得不错，随手点个赞、在看，也可以转给身边需要的朋友，让这份价值继续传递。</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 10px; text-align: center;">如果想第一时间收到推送，也可以给我个<span style="color: #E8B4B8; font-weight: 700;">星标★</span>～</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0; text-align: center;">谢谢你看到这里，我们，下一次再见。</p></section>
+
+
+
+  <section style="text-align: center; padding: 4px 16px 32px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;"><p style="font-size: 18px; font-weight: 800; color: #1E3A5F; padding: 0 0 8px; letter-spacing: 1px;">港通+</p><p style="font-size: 14px; font-weight: 500; color: #555; padding: 0 0 4px; letter-spacing: 0.5px;">内地→香港跨境问题的中文索引口口</p><p style="font-size: 12px; font-weight: 400; color: #999; padding: 0; letter-spacing: 0.8px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p></section>
+
+</section>
+</div>
+</body>
+</html>

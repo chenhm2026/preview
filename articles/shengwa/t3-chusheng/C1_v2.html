@@ -1,130 +1,3 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>公众号推送版（一键复制）</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-    background-color: #f5f5f5;
-  }
-  .push-container {
-    max-width: 677px;
-    margin: 0 auto;
-    background: #ffffff;
-  }
-  #copy-btn {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    z-index: 999;
-    background: #ffffff;
-    border: 1.5px solid rgba(222,115,86,0.35);
-    border-radius: 20px;
-    padding: 7px 16px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #DE7356;
-    cursor: pointer;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.2s;
-    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
-    white-space: nowrap;
-  }
-  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
-  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
-  .copy-hint {
-    position: fixed;
-    top: 60px;
-    right: 16px;
-    background: rgba(34,197,94,0.95);
-    color: #fff;
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-size: 12px;
-    z-index: 998;
-    opacity: 0;
-    transition: opacity 0.2s;
-    pointer-events: none;
-    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
-  }
-  .copy-hint.show { opacity: 1; }
-</style>
-<script>
-  function copyArticle() {
-    var btn = document.getElementById('copy-btn');
-    var container = document.querySelector('.push-container');
-    if (!container) return;
-    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
-    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
-      var html = container.innerHTML;
-      var blob = new Blob([html], {type: 'text/html'});
-      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
-      navigator.clipboard.write([
-        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
-      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
-    } else {
-      fallbackCopy(btn, container);
-    }
-  }
-  function fallbackCopy(btn, container) {
-    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
-    var range = document.createRange();
-    range.selectNodeContents(container);
-    var sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-    var copied = false;
-    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
-    sel.removeAllRanges();
-    if (copied) { showCopied(btn); return; }
-    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
-    try {
-      var ta = document.createElement('textarea');
-      ta.value = container.innerText;
-      ta.style.position = 'fixed';
-      ta.style.left = '-9999px';
-      document.body.appendChild(ta);
-      ta.focus();
-      ta.select();
-      copied = document.execCommand('copy');
-      document.body.removeChild(ta);
-      if (copied) { showCopied(btn); return; }
-    } catch(e) {}
-    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
-    showHint('复制失败，请长按下方文字全选复制', container);
-  }
-  function showCopied(btn) {
-    btn.classList.add('copied');
-    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
-    var hint = document.getElementById('copy-hint');
-    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
-    if (hint) hint.classList.add('show');
-    setTimeout(function(){
-      btn.classList.remove('copied');
-      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
-      if (hint) hint.classList.remove('show');
-    }, 2500);
-  }
-  function showHint(msg, container) {
-    var hint = document.getElementById('copy-hint');
-    if (hint) hint.textContent = msg;
-    if (hint) hint.classList.add('show');
-  }
-</script>
-</head>
-<body>
-<button id="copy-btn" onclick="copyArticle()">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-  一键复制
-</button>
-<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
-<div class="push-container">
 <section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; padding: 0 auto; padding: 20px 0;">
 
   <section style="padding: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(232,180,184, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
@@ -149,7 +22,7 @@
   <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">信息核对日期：<strong style="font-weight: 900; color: #111827;">2026-08-03</strong> ｜ 全部取自香港入境事务处官网（<a href="https://www.immd.gov.hk/hks/" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">immd.gov.hk</a>）与香港政府一站通（<a href="https://www.gov.hk/sc/" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">gov.hk</a>）</p>
   <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">文末所有链接均已逐条实测可打开，如遇失效请在群里说一声，我来更新</p>
   <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 政策和收费会调整，出发前建议再点一次<a href="https://www.immd.gov.hk/hks/" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">入境处官网</a>确认</p>
-  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
 
   <section style="padding: 36px 0 18px;">
     <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
@@ -166,7 +39,7 @@
   <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">法律层面是硬性的</strong>。入境处官网（<a href="https://www.immd.gov.hk/hks/services/birth-death/Registration_of_a_Birth.html" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">出生登记专页</a>）原文写着：</p>
   <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">根据香港法例第 174 章《生死登记条例》第 7 条，父母须在婴儿出生后 42 天内，向出生登记处办理登记。若有人刻意不依从法例办理婴儿出生登记，即属违法，一经定罪，最高罚款港币 2,000 元或入狱六个月。</p>
   <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">而且逾期还会影响孩子后续的医疗、教育、福利权益。说白了：这不是"建议尽快"，是<strong style="font-weight: 900; color: #111827;">法定期限</strong>。</p>
-  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
 
   <section style="padding: 36px 0 18px;">
     <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
@@ -214,7 +87,7 @@
   <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">任何嬰兒的父母如能夠儘早清繳所有醫療費用，公立醫院便會儘快將嬰兒的出生資料呈報出生登記處，嬰兒的父母最快可於繳清費用七個工作天後前往出生登記處辦理領取出生證明書。</p>
   <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">→ <a href="https://www.info.gov.hk/gia/general/200703/22/P200703220231.htm" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">医管局新闻公报全文（2007 年 3 月 22 日）</a></p>
   <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">公报还说明，即使欠费，医管局仍须按法例在婴儿出生后 <strong style="font-weight: 900; color: #111827;">35 天（五个星期）</strong> 内将资料提交入境处——但那个是兜底时限，不是你家宝宝的"可办时间"。想早拿出生纸，<strong style="font-weight: 900; color: #111827;">出院时就把费用结清</strong>，然后等约 7 个工作天去办登记。</p>
-  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
 
   <section style="padding: 36px 0 18px;">
     <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
@@ -262,7 +135,7 @@
     <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">宝宝不用去</strong>，不用带上</li>
     <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">如果宝宝是婚生子女，<strong style="font-weight: 900; color: #111827;">父或母一个人去就行</strong>，不用两个都到</span></li>
   </ul>
-  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
 
   <section style="padding: 36px 0 18px;">
     <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
@@ -292,7 +165,7 @@
     <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">父亲亲身去，交父亲本人声明书 + 母亲的法定声明书（确认该人是父亲）；或</span></li>
     <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">凭法庭颁令核证副本办理</span></li>
   </ul>
-  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
 
   <section style="padding: 36px 0 18px;">
     <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
@@ -357,7 +230,7 @@
     <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">将军澳出生登记处</strong> → <strong style="font-weight: 900; color: #111827;">于香港任何分区医院出生的婴儿</strong>（不限区域）</li>
   </ul>
   <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">各登记处最新地址与办公时间，以官网为准：<a href="https://www.immd.gov.hk/hks/contactus/birth.html" style="color: #E8B4B8; text-decoration: underline;">https://www.immd.gov.hk/hks/contactus/birth.html</a></p>
-  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
 
   <section style="padding: 36px 0 18px;">
     <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
@@ -412,7 +285,7 @@
     <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">亲身办：现金、易办事、八达通、转数快、内地电子钱包（<strong style="font-weight: 900; color: #111827;">只接受支付宝、微信支付、云闪付 App</strong>）、划线支票或银行本票（抬头写「香港特别行政区政府」）</span></li>
     <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">网上办选邮寄或亲领：按系统指示缴费</span></li>
   </ul>
-  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
 
   <section style="padding: 36px 0 18px;">
     <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
@@ -446,7 +319,7 @@
     <p style="font-size: 15px; color: #374151; line-height: 1.8; padding: 0;">另外官方还留了个替代方案：如果孩子已经有<strong style="font-weight: 900; color: #111827;">贴有经学校盖印认证相片的学校证明文件</strong>（载有姓名、出生日期及相片），可以用那个代替 ID641。新生儿显然用不上，但孩子大一点再补办证件时会用到。</p>
   </section>
 
-  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
 
   <section style="padding: 36px 0 18px;">
     <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
@@ -477,7 +350,7 @@
   <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">BDR93A、ID73A、ID842、ROP3、ID641，能在家填的都在家填完；新生儿证件照建议提前在专业证件照店拍（说明是香港入境处规格）。到了现场再抓瞎，同日办证的时间窗口就过了。</p>
   <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">⑨ 注意午休时间。</strong></p>
   <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">九龙、沙田、屯门三个登记处<strong style="font-weight: 900; color: #111827;">中午 12:45–14:00 休息</strong>；生死登记总处（到 16:45）和将军澳（到 16:30）不午休。跨区跑的话把这个算进去。</p>
-  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
 
   <section style="padding: 36px 0 18px;">
     <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
@@ -501,7 +374,7 @@
     <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">把免费的表格 3 当成出生纸</strong> —— 两个不是一回事，办后续手续要的是 HK$140 那份核证副本。</li>
     <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">出院没及时缴清费用</strong> —— 费用没结清，医院不会优先呈报出生资料，直接拖慢拿出生纸的时间。出院当天就缴清，最快 7 个工作天可办登记。</li>
   </ul>
-  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
 
   <section style="padding: 36px 0 18px;">
     <section style="background: #E8B4B8;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
@@ -593,19 +466,16 @@
     <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">出生登记电邮：<strong style="font-weight: 900; color: #111827;">gro@immd.gov.hk</strong> ／ <strong style="font-weight: 900; color: #111827;">enquiry@immd.gov.hk</strong></span></li>
     <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #E8B4B8; font-weight: bold;">•</span><span style="color: #374151;">24 小时预约热线：<strong style="font-weight: 900; color: #111827;">2598 0888</strong></span></li>
   </ul>
-  <section style="height: 2px; background: #F8E8EA; padding: 24px 0;"></section>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
   <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这份指南只做信息整理和路径梳理，不替代官方咨询。个案情况（非婚生、父母身份特殊、证件遗失等）请直接联系入境处或对应登记处。</p>
   <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">有更新或你实操中发现出入，欢迎在群里说一声，我来订正。</p>
 
-  <section style="height: 2px; background: #F8E8EA; padding: 32px 0 28px;"></section>
+  <section style="height: 1px; background: #F8E8EA; padding: 16px 0;"></section>
 
-    <section style="padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(232,180,184, 0.12);"><p style="font-size: 14px; color: #E8B4B8; font-weight: 700; line-height: 1.9; padding: 0 0 10px; text-align: center;">🌟 感恩每一次的相遇与陪伴。</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 10px; text-align: center;">既然看到这里了，如果觉得不错，随手点个赞、在看，也可以转给身边需要的朋友，让这份价值继续传递。</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 10px; text-align: center;">如果想第一时间收到推送，也可以给我个<span style="color: #E8B4B8; font-weight: 700;">星标★</span>～</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0; text-align: center;">谢谢你看到这里，我们，下一次再见。</p></section>
+          <section style="padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(232,180,184, 0.12);"><p style="font-size: 14px; color: #E8B4B8; font-weight: 700; line-height: 1.9; padding: 0 0 10px; text-align: center;">🌟 感慵每一次的相遇与陪伴。</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 10px; text-align: center;">既然看到这里了，如果得得不错，随手个赞、在看个么看一朋友，也可身身再身休好，让这份值价值远次送。</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 10px; text-align: center;">如果想一时一时间接送送，也可给我个<span style="color: #E8B4B8; font-weight: 700;">星标★</span>～</p><p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0; text-align: center;">谢谢你看到这里，我们，下一次再见。</p></section>
 
 
 
   <section style="text-align: center; padding: 4px 16px 32px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;"><p style="font-size: 18px; font-weight: 800; color: #1E3A5F; padding: 0 0 8px; letter-spacing: 1px;">港通+</p><p style="font-size: 14px; font-weight: 500; color: #555; padding: 0 0 4px; letter-spacing: 0.5px;">内地→香港跨境问题的中文索引口口</p><p style="font-size: 12px; font-weight: 400; color: #999; padding: 0; letter-spacing: 0.8px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p></section>
 
 </section>
-</div>
-</body>
-</html>

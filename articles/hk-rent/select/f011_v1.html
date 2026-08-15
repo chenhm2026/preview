@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>港通+ · 香港租房</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; background: #fafaf8; padding: 20px; max-width: 800px; margin: 0 auto; }
+#copy-btn { position: fixed; top: 20px; right: 20px; padding: 10px 20px; background: #C46B5A; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; box-shadow: 0 4px 12px rgba(196,107,90,0.3); z-index: 100; font-size: 14px; }
+#copy-btn:hover { background: #7A2E2A; }
+#copy-btn.copied { background: #4A8B5F; }
+#content-to-copy { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+</style>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">📋 一键复制到公众号编辑器</button>
+<div id="content-to-copy">
+<section class="push-container" style="max-width: 100%; padding: 20px 16px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif; color: #2C2C2C;">
+<section style="margin: 24px 0 16px;"><h1 style="font-size: 28px; font-weight: 800; color: #C46B5A; margin: 0 0 12px; line-height: 1.4;">f011 · 香港租房｜IIQE / 跨境家庭口岸地段</h1></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">如果你刚通过 IIQE 准备赴港、或者你是跨境家庭（一方在内地工作、一方在港读书 / 工作），你大概率在想——<strong style="color: #7A2E2A; font-weight: 700;">"我是不是可以住深圳，每天过关？"</strong></p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">这个思路可以</strong>——但跨境租房不是"省房租那么简单"。每天过关、每天排队的隐性成本（时间 + 通行证 + 通勤），经常抵消掉租金节省。</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">这篇帮你</strong>：搞清楚 6 大口岸的差异、判断"你适不适合跨境租房"、香港侧哪些片区适合长租。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">f011 边界声明</h2></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">本篇<strong style="color: #7A2E2A; font-weight: 700;">仅为信息入口</strong>，展示公开可查的口岸数据、通勤口径与合规事实。</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">不关联任何内部服务、成员专属渠道、优先推荐或隐性优惠暗示。</strong></p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">考试、实习及职业过渡期可提前了解长租规则，<strong style="color: #7A2E2A; font-weight: 700;">与"加入团队获得更划算租住信息"彻底隔离</strong>。</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">></p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">如涉及：</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">- IIQE 考试报名 → IIQE 赛道</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">- 跨境车辆 / 过关服务 → 不在本赛道范围</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">- 跨境家庭签证 → 入境事务处</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">先问自己 5 个问题</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">跨境租房<strong style="color: #7A2E2A; font-weight: 700;">不一定适合每个人</strong>。这 5 个问题先回答完，再决定看不下去。</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>我是否需要<strong style="color: #7A2E2A; font-weight: 700;">每天</strong>跨境通勤（内地 ↔ 香港）？</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>我的签证 / 证件是否允许每天往返？</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>我是否能接受单程 <strong style="color: #7A2E2A; font-weight: 700;">60-90 分钟</strong>的通勤时间？</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>我是否有特定口岸偏好（如皇岗、福田、罗湖、莲塘）？</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>我是否能接受香港侧或内地侧的居住成本差异？</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">判断规则</strong>：</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">- 全部 yes → 跨境租房适合你，继续看</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">- 1-2 个 no → 注意文中标 ⚠️ 的部分</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">- <strong style="color: #7A2E2A; font-weight: 700;">≥3 个 no → 跨境租房不适合你</strong>，应回到地段选择相关的其他篇</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 很多人"为了省钱跨境租"，结果 1 个月后发现<strong style="color: #7A2E2A; font-weight: 700;">通勤时间太长影响工作 / 身体 / 家庭关系</strong>，又重新回市区找房。<strong style="color: #7A2E2A; font-weight: 700;">搬家 2 次的成本（中介费 + 押金 + 印花税）= 几万港元</strong>——比省下的租金还多。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">6 大跨境口岸速览</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">香港有 6 大跨境口岸，通关时段、内地侧位置、接驳交通各不相同。按用户类型分类：</p></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">口岸</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">内地侧</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">香港侧</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">通关时段</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">主要用户</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">罗湖</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">深圳罗湖</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">港铁罗湖站</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">约 6:30 - 24:00</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">通勤族、旅客</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">福田 / 落马洲</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">深圳福田</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">港铁落马洲站</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">约 6:30 - 22:30</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">通勤族、商务</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">皇岗</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">深圳皇岗</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">巴士接驳</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">24 小时（旅检）</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">跨境司机、长途车</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">莲塘 / 香园围</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">深圳盐田</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">巴士接驳</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">约 7:00 - 22:00</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">东部跨境、新口岸</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">深圳湾</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">深圳南山</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">巴士接驳</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">约 6:30 - 24:00</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">西部跨境、商务</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">高铁西九龙</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">深圳北（高铁）</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">西九龙站</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">约 6:30 - 22:30</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">高铁旅客、商务</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">港珠澳大桥</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">珠海 / 中山</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">港珠澳大桥香港口岸</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">24 小时（旅检）</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">西部、华南跨境</td></tr>
+</table>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 具体通关时段以运输及物流局最新公告为准。<strong style="color: #7A2E2A; font-weight: 700;">节假日和疫情管控可能临时调整</strong>——出发前查一下。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">3 类跨境用户的长租考虑</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">A. 每天往返香港上班 / 上学</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">跨境通勤时间参考基于港铁 / 巴士 / 高铁班次估算，实际受班次密度、过关排队、目的地距离影响。</p></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">路线</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">内地侧住所 → 香港侧办公室</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">每月交通费参考</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">罗湖 → 港岛</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">1.5 - 2 小时</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">1,500-2,500 港元</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">福田 → 九龙</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">1 - 1.5 小时</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">1,000-1,800 港元</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">莲塘 → 新界东</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">1 - 1.5 小时</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">800-1,500 港元</td></tr>
+</table>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">香港侧热门地段</strong>（按口岸分布）：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">罗湖 / 落马洲沿线</strong>：粉岭、上水、元朗（租金相对低）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">福田 / 皇岗沿线</strong>：元朗、天水围、屯门（巴士 / 小巴接驳）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">莲塘沿线</strong>：北区（少部分屋苑）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">高铁西九龙</strong>：柯士甸 / 佐敦 / 红磡（租金高、配套全）</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 很多人选口岸只看"哪个过关快"，<strong style="color: #7A2E2A; font-weight: 700;">忽略了从香港侧口岸到办公室 / 学校的接驳时间</strong>。<strong style="color: #7A2E2A; font-weight: 700;">罗湖过关 5 分钟，但罗湖站到港岛要 1 小时</strong>——总通勤比想象的多。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">B. 跨境家庭（一方在内地工作、孩子在港读书）</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">跨境家庭最常见的情况是"孩子在港读书、内地家长工作"。常见两种安排：</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">安排 1：内地家长租深圳福田 / 罗湖，孩子住香港北区（粉岭 / 上水）的亲属家</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>优势：家长通勤内地、孩子有家人照顾</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>注意：<strong style="color: #7A2E2A; font-weight: 700;">跨境学童证</strong>提前办理，每天高峰有专用通道</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">安排 2：一家租香港北区，家长每日过关上班</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>优势：家庭在一起</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>注意：<strong style="color: #7A2E2A; font-weight: 700;">通勤时间每天 2-3 小时</strong>，对家庭关系是考验</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 跨境家庭签证（<strong style="color: #7A2E2A; font-weight: 700;">受养人签证 / 学童签证</strong>）以入境处为准。<strong style="color: #7A2E2A; font-weight: 700;">没有办签证就想当然跨境居住 = 违法</strong>，可能影响未来的签证申请。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">C. IIQE / 工作前过渡期</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">通过 IIQE 后赴港从业，最常见的过渡安排：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">方案 1</strong>：先在港短租 1-3 个月（不在本赛道范围）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">方案 2</strong>：直接签长租，<strong style="color: #7A2E2A; font-weight: 700;">优先考虑工作地通勤</strong>而非跨境</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">本赛道<strong style="color: #7A2E2A; font-weight: 700;">不推荐</strong>"为了省钱跨境租"的方案——<strong style="color: #7A2E2A; font-weight: 700;">跨境通勤时间和隐性成本（通行证、签证、身体消耗）通常抵消租金节省</strong>。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">香港侧长租可行片区</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">跨境租房的人<strong style="color: #7A2E2A; font-weight: 700;">不会选市区</strong>——太贵、且浪费了"住近关口"的优势。集中在<strong style="color: #7A2E2A; font-weight: 700;">北部 / 西部 / 中部高铁沿线</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">北部（靠近罗湖 / 落马洲 / 莲塘）</h3></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">片区</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">特点</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">私楼月租参考（2 房）</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">上水</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">罗湖巴士直达、生活配套全</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">约 12,000-18,000</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">粉岭</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">港铁直达九龙、生活配套中等</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">约 11,000-16,000</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">元朗</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">西部通关 + 轻铁 + 巴士，配套全</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">约 13,000-20,000</td></tr>
+</table>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">西部（靠近深圳湾 / 福田 / 皇岗）</h3></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">片区</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">特点</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">私楼月租参考（2 房）</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">天水围</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">轻铁接驳、深圳湾巴士</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">约 11,000-16,000</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">屯门</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">轻铁 + 巴士、轻轨</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">约 12,000-17,000</td></tr>
+</table>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">中部 / 九龙（靠近高铁西九龙）</h3></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">片区</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">特点</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">私楼月租参考（2 房）</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">佐敦 / 尖沙咀</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">高铁直达，租金高</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">约 18,000-30,000</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">红磡</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">高铁 + 港铁双站</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">约 15,000-22,000</td></tr>
+</table>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 租金数字为差饷物业估价署季度报告中位数口径，<strong style="color: #7A2E2A; font-weight: 700;">仅作参考</strong>。实际报价判断看预算表里的「如何判断报价是否合理」一节。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">跨境租房的隐性成本</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">跨境租房<strong style="color: #7A2E2A; font-weight: 700;">总成本不只是租金</strong>——这些费用很多人忽略。</p></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">成本</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">数额</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">说明</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">跨境巴士 / 港铁月票</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">800 - 2,500 港元 / 月</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">不算在租金里</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">通行证 / 签证续签</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">几百港元 / 次</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">学童签、受养人签</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">过关排队时间（高峰）</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">30-60 分钟 / 次</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">早上 7-9 点、傍晚 5-7 点</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">港澳通行证 / 签注</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">看签注类型</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">内地居民需有效签注</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">跨境意外险</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">几百港元 / 年</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">自愿</td></tr>
+</table>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">💡 <strong style="color: #7A2E2A; font-weight: 700;">决策方法</strong>：算一下"租金节省 + 通勤时间成本"——如果节省的钱换算成时薪比你的工作时薪低，<strong style="color: #7A2E2A; font-weight: 700;">跨境租房不划算</strong>。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">5 个常见误区</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 1：以为跨境租房一定省</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。跨境租房的"总成本"包括租金 + 通勤费 + 时间成本 + 通行证 + 签证。<strong style="color: #7A2E2A; font-weight: 700;">算完才发现没省多少</strong>，甚至更贵。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 2：以为罗湖过关最快</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。罗湖过关 5 分钟，但<strong style="color: #7A2E2A; font-weight: 700;">罗湖站到港岛要 1 小时</strong>。总通勤时间 = 过关 + 接驳。要算全程。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 3：以为跨境家庭不需要办签证</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。<strong style="color: #7A2E2A; font-weight: 700;">跨境学童必须办跨境学童证</strong>、受养人签证、子女探亲签——任何跨境居住都必须符合入境处规定。没办证 = 违法。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 4：以为北部 / 西部租金越便宜越好</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。北部 / 西部租金确实低，<strong style="color: #7A2E2A; font-weight: 700;">但配套（医院、学校、商场）也少</strong>。<strong style="color: #7A2E2A; font-weight: 700;">长期居住要看配套，不能只看租金</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 5：以为 IIQE 考过就能立刻跨境上班</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。IIQE 考过只是从业资格，<strong style="color: #7A2E2A; font-weight: 700;">实际赴港工作还需要工作签证（IANG / 高才通 / 输入内地人才计划）</strong>。<strong style="color: #7A2E2A; font-weight: 700;">没签证 = 没法在港工作 = 跨境通勤没意义</strong>。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">IIQE 过渡期短租</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">通过考试但尚未赴港的，<strong style="color: #7A2E2A; font-weight: 700;">先用港岛 / 九龙 1-3 个月短租</strong>过渡，<strong style="color: #7A2E2A; font-weight: 700;">不在本赛道范围</strong>。<strong style="color: #7A2E2A; font-weight: 700;">短租后再找长租</strong>——避免一次性签 2 年锁死。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">关于 IIQE 居住资格</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">IIQE 合格证书 ≠ 居住资格</strong>——只是从业资格考试合格</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">实际赴港工作需要</strong>：IANG / 高才通 / 输入内地人才计划等<strong style="color: #7A2E2A; font-weight: 700;">工作签证</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">没工作签证 = 不能在港长期居住 + 工作</strong>——<strong style="color: #7A2E2A; font-weight: 700;">长租 1-2 年需要签证保障</strong></p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 跨境政策、通关时段、签证安排可能随时调整，请以官方最新公布为准。本篇为信息整理，不构成跨境居住建议或签证指引。</p></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">官方入口汇总</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">口岸通关时段与最新调整查 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">运输及物流局</span>；跨境签证与受养人 / 学童签走 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">入境事务处</span>；判断地段租金看 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">差饷物业估价署</span> 的季度报告；港铁线路与班次看 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">香港铁路有限公司</span>；找房时想查大厦与业主立案法团信息参考 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">民政事务总署</span>。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 跨境政策、通关时段、签证安排可能随时调整，请以官方最新公布为准。本篇为信息整理，不构成跨境居住建议或签证指引。</p></section>
+
+  <section style="margin: 32px 0 24px; padding: 28px 24px 24px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(196,107,90, 0.18); text-align: center;">
+
+    <p style="font-size: 17px; color: #555555; line-height: 1.9; margin: 0 0 18px;">
+      <span style="font-size: 18px;">🌟</span> 感谢你读到这里。<br>
+      如果有一句话触动了你，欢迎点赞或转发给需要的朋友。
+    </p>
+
+    <p style="font-size: 16px; color: #C46B5A; line-height: 1.9; margin: 0 0 12px; font-weight: 700;">
+      👉 喜欢我们的内容？搜索「港通+」关注我们
+    </p>
+
+    <p style="font-size: 15px; color: #7A2E2A; line-height: 1.9; margin: 0;">
+      ⭐ 在订阅号首页右上角点「星标」——这样港通+的新内容你不会错过
+    </p>
+
+    <p style="font-size: 13px; color: #AAAAAA; margin: 16px 0 0; letter-spacing: 0.5px;">
+      我们是港通+ ｜ 跨境发展者的工具索引
+    </p>
+
+  </section>
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 14px; font-weight: 700; color: #1a1a1a; margin: 0 0 6px; letter-spacing: 0.3px;">港通+</p>
+    <p style="font-size: 13px; color: #555555; margin: 0 0 4px; letter-spacing: 0.3px;">内地↔香港跨境问题的中文索引入口</p>
+    <p style="font-size: 12px; color: #999999; margin: 0; letter-spacing: 0.5px;">结构优先·入口导向·合规底线·工具风格</p>
+  </section>
+</section>
+</div>
+<script>
+function copyArticle() {
+  const content = document.getElementById('content-to-copy').innerHTML;
+  const btn = document.getElementById('copy-btn');
+  const blobHtml = new Blob([content], { type: 'text/html' });
+  const blobText = new Blob([document.getElementById('content-to-copy').innerText], { type: 'text/plain' });
+  if (navigator.clipboard && window.ClipboardItem) {
+    navigator.clipboard.write([new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })]).then(() => {
+      btn.innerHTML = '✅ 已复制！去公众号编辑器粘贴';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = '📋 一键复制到公众号编辑器'; btn.classList.remove('copied'); }, 3000);
+    });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = document.getElementById('content-to-copy').innerText;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.innerHTML = '✅ 已复制！';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = '📋 一键复制到公众号编辑器'; btn.classList.remove('copied'); }, 3000);
+  }
+}
+</script>
+</body>
+</html>

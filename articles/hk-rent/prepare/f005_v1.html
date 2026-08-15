@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>港通+ · 香港租房</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; background: #fafaf8; padding: 20px; max-width: 800px; margin: 0 auto; }
+#copy-btn { position: fixed; top: 20px; right: 20px; padding: 10px 20px; background: #C46B5A; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; box-shadow: 0 4px 12px rgba(196,107,90,0.3); z-index: 100; font-size: 14px; }
+#copy-btn:hover { background: #7A2E2A; }
+#copy-btn.copied { background: #4A8B5F; }
+#content-to-copy { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+</style>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">📋 一键复制到公众号编辑器</button>
+<div id="content-to-copy">
+<section class="push-container" style="max-width: 100%; padding: 20px 16px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif; color: #2C2C2C;">
+<section style="margin: 24px 0 16px;"><h1 style="font-size: 28px; font-weight: 800; color: #C46B5A; margin: 0 0 12px; line-height: 1.4;">f005 · 香港租房｜看房前要准备的文件清单</h1></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">如果你第一次在香港租房，你大概率会被这个问题困住——<strong style="color: #7A2E2A; font-weight: 700;">"业主 / 中介要看我什么文件？我得准备齐才能去看房吗？"</strong></p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">香港的租房流程和内地不同——<strong style="color: #7A2E2A; font-weight: 700;">看房前业主 / 中介就要审你的"租房资格"</strong>。如果文件不齐，可能白跑一趟；如果文件有瑕疵，业主可能压你议价。</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">这篇帮你</strong>：5 分钟搞清楚"看房前要带哪 4 类文件"，避免现场卡壳。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">看房前要带哪 4 类文件</h2></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">类别</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">具体内容</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">谁必须</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">身份证明</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">香港身份证 / 护照 / 港澳通行证</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">所有人</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">收入 / 在职证明</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">雇主信 / 粮单 / 税单</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">在职人士</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">资金证明</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">银行月结单 / 存款证明</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">所有人</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">住址证明</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">现居住地址的水电煤单 / 银行月结单</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">已租房的人</td></tr>
+</table>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">4 类文件详解</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">A. 身份证明</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心要求</strong>：证明你是合法居民 / 合法入境者。</p></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">身份</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">用什么</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">香港永久居民</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">香港永久居民身份证</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">香港非永久居民</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">香港身份证 + 签证 / 入境标签</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">内地居民（短期）</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">港澳通行证 + 有效签注</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">内地居民（长期）</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">港澳通行证 + 签注 + 工作 / 学生签证</td></tr>
+</table>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">💡 <strong style="color: #7A2E2A; font-weight: 700;">很多人不知道</strong>：业主偏好"长期租客"——访客签（L 签）通常不接受，逗留签（D 签）要看具体时长。<strong style="color: #7A2E2A; font-weight: 700;">看房前先确认自己签证允许停留多久</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">B. 收入 / 在职证明</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心要求</strong>：证明你付得起租金。惯例是"月入 ≥ 月租 × 2.5"（即租金占收入不超过 40%）。</p></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">文件类型</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">内容</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">哪里开</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">雇主信</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">职位、入职日期、月薪、公司盖章</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">公司 HR</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">粮单</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">最近 3 个月薪金单</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">公司财务 / 自己留底</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">税单</strong>（可选项）</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">最近 1 年薪俸税评税</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">税务局（IRD）</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">自雇 / 自由职业</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">公司商业登记证 + 银行流水</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">自己整理</td></tr>
+</table>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">特殊场景</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">刚到港没收入证明</strong>：可提供<strong style="color: #7A2E2A; font-weight: 700;">银行月结单</strong>（显示存款 ≥ 6 个月租金）+ <strong style="color: #7A2E2A; font-weight: 700;">原雇主推荐信</strong>（如适用）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">学生签证</strong>：可提供<strong style="color: #7A2E2A; font-weight: 700;">父母担保信</strong> + <strong style="color: #7A2E2A; font-weight: 700;">父母收入证明</strong> + <strong style="color: #7A2E2A; font-weight: 700;">亲属关系公证</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">自雇 / 创业</strong>：可提供<strong style="color: #7A2E2A; font-weight: 700;">公司商业登记证</strong> + <strong style="color: #7A2E2A; font-weight: 700;">公司银行流水</strong> + <strong style="color: #7A2E2A; font-weight: 700;">个人银行流水</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">刚到港没税单</strong>：<strong style="color: #7A2E2A; font-weight: 700;">税单不是必须文件</strong>——新到港人士多数没有香港薪俸税评税，<strong style="color: #7A2E2A; font-weight: 700;">银行月结单 + 雇主信 + 粮单足够</strong></p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">雇主信怎么开</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>找公司 HR（人事部）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>内容包括：职位、入职日期、月薪、雇佣性质（永久 / 合同）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">需公司盖章 + HR 签字</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>多数 HR 当天就能开</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 收入不够的常见后果：业主直接拒绝，或者要求<strong style="color: #7A2E2A; font-weight: 700;">加押金</strong>（三按而非两按一上）。<strong style="color: #7A2E2A; font-weight: 700;">看房前先评估自己的"收入/租金比"</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">C. 资金证明</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心要求</strong>：证明你付得起第一笔大额支出（押金 + 印花税 + 中介费）。</p></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">文件类型</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">内容</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">银行月结单</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">最近 1-3 个月，显示账户余额</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">存款证明</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">银行开具的余额证明（部分银行收费）</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">投资账户结单</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">股票 / 基金账户（部分业主接受）</td></tr>
+</table>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">惯例要求</strong>：账户余额 ≥ 6 个月租金总额（含押金 + 中介费 + 印花税）。</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">月租 15,000 的标准</strong>：</p></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">项目</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">数额</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">第一笔总支出（参考 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">预算表</span>）</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">约 53,000</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">6 个月租金</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">90,000</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">建议账户余额</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">≥ 100,000 港元</strong></td></tr>
+</table>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">D. 住址证明</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心要求</strong>：证明你现在的居住地址（业主用来发通知 + 验证你不是"失踪人口"）。</p></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">文件类型</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">内容</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">水电煤单</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">最近 1 期，显示现居住地址</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">银行月结单</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">邮寄版（电子版通常不被接受）</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">手机月结单</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">显示邮寄地址</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">雇主信</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">部分接受（显示公司地址 + 员工住址）</td></tr>
+</table>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">特殊场景</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">刚到港没住址</strong>：可提供<strong style="color: #7A2E2A; font-weight: 700;">酒店 / 临时住所地址</strong> + <strong style="color: #7A2E2A; font-weight: 700;">雇主信</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">与父母同住</strong>：可用<strong style="color: #7A2E2A; font-weight: 700;">父母住址的水电煤单</strong> + <strong style="color: #7A2E2A; font-weight: 700;">亲属关系公证</strong></p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">4 类身份的文件清单差异</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">不同身份的"看房前必带文件"略有差异。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">A. 在职人士（工作签证）</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 香港身份证 / 签证</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 雇主信</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 最近 3 个月粮单</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 最近 1 个月银行月结单</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 现居住地址证明</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">B. 学生（学生签证）</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 香港身份证 / 学生签证</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 学校录取信 / 在读证明</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 父母担保信 + 父母收入证明</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 父母银行月结单</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 家庭住址证明</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">C. IIQE 考牌后赴港从业（参考 IIQE 赛道）</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 港澳通行证 + 签注</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ IIQE 考试合格证书</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 拟入职公司 offer letter（如果有）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 个人银行月结单（显示存款）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>⚠️ <strong style="color: #7A2E2A; font-weight: 700;">特殊提醒</strong>：IIQE 考牌只是从业资格，<strong style="color: #7A2E2A; font-weight: 700;">实际赴港工作还需要工作签证</strong>。<strong style="color: #7A2E2A; font-weight: 700;">没工作签证 = 没法长期租约</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">D. 跨境家庭</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 双方身份证件</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 一方雇主信 + 一方家庭住址证明</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 双方银行月结单</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 结婚证 / 亲属关系公证（如跨境学童）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>⚠️ 跨境家庭签要看具体安排（参考 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">跨境家庭口岸地段</span>）</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">5 个常见误区</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 1：以为文件可以"口头说"</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。业主 / 中介<strong style="color: #7A2E2A; font-weight: 700;">只看文件</strong>，不接受"我月薪 X 万"的承诺。<strong style="color: #7A2E2A; font-weight: 700;">没文件 = 没资格看房</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 2：以为学生签证不能租房</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。学生签证<strong style="color: #7A2E2A; font-weight: 700;">可以租房</strong>，但通常需要父母担保。<strong style="color: #7A2E2A; font-weight: 700;">签约前准备好父母文件</strong>，业主才会接受。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 3：以为访客签（L 签）可以签长租</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。访客签一般只能待 7-180 天，<strong style="color: #7A2E2A; font-weight: 700;">没法签 1 年长约</strong>。<strong style="color: #7A2E2A; font-weight: 700;">逗留签（D 签）要看具体时长和工作 / 学习状态</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 4：以为电子版文件可以</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。业主 / 中介通常<strong style="color: #7A2E2A; font-weight: 700;">只接受纸质版 / PDF</strong>（带盖章 / 银行章）。电子截图<strong style="color: #7A2E2A; font-weight: 700;">多数不被接受</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 5：以为自雇 / 自由职业没法通过审查</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。自雇人士<strong style="color: #7A2E2A; font-weight: 700;">可以</strong>提供商业登记证 + 公司银行流水 + 个人银行流水。<strong style="color: #7A2E2A; font-weight: 700;">关键是证明稳定收入</strong>，不是非要雇主信。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 6：以为没税单就不能租房</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。<strong style="color: #7A2E2A; font-weight: 700;">税单是"加分项"，不是"必须项"</strong>。新到港人士多数没有香港薪俸税评税，<strong style="color: #7A2E2A; font-weight: 700;">银行月结单 + 雇主信 + 粮单足够</strong>——业主 / 中介不会因为没税单拒签。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">看房前最后清单</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">带齐这 5 件，看房不卡壳：</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>身份证 / 签证（原件 + 复印件 2 份）</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>雇主信 / 收入证明</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>银行月结单（最近 1-3 个月）</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>现居住地址证明</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>提前列出 3-5 个想问业主的问题</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">雇主信应包含字段</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">公司抬头</strong>（盖章）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">员工姓名 + 身份证号</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">职位 + 部门</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">入职日期</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">月薪 + 雇佣性质</strong>（永久 / 合同 / 试用）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">公司 HR 签字 + 联系方式</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">开具日期</strong>（3 个月内有效）</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">💡 <strong style="color: #7A2E2A; font-weight: 700;">没有正式雇主信怎么办</strong>：自由职业 / 自雇人士可写<strong style="color: #7A2E2A; font-weight: 700;">自雇声明</strong>——含个人姓名、收入来源、客户列表、银行月结单。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">学生签证父母担保信应包含字段</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">担保人姓名 + 与申请人关系</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">担保人身份证号 + 联系方式</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">担保金额 + 担保期限</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">担保人签字 + 公证</strong>（部分业主要求律师公证）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">担保人收入证明</strong>（雇主信 + 银行月结单）</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">💡 <strong style="color: #7A2E2A; font-weight: 700;">没父母能担保怎么办</strong>：可以找<strong style="color: #7A2E2A; font-weight: 700;">香港本地的朋友 / 同事</strong>做担保人——但需对方愿意 + 收入证明齐全。</p></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">官方入口汇总</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">在职人士的收入 / 税单通过 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">税务局</span> 申请；商业登记证查询走 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">公司注册处</span>；学生签证相关证明参考 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">入境事务处</span>。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 本篇仅作信息整理。业主对文件的具体要求可能不同，看房前<strong style="color: #7A2E2A; font-weight: 700;">先电话 / 微信问中介要什么文件</strong>，避免白跑。</p></section>
+
+  <section style="margin: 32px 0 24px; padding: 28px 24px 24px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(196,107,90, 0.18); text-align: center;">
+
+    <p style="font-size: 17px; color: #555555; line-height: 1.9; margin: 0 0 18px;">
+      <span style="font-size: 18px;">🌟</span> 感谢你读到这里。<br>
+      如果有一句话触动了你，欢迎点赞或转发给需要的朋友。
+    </p>
+
+    <p style="font-size: 16px; color: #C46B5A; line-height: 1.9; margin: 0 0 12px; font-weight: 700;">
+      👉 喜欢我们的内容？搜索「港通+」关注我们
+    </p>
+
+    <p style="font-size: 15px; color: #7A2E2A; line-height: 1.9; margin: 0;">
+      ⭐ 在订阅号首页右上角点「星标」——这样港通+的新内容你不会错过
+    </p>
+
+    <p style="font-size: 13px; color: #AAAAAA; margin: 16px 0 0; letter-spacing: 0.5px;">
+      我们是港通+ ｜ 跨境发展者的工具索引
+    </p>
+
+  </section>
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 14px; font-weight: 700; color: #1a1a1a; margin: 0 0 6px; letter-spacing: 0.3px;">港通+</p>
+    <p style="font-size: 13px; color: #555555; margin: 0 0 4px; letter-spacing: 0.3px;">内地↔香港跨境问题的中文索引入口</p>
+    <p style="font-size: 12px; color: #999999; margin: 0; letter-spacing: 0.5px;">结构优先·入口导向·合规底线·工具风格</p>
+  </section>
+</section>
+</div>
+<script>
+function copyArticle() {
+  const content = document.getElementById('content-to-copy').innerHTML;
+  const btn = document.getElementById('copy-btn');
+  const blobHtml = new Blob([content], { type: 'text/html' });
+  const blobText = new Blob([document.getElementById('content-to-copy').innerText], { type: 'text/plain' });
+  if (navigator.clipboard && window.ClipboardItem) {
+    navigator.clipboard.write([new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })]).then(() => {
+      btn.innerHTML = '✅ 已复制！去公众号编辑器粘贴';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = '📋 一键复制到公众号编辑器'; btn.classList.remove('copied'); }, 3000);
+    });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = document.getElementById('content-to-copy').innerText;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.innerHTML = '✅ 已复制！';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = '📋 一键复制到公众号编辑器'; btn.classList.remove('copied'); }, 3000);
+  }
+}
+</script>
+</body>
+</html>

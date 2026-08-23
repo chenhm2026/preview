@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>港通+ · 香港租房</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; background: #fafaf8; padding: 20px; max-width: 800px; margin: 0 auto; }
+#copy-btn { position: fixed; top: 20px; right: 20px; padding: 10px 20px; background: #C46B5A; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; box-shadow: 0 4px 12px rgba(196,107,90,0.3); z-index: 100; font-size: 14px; }
+#copy-btn:hover { background: #7A2E2A; }
+#copy-btn.copied { background: #4A8B5F; }
+#content-to-copy { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+</style>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">📋 一键复制到公众号编辑器</button>
+<div id="content-to-copy">
+<section class="push-container" style="max-width: 100%; padding: 20px 16px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif; color: #2C2C2C;">
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">如果你刚搬进新家，你大概率会问——<strong style="color: #7A2E2A; font-weight: 700;">"我的地址换了，要通知哪些机构？"</strong></p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">在香港搬家后，<strong style="color: #7A2E2A; font-weight: 700;">地址登记不是"建议"</strong>——是<strong style="color: #7A2E2A; font-weight: 700;">强制要求</strong>。<strong style="color: #7A2E2A; font-weight: 700;">银行 / 政府 / 学校 / 雇主 / 保险</strong>等多个机构<strong style="color: #7A2E2A; font-weight: 700;">都需要更新地址</strong>。<strong style="color: #7A2E2A; font-weight: 700;">不更新 = 收不到重要文件 / 影响信用记录 / 影响签证</strong>。</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">这篇帮你</strong>：5 分钟搞清楚"4 类机构地址变更流程"+"不更新的后果"。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">为什么要更新地址</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心原因</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>📬 <strong style="color: #7A2E2A; font-weight: 700;">邮件 / 文件送达</strong>——银行账单 / 政府信函 / 雇主通知</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>📋 <strong style="color: #7A2E2A; font-weight: 700;">法律责任</strong>——某些地址更新是<strong style="color: #7A2E2A; font-weight: 700;">强制要求</strong>（如银行 KYC）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>🔒 <strong style="color: #7A2E2A; font-weight: 700;">信用记录</strong>——地址不一致可能影响<strong style="color: #7A2E2A; font-weight: 700;">信用评分</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>🎓 <strong style="color: #7A2E2A; font-weight: 700;">学校网</strong>——孩子的学校网绑定地址</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 漏更新地址 → <strong style="color: #7A2E2A; font-weight: 700;">错过重要信函 / 罚单 / 学校派位</strong>。<strong style="color: #7A2E2A; font-weight: 700;">搬家后 14 天内全部更新</strong>最稳。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">4 类机构地址变更详解</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">A. 银行 / 金融机构</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心要求</strong>：<strong style="color: #7A2E2A; font-weight: 700;">必须更新</strong>——影响 KYC（认识你的客户）和反洗钱合规。</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">需要更新的银行账户</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>储蓄账户</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>支票账户</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>信用卡</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>投资账户</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>贷款账户</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">怎么更新</strong>：</p></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">银行</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">方式</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">时间</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">汇丰 / 恒生 / 中银</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">网上银行 / 手机 App</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">即时</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">渣打 / 花旗</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">网上 / 柜台</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">约 4 个工作天</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">虚拟银行（ZA / WeLab）</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">手机 App</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">即时</td></tr>
+</table>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">需要准备的文件</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>新地址证明（<span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">水电煤单 / 银行月结单</span>）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>身份证</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>部分银行要求<strong style="color: #7A2E2A; font-weight: 700;">业主的地址证明</strong></p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">💡 <strong style="color: #7A2E2A; font-weight: 700;">很多人不知道</strong>：<strong style="color: #7A2E2A; font-weight: 700;">新地址证明 = 你名字 + 新地址</strong>的水电煤单 / 银行月结单。<strong style="color: #7A2E2A; font-weight: 700;">入住后第 1 期账单</strong>通常就能用。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">B. 政府机构</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">必须更新的政府机构</strong>：</p></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">机构</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">用途</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">怎么更新</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">入境事务处</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">签证 / 身份证地址</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">网上 / 柜台</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">税务局（IRD）</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">税务通讯</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">网上 / 表格 IR1249</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">选举事务处</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">选民登记</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">网上</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">运输署</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">驾照地址</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">网上 / 柜台</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">民政事务总署</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">大厦通讯</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">网上</td></tr>
+</table>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心提示</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">入境处地址变更</strong>——<strong style="color: #7A2E2A; font-weight: 700;">持有签证的人必须</strong>（影响签证续签）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">IRD 地址变更</strong>——<strong style="color: #7A2E2A; font-weight: 700;">每年报税时同步更新</strong></p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">C. 学校</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心要求</strong>：<strong style="color: #7A2E2A; font-weight: 700;">有孩子的家庭必须更新</strong>——影响学校网派位。</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">需要更新的机构</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">孩子就读的学校</strong>——学籍系统</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">教育局</strong>——学校网注册</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">校车 / 接送服务</strong>——接送地址</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">怎么更新</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>多数学校<strong style="color: #7A2E2A; font-weight: 700;">接受书面通知 + 新地址证明</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>部分学校<strong style="color: #7A2E2A; font-weight: 700;">要求家长到校办理</strong></p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 漏更新学校地址 → <strong style="color: #7A2E2A; font-weight: 700;">孩子派位出错</strong>——影响未来 6 年小学。<strong style="color: #7A2E2A; font-weight: 700;">搬学前 1 个月通知学校</strong>最稳。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">D. 雇主 / 公司</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心要求</strong>：<strong style="color: #7A2E2A; font-weight: 700;">必须更新</strong>——影响税务、保险、紧急联系。</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">需要更新的信息</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>HR 系统的家庭地址</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>紧急联系人地址</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>强积金（MPF）账户地址</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>公司保险（如团体医疗）</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">怎么更新</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">HR 系统</strong>——网上填写</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">MPF</strong>——联系受托人（HSBC / 永明等）</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">E. 其他常用机构</h3></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">机构</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">是否必须</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">保险公司</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">✅ 必须（影响保单送达）</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">信用卡</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">✅ 必须（账单送达）</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">ISP（网络）</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">✅ 必须（服务地址）</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">订阅服务（报刊 / 杂志）</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">⚠️ 建议</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">各类会员</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">⚠️ 建议</td></tr>
+</table>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">地址登记的 4 步法</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">第 1 步：列出所有需要更新的机构</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">建议</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>银行 × 5 家（如果你有 5 家账户）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>政府 × 5 个（入境处 / IRD / 选举 / 运输 / 民政）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>学校 × 1</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>雇主 × 1</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>保险 × 2-3 家</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>ISP × 1</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>其他 × N</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">总计</strong>：15-20 个机构</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">第 2 步：准备新地址证明</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心文件</strong>：<strong style="color: #7A2E2A; font-weight: 700;">新地址的水电煤单 / 银行月结单</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">入住后第 1 期账单</strong>通常能用作地址证明</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">业主</strong>作为开户人<strong style="color: #7A2E2A; font-weight: 700;">不影响你使用</strong>——水电煤单上<strong style="color: #7A2E2A; font-weight: 700;">有你的名字 + 新地址</strong>即可</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">第 3 步：按优先级更新</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">优先级</strong>：</p></section>
+<section style="margin: 10px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A;">1.</strong> 🚨 <strong style="color: #7A2E2A; font-weight: 700;">最紧急</strong>：银行 / 入境处 / IRD（影响合规）</p></section>
+<section style="margin: 10px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A;">2.</strong> ⚠️ <strong style="color: #7A2E2A; font-weight: 700;">次紧急</strong>：学校 / 雇主 / 保险</p></section>
+<section style="margin: 10px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A;">3.</strong> 📋 <strong style="color: #7A2E2A; font-weight: 700;">常规</strong>：ISP / 订阅 / 会员</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">第 4 步：跟进更新状态</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">网上更新</strong>——即时生效</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">柜台更新</strong>——1-7 天</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">邮件更新</strong>——7-14 天</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">5 个常见误区</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 1：以为"更新一次就够"</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。<strong style="color: #7A2E2A; font-weight: 700;">每个机构都要单独更新</strong>——银行账户、信用卡、保险、订阅<strong style="color: #7A2E2A; font-weight: 700;">全都要</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 2：以为"业主账户不关就行"</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">不一定</strong>。水电煤账户<strong style="color: #7A2E2A; font-weight: 700;">你的名字 + 业主名字</strong>——<strong style="color: #7A2E2A; font-weight: 700;">业主不关账户 = 你付的钱可能到业主账户</strong>。<strong style="color: #7A2E2A; font-weight: 700;">过户是最稳的</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 3：以为"学校会自动收到通知"</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。<strong style="color: #7A2E2A; font-weight: 700;">学校不与政府系统同步</strong>——必须<strong style="color: #7A2E2A; font-weight: 700;">家长主动通知</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 4：以为"MPF 不需要更新"</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">不一定</strong>。<strong style="color: #7A2E2A; font-weight: 700;">MPF 受益人 / 紧急联系人地址</strong>——会影响<strong style="color: #7A2E2A; font-weight: 700;">MPF 提取时</strong>的通讯。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 5：以为"虚拟银行不用地址"</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。虚拟银行也是银行——<strong style="color: #7A2E2A; font-weight: 700;">KYC 要求地址</strong>。<strong style="color: #7A2E2A; font-weight: 700;">不更新 = 账户服务可能受限</strong>（KYC 资料过时，视各银行条款）。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">地址更新的 10 个必做</h2></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>银行账户 × 全部</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>信用卡 × 全部</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>入境事务处</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>税务局（IRD）</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>学校（如有孩子）</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>雇主 HR</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>强积金（MPF）</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>保险公司</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>ISP（网络服务）</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>选举登记（如适用）</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">地址变更的常见问题</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">Q：地址证明是什么？</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">A：显示<strong style="color: #7A2E2A; font-weight: 700;">你的名字 + 新地址</strong>的官方文件——水电煤单 / 银行月结单 / 雇主信。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">Q：没新地址证明怎么办？</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">A：<strong style="color: #7A2E2A; font-weight: 700;">先更新水电煤账户</strong>——你的名字 + 新地址。<strong style="color: #7A2E2A; font-weight: 700;">第 1 期账单</strong>就是地址证明。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">Q：地址变更需要多久生效？</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">A：网上 = 即时；柜台 = 约 4 个工作天；邮件 = 7-14 天。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">Q：不更新有什么后果？</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">A：错过重要信函 / 影响签证续签 / 影响信用记录 / 影响孩子学校网。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">Q：可以用业主地址 + 自己的名字吗？</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">A：部分机构接受——如水电煤单。但<strong style="color: #7A2E2A; font-weight: 700;">银行 KYC 通常不接受业主地址</strong>。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">地址更新 5 件套</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">准备文件</strong>：</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>新地址证明（入住后第 1 期水电煤单）</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>身份证</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>旧地址（供核对）</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>新地址</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>联系方式（手机 / 邮箱）</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">虚拟办公室 / 商业地址</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">如果你是自雇 / 创业者</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">商业地址登记</strong>——可注册公司或虚拟办公室</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">个人地址</strong>——可以<strong style="color: #7A2E2A; font-weight: 700;">保持原地址</strong>（但需合规）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">建议</strong>：<strong style="color: #7A2E2A; font-weight: 700;">商业和个人地址分开</strong>——避免混淆</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">💡 跨境家庭（参考 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">跨境家庭口岸地段</span>）可以<strong style="color: #7A2E2A; font-weight: 700;">内地地址 + 香港地址</strong>两个地址登记。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">入境处地址变更</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">入境处地址变更</strong>是<strong style="color: #7A2E2A; font-weight: 700;">法律要求</strong>——影响<strong style="color: #7A2E2A; font-weight: 700;">签证续签 / 强积金 / 选举</strong>等多个环节：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">递交方式</strong>（不分永居/非永居，统一4种）：</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">  - 邮寄：新界将军澳宝邑路61号 入境事务处总部行政大楼9楼 人事登记纪录组</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">  - 电邮：ropr@immd.gov.hk</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">  - 传真：(852) 2824 1662</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">  - 亲临：任何一间人事登记办事处</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">变更时间</strong>：<strong style="color: #7A2E2A; font-weight: 700;">建议尽快更新</strong>（入境处未规定具体期限，但及时更新可避免影响签证续签等事务）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">未变更后果</strong>：影响<strong style="color: #7A2E2A; font-weight: 700;">签证续签 / 公共医疗服务 / 法律文件送达</strong></p></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">官方入口汇总</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">入境事务处地址更新走 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">入境处</span>；税务局用 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">IRD 表格 IR1249</span>；选民登记用 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">选举事务处</span>；强积金地址变更联系受托人。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 本篇仅作信息整理。地址变更受个人情况影响，建议咨询具体机构。</p></section>
+
+  <section style="margin: 32px 0 24px; padding: 28px 24px 24px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(196,107,90, 0.18); text-align: center;">
+
+    <p style="font-size: 17px; color: #555555; line-height: 1.9; margin: 0 0 18px;">
+      <span style="font-size: 18px;">🌟</span> 感谢你读到这里。<br>
+      如果有一句话触动了你，欢迎点赞或转发给需要的朋友。
+    </p>
+
+    <p style="font-size: 16px; color: #C46B5A; line-height: 1.9; margin: 0 0 12px; font-weight: 700;">
+      👉 喜欢我们的内容？搜索「港通+」关注我们
+    </p>
+
+    <p style="font-size: 15px; color: #7A2E2A; line-height: 1.9; margin: 0;">
+      ⭐ 在订阅号首页右上角点「星标」——这样港通+的新内容你不会错过
+    </p>
+
+    <p style="font-size: 13px; color: #AAAAAA; margin: 16px 0 0; letter-spacing: 0.5px;">
+      我们是港通+ ｜ 跨境发展者的工具索引
+    </p>
+
+  </section>
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 14px; font-weight: 700; color: #1a1a1a; margin: 0 0 6px; letter-spacing: 0.3px;">港通+</p>
+    <p style="font-size: 13px; color: #BBBBBB; margin: 0 0 4px; letter-spacing: 0.5px;">内地↔香港跨境问题的中文索引入口</p>
+    <p style="font-size: 12px; color: #7A2E2A; margin: 6px 0 0; letter-spacing: 0.5px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p>
+  </section>
+
+<section style="margin: 16px 0 0; padding: 0;"><p style="font-size: 15px; color: #888888; line-height: 1.8; margin: 0; letter-spacing: 0.3px;">#香港租房 #地址登记 #身份证 #银行 #学校</p></section>
+</section>
+</div>
+<script>
+function copyArticle() {
+  const content = document.getElementById('content-to-copy').innerHTML;
+  const btn = document.getElementById('copy-btn');
+  const blobHtml = new Blob([content], { type: 'text/html' });
+  const blobText = new Blob([document.getElementById('content-to-copy').innerText], { type: 'text/plain' });
+  if (navigator.clipboard && window.ClipboardItem) {
+    navigator.clipboard.write([new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })]).then(() => {
+      btn.innerHTML = '✅ 已复制！去公众号编辑器粘贴';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = '📋 一键复制到公众号编辑器'; btn.classList.remove('copied'); }, 3000);
+    });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = document.getElementById('content-to-copy').innerText;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.innerHTML = '✅ 已复制！';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = '📋 一键复制到公众号编辑器'; btn.classList.remove('copied'); }, 3000);
+  }
+}
+</script>
+</body>
+</html>

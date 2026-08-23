@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>港通+ · 香港租房</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; background: #fafaf8; padding: 20px; max-width: 800px; margin: 0 auto; }
+#copy-btn { position: fixed; top: 20px; right: 20px; padding: 10px 20px; background: #C46B5A; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; box-shadow: 0 4px 12px rgba(196,107,90,0.3); z-index: 100; font-size: 14px; }
+#copy-btn:hover { background: #7A2E2A; }
+#copy-btn.copied { background: #4A8B5F; }
+#content-to-copy { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+</style>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">📋 一键复制到公众号编辑器</button>
+<div id="content-to-copy">
+<section class="push-container" style="max-width: 100%; padding: 20px 16px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif; color: #2C2C2C;">
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">如果你第一次在香港租房，你大概率会被一个问题困住——<strong style="color: #7A2E2A; font-weight: 700;">"网上找房平台那么多，到底哪个是真的？哪个是坑？"</strong></p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">香港的找房渠道有 3 大类：<strong style="color: #7A2E2A; font-weight: 700;">业主自放、中介挂牌、综合平台</strong>。3 类的房源真实性、中介费、谈判空间完全不同。<strong style="color: #7A2E2A; font-weight: 700;">用错渠道 = 多花钱、被坑</strong>。</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">这篇帮你</strong>：5 分钟搞清楚"3 类渠道的区别"+"怎么用最快找到合适的房"。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">3 类找房渠道速览</h2></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">渠道类型</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">房源来源</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">中介费</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">谈判空间</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">适合谁</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">业主自放</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">业主自己上网发布</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">0</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">大</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">时间充裕、想省钱</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">中介挂牌</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">中介代理业主放盘</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">半个月到一个月</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">中</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">想快点签约、有人带看</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">综合平台</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">业主 + 中介混合</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">看具体放盘人</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">视情况</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">想要最广房源</td></tr>
+</table>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">业主自放：最省钱，但要花时间</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">是什么</strong>：业主自己上网发布房源，<strong style="color: #7A2E2A; font-weight: 700;">没有中介</strong>。</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">常见平台</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>业主自放到指定平台</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>业主在社群（Facebook / WhatsApp 群 / 小红书）发布</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>业主在物业大堂贴海报</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">优点</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ <strong style="color: #7A2E2A; font-weight: 700;">没有中介费</strong>——省半个月到一个月租金</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 议价空间大——业主自己谈，<strong style="color: #7A2E2A; font-weight: 700;">弹性高</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 房源真实性高——<strong style="color: #7A2E2A; font-weight: 700;">就是业主本人</strong></p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">缺点</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>⚠️ 房源少——大部分业主<strong style="color: #7A2E2A; font-weight: 700;">没精力自己挂</strong>，会让中介代理</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>⚠️ 看房时间受限——业主可能只有周末有空</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>⚠️ 谈判流程不专业——可能没标准租约模板</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>⚠️ 业主筛选租客严格——文件不全直接被拒</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">适合你吗</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 时间充裕（能花 1-2 周找房）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 文件齐全（<span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">看房前文件清单</span>）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 会粤语或英文（部分业主只讲粤语）</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">中介挂牌：最省事，但要付中介费</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">是什么</strong>：业主委托中介代理放盘，<strong style="color: #7A2E2A; font-weight: 700;">中介撮合业主和租客</strong>。</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">常见类型</strong>：</p></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">类型</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">中介费</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">适用</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">业主独家代理</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">业主付</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">业主只委托一家</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">多家代理</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">业主 / 租客分摊</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">业主委托多家</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">租客中介</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">租客付半个月租金</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">业主不付中介费</td></tr>
+</table>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">优点</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ <strong style="color: #7A2E2A; font-weight: 700;">房源多</strong>——中介有大量盘源</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ <strong style="color: #7A2E2A; font-weight: 700;">有人带看</strong>——中介带你实地看</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ <strong style="color: #7A2E2A; font-weight: 700;">流程标准</strong>——有标准租约模板</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ <strong style="color: #7A2E2A; font-weight: 700;">谈判有经验</strong>——中介帮你谈价</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">缺点</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>⚠️ <strong style="color: #7A2E2A; font-weight: 700;">中介费</strong>——半个月到一个月租金</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>⚠️ 部分中介<strong style="color: #7A2E2A; font-weight: 700;">隐瞒信息</strong>（业主要求、维修记录）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>⚠️ 部分中介<strong style="color: #7A2E2A; font-weight: 700;">强制推荐高价房</strong>（佣金高的优先推）</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">适合你吗</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 急着入住（1-2 周内要签）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 不熟悉香港流程</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>✅ 预算充足（中介费不计较）</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">综合平台：最广，但真假混杂</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">是什么</strong>：把业主自放和中介挂牌<strong style="color: #7A2E2A; font-weight: 700;">聚合</strong>在一起的平台。</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">特点</strong>：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>房源量大，<strong style="color: #7A2E2A; font-weight: 700;">一站式搜索</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>平台不直接参与交易</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>真假混杂——<strong style="color: #7A2E2A; font-weight: 700;">业主 / 中介都需要自己识别</strong></p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">用综合平台时的 4 个注意</strong>：</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">注意 1：看清"放盘人"标签</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>平台通常会标注"业主自放"vs"中介代理"</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">看到中介代理，预算好中介费</strong></p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">注意 2：警惕"超低价"</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>比同地段低 20% 以上的——<strong style="color: #7A2E2A; font-weight: 700;">99% 是假的</strong>（骗你联系 / 钓鱼）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">真实的低价房</strong>——要么地段差、要么有缺陷</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">注意 3：警惕"先交钱再看房"</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">任何要求"先交看房费 / 订金"的都是骗子</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>香港惯例是<strong style="color: #7A2E2A; font-weight: 700;">看完房、谈好价再签</strong></p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">注意 4：照片 vs 实际</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>平台照片可能是"美化版"</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">一定要实地看房</strong>（参考 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">实地看房 Checklist</span>）</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 被"假房源"骗联系——浪费 1-2 周；被"假中介"骗押金——<strong style="color: #7A2E2A; font-weight: 700;">几 万港元可能打水漂</strong>。<strong style="color: #7A2E2A; font-weight: 700;">不轻易转账，不轻信超低价</strong>。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">3 类渠道的搭配策略</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">效率最高的找房路径</strong>：</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">第 1 周：综合平台（广撒网）</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">  ↓</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">第 2 周：精选 5-10 个候选</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">  ↓</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">  ├─ 中介挂牌的：直接联系中介带看（省时间）</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">  └─ 业主自放的：直接联系业主（省中介费）</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">  ↓</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">第 3 周：实地看房 + 谈判 + 签约</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">省钱最快的找房路径</strong>：</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">只找业主自放</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">  ↓</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">每天刷 3-5 个平台 / 社群</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">  ↓</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">花 2-3 周找到合适房源</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">  ↓</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">零中介费</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">5 个常见误区</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 1：以为"业主自放"都可信</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">不一定</strong>。<strong style="color: #7A2E2A; font-weight: 700;">业主自放也可能是骗子</strong>（假房源钓流量）。<strong style="color: #7A2E2A; font-weight: 700;">同样要警惕"超低价 / 先交钱"</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 2：以为中介费可以谈</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">不一定</strong>。中介费<strong style="color: #7A2E2A; font-weight: 700;">通常是半个月到一个月租金</strong>，<strong style="color: #7A2E2A; font-weight: 700;">议价空间有限</strong>。业主独家代理的，业主已付中介费，租客<strong style="color: #7A2E2A; font-weight: 700;">不再付</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 3：以为平台可以"担保交易"</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。香港找房平台<strong style="color: #7A2E2A; font-weight: 700;">不提供押金担保</strong>。签约和押金转账是<strong style="color: #7A2E2A; font-weight: 700;">业主和租客直接做</strong>。<strong style="color: #7A2E2A; font-weight: 700;">别信"平台代管押金"</strong>。</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">💡 <strong style="color: #7A2E2A; font-weight: 700;">常见平台参考</strong>：28Hse（香港屋网）、Spacious（千居）、Squarefoot 等——具体平台政策可能调整，以最新规则为准。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 4：以为"加微信看更多照片"就是业主</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">不一定</strong>。<strong style="color: #7A2E2A; font-weight: 700;">中介也用个人微信</strong>。<strong style="color: #7A2E2A; font-weight: 700;">看到个人微信不一定就是业主</strong>——签约前要按 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">业主/二房东/中介识别</span> 验证。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 5：以为看房免费就安全</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">不一定</strong>。<strong style="color: #7A2E2A; font-weight: 700;">看房免费</strong>，但<strong style="color: #7A2E2A; font-weight: 700;">看房过程可能被"假房源 / 假中介"套信息</strong>。<strong style="color: #7A2E2A; font-weight: 700;">别在电话里给身份证号、银行账号</strong>。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">找房 4 件套</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">看房前先准备好这 4 件：</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>文件齐全（参考 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">看房前文件清单</span>）</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>预算表（参考 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">预算表</span>）</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>地段意向（参考 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">地段选择 4 维度</span>）</p></section>
+<section style="margin: 8px 0; padding: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><span style="display: inline-block; width: 22px; height: 22px; border: 2px solid #C46B5A; border-radius: 4px; margin-right: 10px; vertical-align: middle;"></span>5-10 个候选清单（业主自放 + 中介混合）</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">联系中介时 5 句话</h3></section>
+<section style="margin: 10px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A;">1.</strong> "你好，我是 X，看到你们挂的某套房（地址 XX），还在吗？"</p></section>
+<section style="margin: 10px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A;">2.</strong> "请问月租多少？押几付几？什么时候可以入住？"</p></section>
+<section style="margin: 10px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A;">3.</strong> "中介费谁付？是半个月还是一个月？"</p></section>
+<section style="margin: 10px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A;">4.</strong> "我可以什么时候看房？这周末方便吗？"</p></section>
+<section style="margin: 10px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A;">5.</strong> "看房需要带什么文件？我现在准备"</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">💡 <strong style="color: #7A2E2A; font-weight: 700;">别在电话里给身份证号 / 银行账号</strong>——约看房后再发。</p></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">官方入口汇总</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">中介牌照查询走 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">地产业监管局</span>；业主与租客纠纷参考 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">差饷物业估价署</span> 的租务指引；找房平台的真伪难辨，<strong style="color: #7A2E2A; font-weight: 700;">最终签约以 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">业主/二房东/中介识别</span> 的验证为准</strong>。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 本篇仅作信息整理。找房平台政策可能调整，请以平台最新规则为准。</p></section>
+
+  <section style="margin: 32px 0 24px; padding: 28px 24px 24px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(196,107,90, 0.18); text-align: center;">
+
+    <p style="font-size: 17px; color: #555555; line-height: 1.9; margin: 0 0 18px;">
+      <span style="font-size: 18px;">🌟</span> 感谢你读到这里。<br>
+      如果有一句话触动了你，欢迎点赞或转发给需要的朋友。
+    </p>
+
+    <p style="font-size: 16px; color: #C46B5A; line-height: 1.9; margin: 0 0 12px; font-weight: 700;">
+      👉 喜欢我们的内容？搜索「港通+」关注我们
+    </p>
+
+    <p style="font-size: 15px; color: #7A2E2A; line-height: 1.9; margin: 0;">
+      ⭐ 在订阅号首页右上角点「星标」——这样港通+的新内容你不会错过
+    </p>
+
+    <p style="font-size: 13px; color: #AAAAAA; margin: 16px 0 0; letter-spacing: 0.5px;">
+      我们是港通+ ｜ 跨境发展者的工具索引
+    </p>
+
+  </section>
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 14px; font-weight: 700; color: #1a1a1a; margin: 0 0 6px; letter-spacing: 0.3px;">港通+</p>
+    <p style="font-size: 13px; color: #BBBBBB; margin: 0 0 4px; letter-spacing: 0.5px;">内地↔香港跨境问题的中文索引入口</p>
+    <p style="font-size: 12px; color: #7A2E2A; margin: 6px 0 0; letter-spacing: 0.5px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p>
+  </section>
+
+<section style="margin: 16px 0 0; padding: 0;"><p style="font-size: 15px; color: #888888; line-height: 1.8; margin: 0; letter-spacing: 0.3px;">#香港租房 #找房平台 #28Hse #Squarefoot #中原</p></section>
+</section>
+</div>
+<script>
+function copyArticle() {
+  const content = document.getElementById('content-to-copy').innerHTML;
+  const btn = document.getElementById('copy-btn');
+  const blobHtml = new Blob([content], { type: 'text/html' });
+  const blobText = new Blob([document.getElementById('content-to-copy').innerText], { type: 'text/plain' });
+  if (navigator.clipboard && window.ClipboardItem) {
+    navigator.clipboard.write([new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })]).then(() => {
+      btn.innerHTML = '✅ 已复制！去公众号编辑器粘贴';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = '📋 一键复制到公众号编辑器'; btn.classList.remove('copied'); }, 3000);
+    });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = document.getElementById('content-to-copy').innerText;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.innerHTML = '✅ 已复制！';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = '📋 一键复制到公众号编辑器'; btn.classList.remove('copied'); }, 3000);
+  }
+}
+</script>
+</body>
+</html>

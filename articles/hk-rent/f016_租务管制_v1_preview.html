@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>港通+ · 香港租房</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; background: #fafaf8; padding: 20px; max-width: 800px; margin: 0 auto; }
+#copy-btn { position: fixed; top: 20px; right: 20px; padding: 10px 20px; background: #C46B5A; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; box-shadow: 0 4px 12px rgba(196,107,90,0.3); z-index: 100; font-size: 14px; }
+#copy-btn:hover { background: #7A2E2A; }
+#copy-btn.copied { background: #4A8B5F; }
+#content-to-copy { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+</style>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">📋 一键复制到公众号编辑器</button>
+<div id="content-to-copy">
+<section class="push-container" style="max-width: 100%; padding: 20px 16px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif; color: #2C2C2C;">
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">如果你第一次在香港租房，你大概率会被一个问题困住——<strong style="color: #7A2E2A; font-weight: 700;">"租约里说的'租务管制'是什么？它保护我还是保护业主？"</strong></p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">香港的租务管制基于《业主与租客（综合）条例》。它<strong style="color: #7A2E2A; font-weight: 700;">主要保护</strong>"旧式租约下的住宅租客"（如 1970 年代前的租约），<strong style="color: #7A2E2A; font-weight: 700;">但有适用范围</strong>——现代租约<strong style="color: #7A2E2A; font-weight: 700;">多不在覆盖范围</strong>。</p></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">这篇帮你</strong>：5 分钟搞清楚"租务管制适用谁"+"它怎么保护你"+"哪些情况它不适用"。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">先看租务管制是否适用你</h2></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">租约类型</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">适用</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">备注</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">2004 年 7 月 9 日前签订的住宅租约</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">✅ 适用</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">"旧式租约"</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">2004 年 7 月 9 日后签订的住宅租约</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">❌ 不适用</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">"新式租约"</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">商业租约</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">❌ 不适用</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">商业有另一套规则</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">村屋 / 唐楼</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">看具体签约日期</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"></td></tr>
+</table>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心提示</strong>：<strong style="color: #7A2E2A; font-weight: 700;">2004 年 7 月 9 日是分界线</strong>。这一天之前签的住宅租约适用租务管制；之后签的<strong style="color: #7A2E2A; font-weight: 700;">多不适用</strong>（除非极特殊）。</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">💡 <strong style="color: #7A2E2A; font-weight: 700;">很多人不知道</strong>：<strong style="color: #7A2E2A; font-weight: 700;">租务管制适用的是少数"老租客"</strong>——大多数香港租客<strong style="color: #7A2E2A; font-weight: 700;">不在覆盖范围</strong>。但<strong style="color: #7A2E2A; font-weight: 700;">了解一下不亏</strong>——以防遇到"老租客"纠纷。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">租务管制保护什么（适用范围内）</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">A. 租金管制</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心规则</strong>：<strong style="color: #7A2E2A; font-weight: 700;">业主不能随便涨租</strong>——除非符合特定条件：</p></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">条件</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">涨租幅度</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">维修完成后</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">实际维修费用的增幅</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">业主收入变化</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">收入相对租金的差额</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">差饷物业估价署裁定</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">由 RVD 评估合理租金</td></tr>
+</table>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心提示</strong>：<strong style="color: #7A2E2A; font-weight: 700;">业主单方面涨租 = 违法</strong>——租客可以投诉到差饷物业估价署。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">B. 续约权</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心规则</strong>：<strong style="color: #7A2E2A; font-weight: 700;">租约到期后，租客有权续约</strong>——业主不能"想赶人就赶人"：</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">租客优先</strong>——业主在租约到期前<strong style="color: #7A2E2A; font-weight: 700;">必须给租客续约选择</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">续约条款</strong>——续约租金通常按"原租金 + RVD 评估的合理涨幅"</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">业主收回</strong>——业主<strong style="color: #7A2E2A; font-weight: 700;">自用</strong>或<strong style="color: #7A2E2A; font-weight: 700;">重建</strong>才能收回，<strong style="color: #7A2E2A; font-weight: 700;">且必须提前通知</strong></p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">C. 驱逐保护</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心规则</strong>：业主<strong style="color: #7A2E2A; font-weight: 700;">不能随便驱逐租客</strong>：</p></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">情况</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">业主能否驱逐</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">租客<strong style="color: #7A2E2A; font-weight: 700;">没欠租</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">❌ 不能</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">租客<strong style="color: #7A2E2A; font-weight: 700;">没违反租约</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">❌ 不能</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">业主<strong style="color: #7A2E2A; font-weight: 700;">想自用 / 重建</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">✅ 可以（但要提前通知 + 赔偿）</td></tr>
+</table>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">租务管制不适用的情况（不保护）</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">A. 现代租约（2004 后）</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">业主可以按租约条款解约</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">租约到期可不续约</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">业主可以调整租金</strong></p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">B. 商业租约</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>完全按<strong style="color: #7A2E2A; font-weight: 700;">租约条款</strong>执行</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>租务管制<strong style="color: #7A2E2A; font-weight: 700;">不适用</strong></p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">C. 业主收回自用</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>即使在租务管制下，<strong style="color: #7A2E2A; font-weight: 700;">业主自用</strong>也可以收回</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>但<strong style="color: #7A2E2A; font-weight: 700;">必须提前 6-12 个月通知</strong>（看具体情况）</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">D. 租客严重违约</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">欠租超过 15 天</strong>（《业主与租客（综合）条例》第 117/126 条）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">破坏房屋结构</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">非法用途</strong></p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">5 个常见误区</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 1：以为"租务管制保护所有租客"</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">错</strong>。<strong style="color: #7A2E2A; font-weight: 700;">2004 年 7 月 9 日后</strong>签的租约<strong style="color: #7A2E2A; font-weight: 700;">不在覆盖范围</strong>。<strong style="color: #7A2E2A; font-weight: 700;">现代租客多不适用</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 2：以为"业主不能涨租"</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">不一定</strong>。<strong style="color: #7A2E2A; font-weight: 700;">新式租约</strong>（2004 后）按合同条款；<strong style="color: #7A2E2A; font-weight: 700;">旧式租约</strong>业主可申请 RVD 评估涨租。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 3：以为"业主不能赶人"</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">不一定</strong>。<strong style="color: #7A2E2A; font-weight: 700;">租约到期 + 业主自用 / 重建</strong>——业主可以收回。<strong style="color: #7A2E2A; font-weight: 700;">业主必须提前通知</strong>。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 4：以为"续约是自动的"</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">不一定</strong>。<strong style="color: #7A2E2A; font-weight: 700;">新式租约</strong>（2004 后）到期可不续约；<strong style="color: #7A2E2A; font-weight: 700;">旧式租约</strong>租客有优先续约权。</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">误区 5：以为"租务管制等同保护"</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">❌ <strong style="color: #7A2E2A; font-weight: 700;">不一定</strong>。租务管制有适用范围 + 限制条件。<strong style="color: #7A2E2A; font-weight: 700;">具体要看你的租约</strong>。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">你的租约适用租务管制吗？4 步自评</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">第 1 步：看签约日期</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">2004 年 7 月 9 日前</strong> → 可能适用</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">2004 年 7 月 9 日后</strong> → 多不适用</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">第 2 步：看租约类型</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">住宅</strong> → 可能适用</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">商业</strong> → 不适用</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">第 3 步：看业主意图</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">业主想收回自用</strong> → 可能可以收回</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">业主想涨租</strong> → 看具体条款</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">第 4 步：咨询专业人士</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>律师 / 地产代理 / 民政事务总署</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">新式租约下的租客保护</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">虽然新式租约不适用租务管制</strong>，但仍有保护：</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">A. 合同条款</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">租约条款白纸黑字</strong>——业主必须遵守</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">违反条款 = 违约</strong>——可追讨</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">B. 法律保障</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">《印花税条例》</strong>——租约法律效力</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">《公安条例》第 23 条「强行进入罪」</strong>——业主强行闯入可报警</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">扣押金不退属民事纠纷</strong>——不适用《盗窃罪条例》，可走小额钱债审裁处追讨</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">C. 调解机制</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">小额钱债审裁处</strong>——纠纷金额 ≤ 75,000 港元可起诉</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">消费者委员会</strong>——纠纷调解</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">民政事务总署</strong>——协助调解</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">续约谈判的 4 个变量</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">变量 1：租金</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">新租金</strong> = 原租金 × (1 + 涨幅)</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">涨幅参考</strong>：差饷物业估价署月度报告（近年整体市场约 3-5%，热门地段可能更高）</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">变量 2：租期</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">续签 1 年 / 2 年 / 3 年</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">长租期租金涨幅小</strong>（业主锁定收益）</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">变量 3：押金调整</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">是否调整押金</strong>——续约时通常不变</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">少数情况</strong>——押金需追加</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">变量 4：装修 / 家电</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">续约时业主可能更换家电</strong>（冰箱 / 洗衣机）</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">租客可争取装修 / 改造</strong>（部分自费，部分业主分摊）</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 续约前<strong style="color: #7A2E2A; font-weight: 700;">没看清涨幅</strong>——签约后发现月租涨 15%——被动接受或被赶走。<strong style="color: #7A2E2A; font-weight: 700;">续约前 60 天开始谈判</strong>。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">5 个常见续约坑</h2></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">坑 1：续约被拒毫无预警</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">新式租约下</strong>，业主没有法定义务提前通知不续约——<strong style="color: #7A2E2A; font-weight: 700;">除非租约条款有约定</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">建议</strong>：签约时约定"续约/不续约需提前 X 个月书面通知"</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">坑 2：续约租金涨幅不透明</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">业主单方面报涨幅</strong>——租客可<strong style="color: #7A2E2A; font-weight: 700;">要求 RVD 评估</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">业主涨幅 < RVD 评估</strong>——租客可投诉</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">坑 3：续约押金被追加</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">业主说"市场涨了，要加押金"</strong>——多<strong style="color: #7A2E2A; font-weight: 700;">不接受</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">除非原押金低于市场</strong>——业主有权调整</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">坑 4：续约后维修责任变更</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">业主说"续约后家电不再负责"</strong>——看原租约条款</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">原条款白纸黑字</strong>——业主不能单方面改</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">坑 5：续约时强制换房</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">业主说"续约但要换房"</strong>——租客有权拒绝</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">续约是原房原条款</strong>——不是换房谈判</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">租金管制 vs 自由市场</h2></section>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 16px; line-height: 1.7; background: #FDFAF6; border-radius: 8px; overflow: hidden;">
+<tr style="background: rgba(196,107,90,0.08);">
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">情况</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">业主自由度</th>
+<th style="padding: 10px 12px; border-bottom: 2px solid rgba(196,107,90,0.3); font-weight: 700; color: #7A2E2A; vertical-align: top; color: #2C2C2C;">租客自由度</th>
+</tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">旧式租约</strong>（2004 前）</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">受限制（RVD 评估）</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">受保护（续约权）</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">新式租约</strong>（2004 后）</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">完全自由（按合同）</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">完全自由（按合同）</td></tr>
+<tr><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;"><strong style="color: #7A2E2A; font-weight: 700;">商业租约</strong></td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">完全自由</td><td style="padding: 10px 12px; border-bottom: 1px solid rgba(196,107,90,0.2); vertical-align: top; color: #2C2C2C;">完全自由</td></tr>
+</table>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;"><strong style="color: #7A2E2A; font-weight: 700;">核心提示</strong>：<strong style="color: #7A2E2A; font-weight: 700;">现代香港租赁市场</strong>已经是<strong style="color: #7A2E2A; font-weight: 700;">自由市场</strong>——业主与租客<strong style="color: #7A2E2A; font-weight: 700;">按合同条款</strong>谈判。<strong style="color: #7A2E2A; font-weight: 700;">租务管制只保护极少数"老租客"</strong>。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">判断你的租约是否适用租务管制</h3></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span><strong style="color: #7A2E2A; font-weight: 700;">看租约首页的"生效日期"</strong></p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>2004 年 7 月 9 日之前签约 → 适用</p></section>
+<section style="margin: 6px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #C46B5A; font-weight: 700;">·</span>2004 年 7 月 9 日之后签约 → 多不适用</p></section>
+<section style="margin: 20px 0 10px;"><h3 style="font-size: 20px; font-weight: 700; color: #7A2E2A; margin: 0; line-height: 1.5;">关于"冻结期"的常见误解</h3></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">冻结期（业主收回自住需冻结 X 年）<strong style="color: #7A2E2A; font-weight: 700;">只适用于 2004 年前的旧式租约</strong>——<strong style="color: #7A2E2A; font-weight: 700;">新式租约没有冻结期</strong>，业主在租约到期后<strong style="color: #7A2E2A; font-weight: 700;">可以正常收回</strong>（需提前通知）。</p></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 租务管制可能随条例修订调整，请以差饷物业估价署最新公布为准。本篇仅作信息整理。</p></section>
+<section style="margin: 28px 0 14px;"><h2 style="font-size: 22px; font-weight: 800; color: #C46B5A; margin: 0; padding: 8px 0; border-bottom: 2px solid #7A2E2A; line-height: 1.4;">官方入口汇总</h2></section>
+<section style="margin: 12px 0;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">租务管制条例原文参考 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">差饷物业估价署</span>；业主与租客纠纷调解联系 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">民政事务总署</span>；租务法律意见咨询持牌律师。</p></section>
+<section style="margin: 20px 0;"><hr style="border: none; border-top: 1px dashed rgba(196,107,90,0.3); margin: 0;" /></section>
+<section style="margin: 14px 0; padding: 14px 18px; background: #F9F2EE; border-left: 4px solid #C46B5A; border-radius: 6px;"><p style="font-size: 17px; color: #2C2C2C; line-height: 1.85; margin: 0;">⚠️ 租务管制可能随条例修订调整，请以 <span style="color: #C46B5A; border-bottom: 1px solid #C46B5A; padding-bottom: 1px;">差饷物业估价署</span> 最新公布为准。</p></section>
+
+  <section style="margin: 32px 0 24px; padding: 28px 24px 24px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(196,107,90, 0.18); text-align: center;">
+
+    <p style="font-size: 17px; color: #555555; line-height: 1.9; margin: 0 0 18px;">
+      <span style="font-size: 18px;">🌟</span> 感谢你读到这里。<br>
+      如果有一句话触动了你，欢迎点赞或转发给需要的朋友。
+    </p>
+
+    <p style="font-size: 16px; color: #C46B5A; line-height: 1.9; margin: 0 0 12px; font-weight: 700;">
+      👉 喜欢我们的内容？搜索「港通+」关注我们
+    </p>
+
+    <p style="font-size: 15px; color: #7A2E2A; line-height: 1.9; margin: 0;">
+      ⭐ 在订阅号首页右上角点「星标」——这样港通+的新内容你不会错过
+    </p>
+
+    <p style="font-size: 13px; color: #AAAAAA; margin: 16px 0 0; letter-spacing: 0.5px;">
+      我们是港通+ ｜ 跨境发展者的工具索引
+    </p>
+
+  </section>
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 14px; font-weight: 700; color: #1a1a1a; margin: 0 0 6px; letter-spacing: 0.3px;">港通+</p>
+    <p style="font-size: 13px; color: #BBBBBB; margin: 0 0 4px; letter-spacing: 0.5px;">内地↔香港跨境问题的中文索引入口</p>
+    <p style="font-size: 12px; color: #7A2E2A; margin: 6px 0 0; letter-spacing: 0.5px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p>
+  </section>
+
+<section style="margin: 16px 0 0; padding: 0;"><p style="font-size: 15px; color: #888888; line-height: 1.8; margin: 0; letter-spacing: 0.3px;">#香港租房 #租务管制 #加租限制 #续约权 #冻结期</p></section>
+</section>
+</div>
+<script>
+function copyArticle() {
+  const content = document.getElementById('content-to-copy').innerHTML;
+  const btn = document.getElementById('copy-btn');
+  const blobHtml = new Blob([content], { type: 'text/html' });
+  const blobText = new Blob([document.getElementById('content-to-copy').innerText], { type: 'text/plain' });
+  if (navigator.clipboard && window.ClipboardItem) {
+    navigator.clipboard.write([new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })]).then(() => {
+      btn.innerHTML = '✅ 已复制！去公众号编辑器粘贴';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = '📋 一键复制到公众号编辑器'; btn.classList.remove('copied'); }, 3000);
+    });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = document.getElementById('content-to-copy').innerText;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.innerHTML = '✅ 已复制！';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = '📋 一键复制到公众号编辑器'; btn.classList.remove('copied'); }, 3000);
+  }
+}
+</script>
+</body>
+</html>

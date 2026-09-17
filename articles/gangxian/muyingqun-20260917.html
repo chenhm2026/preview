@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>飞哥公众号文章</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #ffffff;
+    color: #374151;
+    line-height: 1.75;
+    letter-spacing: 0.5px;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 20px 0;
+  }
+
+  @media (max-width: 600px) {
+    .container {
+      padding: 0;
+    }
+  }
+
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover {
+    background: #DE7356;
+    color: #ffffff;
+    border-color: #DE7356;
+  }
+  #copy-btn.copied {
+    background: #22C55E;
+    color: #ffffff;
+    border-color: #22C55E;
+  }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.container');
+    if (!container) return;
+
+    // 优先用 ClipboardItem 写 text/html，保留富文本格式
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function() {
+        showCopied(btn);
+      }).catch(function() {
+        fallbackCopy(btn, container);
+      });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+
+  function fallbackCopy(btn, container) {
+    // 创建临时选区覆盖 container
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    try {
+      document.execCommand('copy');
+      showCopied(btn);
+    } catch(e) {
+      alert('复制失败，请手动 Ctrl+A / Cmd+A 全选后复制');
+    }
+    sel.removeAllRanges();
+  }
+
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '✓ 已复制';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>一键复制';
+    }, 2000);
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div class="container">
+
+  <section style="margin: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(196,99,122, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #C4637A; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #C4637A;">BREAKING</span>
+        <span style="flex: 1; height: 1px; background: linear-gradient(to right, rgba(196,99,122, 0.15), transparent);"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.09</span>
+      </section>
+      <section style="display: flex; align-items: center; gap: 20px;">
+        <section style="flex: 1;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; margin: 0; line-height: 1.1; letter-spacing: -1px;">因为一句提醒，我被母婴群踢了出来</p>
+          <p style="font-size: 22px; font-weight: 900; color: #C4637A; margin: 0 0 12px; line-height: 1.1; letter-spacing: -1px;">有时候不是孩子真有问题，而是病历上那行字，比你想的更重</p>
+          <section style="width: 48px; height: 3px; background: linear-gradient(to right, #C4637A, #E8956D); border-radius: 2px; margin: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; margin: 0; line-height: 1.7; letter-spacing: 0.5px;">一句关于儿保病历的善意提醒，让我被踢出群，也揭开了一个少有人知的投保盲区</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+<div style="text-align: center; font-size: 14px; color: #A0926B; padding: 0 0 12px;">📖 全文 3170 字 · 约 11 分钟</div>
+<section style="background: #FBF6EC; border-left: 4px solid #C4637A; border-radius: 8px; overflow: hidden; padding: 0 0 28px 0;"><section style="padding: 18px 22px;"><section style="padding-bottom: 10px;"><span style="font-size: 14px; color: #C4637A; font-weight: bold; letter-spacing: 1px;">📌 本期导读</span></section><section><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">因为一句「儿保记录可能会影响孩子以后投保」的善意提醒，我被踢出了母婴闲置群。难过之后，是几位妈妈主动加了我。这篇想跟你说清楚：那张写满医生严谨用词的病历，到底会在投保时带来什么，以及作为父母，我们能怎么平和地应对孩子成长路上那些被放大的「问题」。</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">---</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">这周本来还在发愁公众号写什么，没想到素材自己找上了门。</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">樱桃长大了，之前买的地垫和围栏用不着了，我就想着出掉。刷小红书的时候，无意间看到有人建了一个母婴闲置群，就加了这位网友，被拉进了群。刚进群时发了自己的闲置物品，之后一直潜水，没怎么说话。</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">群里主要是两类人：一类是娃已经长大的，一类是娃还小的爸妈。昨晚，娃还小的父母们在讨论带宝宝做<span style="color: #B54432; background: linear-gradient(135deg, #C4637A22, #E8956D33); padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.3px;">儿保</span>的焦虑——每个月医生都会说孩子有不同问题，比如体重偏低、奶量不足，让他们非常焦虑。</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">看到这些，我忍不住说了几句。</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">现在很多地方都要求定期做儿保，如果家长有计划未来给宝宝上保险，我都会提醒他们要重视<strong style="font-weight: 900; color: #111827;">儿保记录</strong>。因为儿保时可能会写「大运动发育落后」这类结论，如果留在病历里，可能会影响投保。</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">有时候不一定是孩子真有问题，而是医生出于规避风险的考虑，用词会比较谨慎、严格——写上去相当于明确提醒家长「孩子确实有点情况」，以免以后家长觉得医生没提醒。但有时候这些字眼过于严格，写进病历后，反而会给家长带来不必要的困扰。</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">说到这些，群里挺多人附和。有一位孩子大一点的妈妈就说，每个孩子生长发育情况不一样，不要去纠结。我也表示认同。</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">### 我女儿的「大运动发育落后」</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">我拿自己的经历现身说法。</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">我女儿几个月大时去做儿保，检查时碰巧她懒得抬头，医生就写她<span style="color: #B54432; background: linear-gradient(135deg, #C4637A22, #E8956D33); padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.3px;">「大运动发育落后」</span>。实际上平时在家里，我们看着她抬头等各方面动作都没问题。但就因为医生下了这个结论，我想给她买保险时，保险公司搁置了，说要等恢复后才可以正常购买。</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">说实话，当时宝宝被医生说抬头这块做得不好、大运动落后的时候，我是比较焦虑的。回家疯狂地让娃练习，现在回头想想真是很有毛病。这是我第一个宝宝，也是唯一的宝宝，我什么都不懂，医生一说我就害怕、担心、焦虑。</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">而且因为焦虑，我还去小红书搜相关的帖子。结果平台识别到我的搜索字眼，就给我推更多焦虑的东西，让我更加焦虑。</p><p style="font-size: 15px; color: #4A3728; line-height: 1.8; margin: 0; padding: 0 0 6px;">我女儿现在 3 岁了，活蹦乱跳，一切好着呢。</p></section></section></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #C4637A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">深圳和香港，产检差很多</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">其实不光是儿保，两地的产检也很不同。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我家宝宝是香港籍，产检是深圳和香港两地跑。我发现两地产检特别不同：内地会各种检查；香港那边，我跟医生说内地医生说宝宝可能某个指标有问题，香港医生说没有关系，如果宝宝真的有问题，也不会选择强行保胎，物竞天择。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #C4637A; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #C4637A33;">「先兆流产」三个字</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我怀孕时想给肚子里的宝宝买保险，香港是允许的。但产检时出过血、看过医生，医生就直接给我写上<span style="color: #B54432; background: linear-gradient(135deg, #C4637A22, #E8956D33); padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.3px;">「先兆流产」</span>，写上这几个字就别想买了。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">后来我跟很多怀孕的朋友交流，发现受精卵着床是有一定概率会出血的，这是非常正常的自然现象，但去看医生就一定会写上「先兆流产」，然后开黄体酮。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #C4637A; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #C4637A33;">羊水穿刺，我为什么没做</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">还有一次，我怀孕大概 30 周的时候，深圳的医院怀疑宝宝基因可能有问题，说她大腿骨还是哪里偏短，发育低于正常标准，其实只是临界，深圳的医生建议我做羊水穿刺。我把病历和检查报告发给了我在北京和广州做医生的同学。他们看了之后觉得没必要做，因为羊水穿刺本身有风险，而且从报告看只是临界。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">他们还说，面对不熟悉的病人，有些医生会倾向于建议做，主要是怕担责。我听了他们的意见，最后没有做羊穿。她出生后到现在，其实也没什么太大问题，就是个子可能偏矮一点，但也在正常范围内，主要是我和他爸都不高。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #C4637A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">那些被「扣」住的投保</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这些其实都是我的经验。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我很多客户来给宝宝买保险，我问他们宝宝体况如何，他们都说非常健康，一切都没有问题。但基于经验，我会让他们把儿保记录、体检报告都收集出来发给我。好多都写着「体重偏低」「大运动发育落后」「腿纹不对称」之类的，这些在保险公司看来，风险比较高。</p>
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #C4637A; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #C4637A33;">香港籍宝宝的内地投保空白</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">当时这件事阻碍了我宝宝买保险，我其实挺不爽的。主要因为我家宝宝是香港籍，在深圳，当时我了解到，只要还没上幼儿园、没开始读书之前，宝宝是买不了内地政府少儿保险的。相当于有一个健康风险敞口在那里。而且宝宝 3 岁之前特别容易生病，所以我当时很担心买不上保险，很有意见。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">群里有妈妈也分享了类似的经历。比如她女儿血小板偏低一点，医生就让她考虑去血液科做骨穿，换了个医院，人家又说这是生理性的，再长一段时间就好了。所以这种事情并不是深圳的个例，是大家的共性问题。</p>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #C4637A; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(196,99,122, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">💡</span>
+      <span style="font-size: 16px; font-weight: 900; color: #C4637A; letter-spacing: -0.2px;">判断重要，沟通也要温和</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">在某个病症还不确定的情况下，可以温和地和医生沟通，看能否先观察、复查再判断；也可以顺便说明，家长有未来投保的考虑，希望医生在措辞上审慎一些。但最终记录什么，还是尊重医生的专业判断。</p>
+  </section>
+
+  <h3 style="margin: 20px 0 10px; font-size: 18px; font-weight: 800; color: #C4637A; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #C4637A33;">卵圆孔未闭：生理，还是缺陷？</h3>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">该检查还是得检查，但如果是非紧急、非必要的检查，可以多问一句：为什么查？有没有必要现在查？</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">比如我有一个客户，在小红书上看到别的宝宝有心脏发育不好的情况，就跑到医院跟医生说了这个情况，医生就给他开了心脏彩超的检查，结果查出了<span style="color: #B54432; background: linear-gradient(135deg, #C4637A22, #E8956D33); padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.3px;">卵圆孔未闭</span>。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">实际上，卵圆孔未闭是非常常见的生理现象。从某种角度说，人类的宝宝相比其他哺乳动物，算是「早产儿」，很多器官还没有发育齐全——发育得太齐全，怕妈妈生不下来。卵圆孔正常来说到一岁左右会自动闭合。但只要查出来没有闭合，它毕竟还是一个缺陷。你可以说这个过程是正常的生理状况，但它毕竟还是一个缺陷，保险公司就会意识到风险，搁置承保，暂时先不接受客户的投保。</p>
+
+  <section style="margin: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #C4637A; border-radius: 0 12px 12px 0; box-shadow: 0 2px 16px rgba(196,99,122, 0.08);">
+    <section style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">✨</span>
+      <span style="font-size: 16px; font-weight: 900; color: #C4637A; letter-spacing: -0.2px;">检查要有必要才做</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; margin: 0;">非紧急、非必要的，可以先和医生确认；如果是一些非紧急、可观察的问题，也可以提前了解保险的等候期，合理安排投保和就诊时间。但紧急或必要就医，绝对不能拖。</p>
+  </section>
+
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><span style="color: #B54432; background: linear-gradient(135deg, #C4637A22, #E8956D33); padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.3px;">等候期</span>一般是 30 天、90 天、180 天，不同保险、内地和香港都不一样，要留意自己的保险合同。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: linear-gradient(135deg, #C4637A, #E8956D); border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">被踢出群之后</h2>
+      </section>
+    </section>
+  </section>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">前面这些，相当于给各位新手爸妈提个醒。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">但后面发生了一件我意想不到的事。当时我在群里跟宝爸宝妈们聊这个话题，结果群主说：你不要老聊保险了。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">我说，我没有推销保险，只是在分享。我作为孩子已经 3 岁的妈妈，也经历过新手爸妈阶段，想提醒大家：孩子检查时，病历措辞可能会影响以后投保，可以多留意这个风险。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我说如果觉得是闲聊打扰了大家，我可以问一下群里的人，如果打扰到大家，我就自动退群。结果，就在我把跟群主私聊的对话截图发到群里、还没来得及说话的时候，他就直接把我从群里踢走了。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">被踢走的时候，我心里挺不好受的。我觉得我也没说什么，只是因为聊到了保险这个话题，而且我说了我是做保险销售的，仅是因为如此。<strong style="font-weight: 900; color: #111827;">卖保险的人，无论说什么都是原罪吗？</strong></p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">结果呢，我就带着这个不爽，去洗澡了。我还以为我昨晚应该会睡得很不好。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">洗完澡出来，有几个群里的妈妈主动来加我。其中一个妈妈说，她觉得我讲得没有问题，还在群里帮我说了话，说我只是在提醒大家。并且通过我的分享，她觉得我是一个很热心、愿意分享的人，就来加了我。她给我截图看了她在群里怎么帮我说话，我的心情瞬间就好多了，就像满天乌云突然散开，拨云见日。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">另外一个妈妈也说，觉得我提醒得很好，她之前都没留意到这个点，还觉得我很专业，问我能不能给她讲一讲保险。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">我其实真的没有这方面的想法，我只是随便说说而已。好多时候都是无心插柳柳成荫。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">后面这块是插曲，但这篇文章还是有一定意义的。因为前面关于儿保的提醒，不只是儿保病历的问题，也可以延伸到平时就诊：对不确定的结论，可以多和医生沟通，问清楚要不要现在查、现在下结论；非紧急、非必要的检查，不必过度频繁地做。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">当然，我们也要相信医生的判断，该查的还是要查。</p>
+  <p style="margin: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">但<strong style="font-weight: 900; color: #111827;">与其一有点风吹草动就焦虑，不如平时多翻翻靠谱的书</strong>。我推荐《美国儿科学会育儿百科》，目前应该已经出到第 8 版了。这本书里，孩子大部分的问题都能找到答案。</p>
+  <p style="margin: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">与其去相信小某书上众说纷纭的帖子，不如看这种由专家写出来、经过专业认证的书。在里面找答案，实在找不到了，那该就医就得就医。</p>
+
+  <section style="height: 2px; background: linear-gradient(to right, rgba(196,99,122, 0.3), transparent); margin: 32px 0 28px;"></section>
+
+  <section style="margin: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(196,99,122, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #C4637A; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #C4637A; font-weight: 700; line-height: 1.9; margin: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; margin: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+  <section style="margin: 0 0 16px; padding: 22px 24px; background: #ffffff; border-radius: 14px; border: 1px solid rgba(196,99,122, 0.15); border-left: 3px solid #C4637A;">
+    <p style="font-size: 14px; font-weight: 700; color: #C4637A; margin: 0 0 8px; letter-spacing: 0.3px;">💬 聊聊你的故事</p>
+    <p style="font-size: 14px; color: #374151; line-height: 1.85; margin: 0;">你有没有过因为一纸病历、一句诊断，差点错过或耽误了某件事的经历？欢迎在留言区聊聊，一句话也好。</p>
+    <p style="font-size: 14px; color: #BBBBBB; margin: 10px 0 0; line-height: 1.6;">欢迎在留言区聊聊～</p>
+  </section>
+
+  <p style="font-size: 14px; color: #374151; line-height: 2; margin: 0 0 24px; word-break: break-all;">#港险 #儿保 #母婴育儿 #投保避坑 #跨境生活 #育儿百科</p>
+</div>
+</body>
+</html>

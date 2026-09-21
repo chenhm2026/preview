@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>公众号推送版（一键复制）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; padding: 0 auto; padding: 20px 0;">
+
+  <section style="padding: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(14,165,233, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; padding-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #0EA5E9; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #0EA5E9;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: #F0F9FF;"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.09</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; padding: 0; line-height: 1.1; letter-spacing: -1px;">从深圳去香港有几种方式</p>
+          <section style="width: 48px; height: 3px; background: #0EA5E9;; border-radius: 2px; padding: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; padding: 0; line-height: 1.7; letter-spacing: 0.5px;">通道类型不同，适用场景也不同</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">第一次去香港，很多人到了深圳才意识到：从深圳到香港，不只有“某个口岸”。通道类型不同，适用场景也不同。本文把从深圳赴港的通道归纳为 5 种，从“通道类型”角度帮你判断哪一种更适合你。</p>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、先分类：从深圳赴港的 5 种通道</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">1.1 陆路口岸</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">陆路口岸是最常见的赴港方式，适合大多数游客。深圳与香港之间有多座陆路口岸，过关后直接进入香港地面交通系统。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">代表口岸</strong>：罗湖、福田（落马洲支线）、皇岗、深圳湾、莲塘/香园围、文锦渡等</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">深圳侧交通</strong>：地铁、公交、出租车、自驾、跨境巴士等</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">香港侧交通</strong>：港铁东铁线、巴士、小巴、的士、跨境巴士等</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">适合人群</strong>：住在深圳各区、希望灵活选择时间和交通方式的游客</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">陆路口岸的优势在于选择多、班次密、价格区间宽；不足是需要步行过关，节假日可能排队，部分口岸开放时间有限。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">1.2 广深港高铁</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">广深港高铁是从深圳北站或福田站直接坐到香港西九龙站的铁路通道，过关流程在西九龙站完成。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">主要站点</strong>：深圳北、福田站 → 香港西九龙站</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">车程</strong>：深圳北至西九龙约 14-23 分钟；福田至西九龙约 14 分钟（具体以当日班次为准）</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">适合人群</strong>：从深圳北、福田站附近出发，目的地在尖沙咀、佐敦、西九龙一带的游客</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">高铁的优势是速度快、舒适度高、直达市区核心；不足是票价高于普通口岸+港铁组合，班次受列车时刻表限制，节假日热门时段车票紧张。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">1.3 船运（蛇口邮轮母港 / 深圳机场码头）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">船运是从深圳西部码头乘船前往香港机场、港澳码头或尖沙咀中港城等地点的水路通道。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">主要码头</strong>：蛇口邮轮母港、深圳机场码头</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">主要航线</strong>：香港机场、港澳码头、尖沙咀中港城等（具体航线以码头公布为准）</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">船程</strong>：约 30-60 分钟不等，视航线和天气情况而定</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">适合人群</strong>：住在深圳西部、宝安、前海一带，或需要前往香港机场、澳门等地的游客</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">船运的优势是避开陆路口岸拥堵、可托运行李、部分航线直达香港机场禁区；不足是班次有限、受天气影响较大、码头位置对部分游客不够方便。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">1.4 跨境巴士</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">跨境巴士是指在深圳市区或口岸上车，经指定口岸过关后继续前往香港市区多个站点的长途巴士服务。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">常见线路</strong>：深圳湾口岸线、皇岗口岸线、文锦渡口岸线等</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">深圳上车点</strong>：深圳机场、高铁站、市区酒店商圈、口岸等</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">香港落车点</strong>：太子、旺角、尖沙咀、铜锣湾、香港机场、迪士尼等</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">适合人群</strong>：行李较多、不想多次换乘、希望“一站式”到达市区的游客</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">跨境巴士的优势是点对点多、行李方便、部分线路覆盖夜间时段；不足是高峰时段口岸排队可能影响总耗时，且不同运营商服务水平差异较大，建议出发前比较多家。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">1.5 包车 / 商务车</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">包车或商务车通常提供门到门接送服务，车辆经指定口岸过关，乘客在车内或口岸下车完成通关。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">服务形式</strong>：按趟计费或按天包车，车型多为 7 座商务车</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">常用口岸</strong>：深圳湾、皇岗、莲塘等（具体以车辆备案口岸为准）</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">适合人群</strong>：多人同行、家庭出游、商务出行、夜间抵达、携带大件行李或行动不便的游客</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">包车的优势是时间灵活、舒适度高、可上门接送；不足是费用明显高于公共交通，且需提前确认车辆资质、通关流程和是否含行李。</p>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、五种方式对比表</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">通道类型</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">通勤时间（参考）</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">估算费用（参考，单程）</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">适合人群</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">主要优势</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">主要局限</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">陆路口岸</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">过关 15-60 分钟，另加香港侧接驿 30-90 分钟</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">地铁/巴士约 ¥10-50；出租车约 ¥100-400</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">大多数游客，尤其是熟悉公共交通的人</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">选择多、灵活性高、费用区间宽</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">节假日可能排队，部分口岸开放时间有限</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">广深港高铁</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">深圳北/福田至西九龙约 14-23 分钟，加上候车及过关约 60-90 分钟</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">二等座约 ¥68-75（以 12306 及港铁当日公布为准）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">住在深圳北/福田站附近，去九龙核心区的人</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">速度快、直达西九龙、舒适度较高</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">票价较高，热门时段票紧张，需提前购票</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">船运</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">船程约 30-60 分钟，加上码头手续约 60-120 分钟</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">普通舱约 ¥120-400（以码头当日公布为准）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">住深圳西部、去香港机场或想避开陆路拥堵的人</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">可托运行李、避开口岸排队、部分航线直达机场禁区</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">班次有限、受天气影响、码头位置对部分人较远</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">跨境巴士</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">全程约 60-150 分钟，视口岸排队情况而定</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">约 ¥40-150（以运营商当日公布为准）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">行李多、不想多次换乘、希望直达市区的游客</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">点对点多、行李方便、部分线路夜间运营</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">口岸排队可能拉长时间，服务水平因运营商而异</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">包车/商务车</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">全程约 60-120 分钟，视口岸排队情况而定</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">约 ¥300-800/车或更高（以运营商报价为准）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">多人同行、家庭、商务、夜间出行、行动不便者</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">门到门、时间灵活、舒适度高</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">费用高，需提前确认车辆和通关细节</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">注：以上时间和费用均为参考值，实际会因出发地点、目的地、交通状况、客流高峰、天气、汇率及运营商政策变化而不同。出发前请以各官方及运营商当日公布为准。</p>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、按场景选择</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">你的情况</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">推荐通道</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">第一次去香港，预算有限，熟悉地铁</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">陆路口岸（罗湖/福田/深圳湾）</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">住在深圳北/福田站附近，赶时间</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">广深港高铁</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">目的地在尖沙咀、佐敦、西九龙</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">广深港高铁 或 跨境巴士</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">住在宝安、前海、深圳机场附近</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">船运 或 深圳湾陆路口岸</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">要去香港机场乘机或转机</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">船运（直达机场禁区）或 深圳湾口岸+机场巴士</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">行李多、老人小孩同行</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">跨境巴士 或 包车/商务车</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">深夜或凌晨出发</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">皇岗口岸（陆路）或 夜间跨境巴士</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">多人同行，追求舒适和效率</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">包车/商务车</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">想避开节假日口岸排队</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">船运 或 高铁</td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、注意事项</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">建议提前确认口岸开放时间和通关安排</strong>。节假日、演唱会、大型活动期间，部分口岸可能延长开放时间或实施客流管制。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">建议留意区分“福田站”（高铁站）和“福田口岸站”（地铁口岸站），两者相距较远</strong>。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">高铁实行“一地两检”</strong>。从深圳北/福田站出发时直接按高铁流程检票上车，到达香港西九龙后再统一完成内地出境和香港入境手续。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">船运前往香港机场需留意值机时间</strong>。部分航线可在蛇口邮轮母港直接办理香港机场登机手续和行李托运，但需提前确认航空公司是否支持。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">跨境巴士和包车需确认上下车点、班次和费用</strong>。不同运营商线路差异较大，建议出发前通过官方渠道查询，并保留电子票或预约凭证。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">建议提前准备好香港侧交通支付方式</strong>。八达通、感应式信用卡、港铁/巴士二维码、现金等在香港不同场景下使用范围不同，建议提前准备多种方式。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">出发前建议再次检查证件和签注</strong>。确保护照或港澳通行证有效，签注次数和类型符合行程需求。</li>
+  </ul>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、下一步</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">如果你已经选好通道</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">下一步查什么</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">想比较具体口岸怎么选</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">→ 深圳各口岸怎么选</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">第一次过关，担心流程</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">→ 第一次过关流程</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">带儿童或老人同行</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">→ 儿童过关要带什么</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">已经到香港，不知道怎么去市区</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">→ 过关后怎么去市区</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">打算当天往返</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">→ 深圳香港一日游路线规划</td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">官方信息来源</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">深圳市人民政府口岸办公室</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="https://ka.sz.gov.cn/" style="color: #0EA5E9; text-decoration: underline;">https://ka.sz.gov.cn/</a></p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">港铁 MTR 官方网站</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="https://www.mtr.com.hk/" style="color: #0EA5E9; text-decoration: underline;">https://www.mtr.com.hk/</a></p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">广深港高铁香港段</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  <a href="https://www.highspeed.mtr.com.hk/" style="color: #0EA5E9; text-decoration: underline;">https://www.highspeed.mtr.com.hk/</a></p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">蛇口邮轮母港 / 深圳机场码头官方班次</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  （可通过码头官方微信公众号或官网查询）</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">跨境巴士运营商官方网站/小程序</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  （可通过“跨境巴士”“口岸巴士”等关键词搜索官方查询入口）</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">信息截至 2026 年 9 月。口岸开放时间、高铁班次、船运航线、跨境巴士线路及价格可能随时调整，出发前请以相关官方机构和运营商当日公布为准。</p>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">免责声明</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">本文内容仅供参考，不构成法律、移民或专业建议。政策、价格、流程等信息可能随时调整，请以相关政府部门、官方机构及运营商的最新公告为准。如有具体问题，建议咨询 12367 热线（国家移民管理局）、香港入境事务处或相关专业人士。</p>
+
+  <section style="height: 2px; background: #E0F2FE; padding: 32px 0 28px;"></section>
+
+  <section style="padding: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(14,165,233, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #0EA5E9; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #0EA5E9; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+
+    <section style="text-align: center; padding: 16px 16px 32px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+    <p style="font-size: 18px; font-weight: 800; color: #0EA5E9; padding: 0 0 8px; letter-spacing: 1px;">港通+</p>
+    <p style="font-size: 14px; font-weight: 500; color: #555; padding: 0 0 4px; letter-spacing: 0.5px;">内地↔香港跨境问题的中文索引入口</p>
+    <p style="font-size: 12px; font-weight: 400; color: #999; padding: 0; letter-spacing: 0.8px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p>
+  </section>
+
+</section>
+</div>
+</body>
+</html>

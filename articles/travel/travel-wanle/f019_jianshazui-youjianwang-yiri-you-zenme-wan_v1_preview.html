@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>公众号推送版（一键复制）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; padding: 0 auto; padding: 20px 0;">
+
+  <section style="padding: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(14,165,233, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; padding-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #0EA5E9; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #0EA5E9;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: #F0F9FF;"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.09</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; padding: 0; line-height: 1.1; letter-spacing: -1px;">尖沙咀油尖旺一日游怎么玩</p>
+          <section style="width: 48px; height: 3px; background: #0EA5E9;; border-radius: 2px; padding: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; padding: 0; line-height: 1.7; letter-spacing: 0.5px;">按预算定节奏，一天走完油尖旺</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">尖沙咀、油麻地、旺角是香港游客密度较高的区域之一：一边是维多利亚港的海景与星光大道，一边是庙街夜市、女人街和鳞次栉比的茶餐厅。想把这块地方压缩成一天，又不变成“暴走打卡”，建议按预算定节奏——经济型看街景、标准型加体验、深度型留时间给细节。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">这篇帮你</strong>：圈出核心范围、梳理看点、并按经济 / 标准 / 深度三档预算给出一日游建议。</p>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、区域范围与交通</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">1.1 核心范围</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">油尖旺一日游通常指以下三个核心地段：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">尖沙咀</strong>：以梳士巴利道、弥敦道一带为中心，西接维多利亚港海滨，东至尖沙咀东。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">油麻地</strong>：沿弥敦道与窝打老道交界附近，南至佐敦，北至旺角，庙街、果栏等老街区集中于此。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">旺角</strong>：以弥敦道与亚皆老街交界为核心，包括太子至旺角东一带，街市、小店、步行街密度最高。</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这三区沿弥敦道南北相连，地势平坦，适合步行串联。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">1.2 交通方式</h3>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">方式</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">适合场景</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">参考说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港铁荃湾线</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">跨区域移动</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">尖沙咀、佐敦、油麻地、旺角站依次分布，车次频密</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">渡轮</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">从港岛进入尖沙咀</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">尖沙咀 往返 中环 / 湾仔，航程短，可顺便看海景</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">巴士 / 小巴</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">填补港铁未覆盖的街巷</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">路线多，但高峰时段易拥堵</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">步行</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">同一区内移动</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">尖沙咀至旺角约 3–4 公里，沿弥敦道或内街穿行均可</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">交通费用以现场票价及官方最新信息为准（2025 年 9 月）。</p>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、这一带有什么</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">2.1 主要点位</h3>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">区域</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">代表类型</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">看点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">尖沙咀海滨</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">维港景观</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">星光大道、香港文化中心、钟楼、海滨长廊</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">尖沙咀中部</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">商业与文化</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">大型购物中心一带（如海港城、K11 MUSEA 周边）、艺术馆 / 文化空间、天台或高层观景位</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">佐敦 / 油麻地</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">老街区</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">庙街、果栏、红砖屋一类历史建筑、社区公园</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">旺角</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">市井与购物街</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">女人街、波鞋街、花墟道（若从太子进入）、通宵小店</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">整体来看，这一天的动线可以从<strong style="font-weight: 900; color: #111827;">南（尖沙咀海滨）往东北（旺角）</strong>走，也可以反向。上午适合看海、下午逛商场或文化空间、傍晚以后留给庙街和旺角街市。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">2.2 吃住行特点</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">吃</strong>：选择极多。茶餐厅、粉面店、烧味档、甜品铺、商场美食广场、独立咖啡馆、酒吧都有。价位跨度大，从街边小食到商场正餐均可找到。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">住</strong>：尖沙咀以酒店和宾馆集中著称，旺角、油麻地则有更多平价旅舍与长租公寓式住宿。交通便利是共同优势。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">行</strong>：步行 + 港铁即可覆盖大部分点位。街道密集、人流大，节假日弥敦道及商场区域会非常拥挤。</li>
+  </ul>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、按预算拆解一日游</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">下面的三档预算均按<strong style="font-weight: 900; color: #111827;">一人一天、不含住宿</strong>估算，包含交通、两餐、小食 / 咖啡及少量付费项目。价格为 2025 年 9 月参考估算，实际花费请以后付费时标价为准。</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">档位</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">人均预算（参考）</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">核心体验</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">适合谁</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">经济型</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">约 HKD 200–350</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">海滨散步、街区漫游、街头小食</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">想控制花费、偏好步行看街景</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">标准型</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">约 HKD 500–800</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">海港景观 + 商场文化空间 + 正餐 + 夜市</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">想兼顾风景与本地体验</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">深度型</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">约 HKD 1,000 以上</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">付费展览 / 演出 + 精品咖啡 + 主题晚餐</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">愿意花钱买时间、重质感</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">3.1 经济型：约 HKD 200–350 / 人</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">节奏关键词</strong>：免费景观 + 街坊小食 + 公共交通。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">上午</strong>：从尖沙咀海滨开始，沿星光大道往钟楼方向走，看维港与对岸中环天际线。全程免费，建议 9:00–10:30 避开旅行团高峰。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">午餐</strong>：在尖沙咀或佐敦一带找一家茶餐厅 / 粉面店，人均约 HKD 50–80。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">下午</strong>：经弥敦道往北步行至油麻地，顺路看街景、社区小店；可在油麻地一带的社区公园或咖啡馆稍作休息，咖啡约 HKD 30–50。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">傍晚</strong>：继续步行至旺角，逛女人街、波鞋街一带，体验夜市气氛。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">晚餐</strong>：街头小食或商场美食广场，人均约 HKD 50–80。</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">费用提示</strong>：交通以港铁和步行为主，约 HKD 20–40；若从中环搭渡轮进入尖沙咀，船票另计，票价请以码头现场为准。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">3.2 标准型：约 HKD 500–800 / 人</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">节奏关键词</strong>：维港 + 商场文化空间 + 一顿正餐 + 庙街夜市。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">上午</strong>：搭渡轮到尖沙咀（如从港岛出发），下船后沿星光大道散步，再进入尖沙咀中部的购物中心区域。商场内常有免费展览、观景台或文化空间，可作为室内缓冲。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">午餐</strong>：选择商场内的美食广场或中价位餐厅，人均约 HKD 100–150。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">下午</strong>：前往香港文化中心一带，看建筑外观或露天表演；之后可去尖沙咀东的海滨花园，或折返至佐敦、油麻地。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">下午茶 / 咖啡</strong>：在独立咖啡馆或连锁精品咖啡停留，人均约 HKD 40–70。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">晚餐</strong>：在油麻地 / 佐敦一带找一家口碑稳定的烧味、粥面或小菜馆，人均约 HKD 120–200。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">晚上</strong>：逛庙街夜市，看地摊与街头表演，按需购买小食。</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">费用提示</strong>：若进入收费展览或观看演出，票价需另计，建议提前在官方渠道查询并购票。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">3.3 深度型：约 HKD 1,000 以上 / 人</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">节奏关键词</strong>：慢走、付费内容、精品餐饮、夜景。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">上午</strong>：在酒店或咖啡馆用早餐（人均约 HKD 80–150），随后前往尖沙咀海滨，重点看星光大道的雕塑与手印细节，拍摄晨光下的维港。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">中午</strong>：参观收费艺术馆或观看一场文化演出，门票约 HKD 100–300（以官方票价为准）。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">午餐</strong>：在尖沙咀选择一家主题餐厅或点心茶楼，人均约 HKD 200–350。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">下午</strong>：走访历史建筑群或特色街区，例如 1881 Heritage（前水警总部）一类保留建筑，再挑一家独立咖啡馆坐下，人均约 HKD 60–100。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">傍晚</strong>：前往尖沙咀东或西九文化区方向看日落（若行程允许跨出核心区）。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">晚餐</strong>：安排一顿正式晚餐，如中菜、日料或景观餐厅，人均约 HKD 300–600。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">晚上</strong>：回到星光大道或庙街，感受夜景与夜市，结束一天。</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">费用提示</strong>：深度型预算弹性大，门票、晚餐与饮品是主要变量；建议提前锁定演出或餐厅时段，避免现场等位。</p>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、实用提醒</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">时段选择</strong>：海滨与商场上午较清静；庙街和女人街傍晚后更有气氛，但人也更多。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">天气应对</strong>：夏季炎热潮湿，建议随身带水、防晒与轻便雨具；冬季则早晚温差明显。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">支付方式</strong>：大部分商户支持八达通、信用卡及移动支付，但部分街市小摊仍收现金，建议备少量港币。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">步行强度</strong>：弥敦道看似笔直，但商场、街口多，实际停留时间长，建议穿舒适鞋子。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">官方信息先行</strong>：商场展览、文化场馆开放时间及夜市摊位常有调整，出发前请查阅官方渠道。</li>
+  </ul>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、下一步</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">先确定自己的预算档位，再按上面动线截取上午 / 下午 / 晚上三段。</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">如果只有半天，建议集中尖沙咀海滨 + 一个商场区域；如果时间充裕，可把旺角夜市单独留到另一天。</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">出发前再查一次港铁、场馆与轮渡的最新安排，确认当天无临时封闭或调整。</span></li>
+  </ul>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">官方信息来源</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">信息</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">官方来源</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港旅游发展局景点与活动</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.discoverhongkong.com" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">Discover Hong Kong</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">星光大道及康文署设施</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.lcsd.gov.hk" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">康文署</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港铁路线及票价</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.mtr.com.hk" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">港铁</a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港岛至九龙渡轮班次及票价</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.starferry.com.hk" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;">天星小轮</a></td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 免责声明：本篇内容仅供行程规划参考，不构成消费或预订建议。文中价格、开放时间、交通班次及商户营业状态均可能变动，请以各官方机构或现场最新公告为准。出行前请自行核实相关信息并评估个人情况。</p>
+
+  <section style="height: 2px; background: #E0F2FE; padding: 32px 0 28px;"></section>
+
+  <section style="padding: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(14,165,233, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #0EA5E9; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #0EA5E9; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+
+    <section style="text-align: center; padding: 16px 16px 32px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+    <p style="font-size: 18px; font-weight: 800; color: #0EA5E9; padding: 0 0 8px; letter-spacing: 1px;">港通+</p>
+    <p style="font-size: 14px; font-weight: 500; color: #555; padding: 0 0 4px; letter-spacing: 0.5px;">内地↔香港跨境问题的中文索引入口</p>
+    <p style="font-size: 12px; font-weight: 400; color: #999; padding: 0; letter-spacing: 0.8px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p>
+  </section>
+
+  <p style="font-size: 14px; color: #374151; line-height: 2; padding: 0 0 24px; word-break: break-all;">#香港旅游 #尖沙咀 #油麻地 #旺角 #港通加</p>
+</section>
+</div>
+</body>
+</html>

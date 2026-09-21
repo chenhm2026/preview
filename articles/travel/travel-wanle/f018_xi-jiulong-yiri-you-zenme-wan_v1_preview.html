@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>公众号推送版（一键复制）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; padding: 0 auto; padding: 20px 0;">
+
+  <section style="padding: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(14,165,233, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; padding-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #0EA5E9; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #0EA5E9;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: #F0F9FF;"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.09</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; padding: 0; line-height: 1.1; letter-spacing: -1px;">西九龙一日游怎么玩</p>
+          <section style="width: 48px; height: 3px; background: #0EA5E9;; border-radius: 2px; padding: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; padding: 0; line-height: 1.7; letter-spacing: 0.5px;">按预算定节奏，一天走完西九龙</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果只有一天时间，又不想在香港几个区之间来回赶，西九龙是一个相对集中的选择。这里集合了高铁口岸、文化场馆、商场和海滨空间，从深圳湾或高铁过关后，短途步行或地铁就能进入核心区域。这篇按经济、标准、深度三档预算，给出可以在西九龙完成的单日方案。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、西九龙在哪里：区位与交通</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">1.1 地理范围</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">西九龙通常指九龙半岛西侧、维多利亚港沿岸一带，核心区域包括高铁西九龙站、港铁九龙站、柯士甸站周边，以及西九文化区所在的海滨地块。东面及东北面连接尖沙咀、佐敦/油麻地，北面为大角咀/奥运一带，西、南面为维多利亚港海滨。整体地势平坦，主要靠步行和地铁衔接，适合一天内慢走。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">1.2 交通方式</h3>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">到达方式</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">适合人群</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高铁西九龙站</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">从内地乘高铁直达</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">出站后可换乘港铁，或步行约10-15分钟经圆方进入西九文化区</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港铁柯士甸站</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">从深圳湾经屯马线，或市区转乘</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">部分出口可步行至戏曲中心，也可经圆方前往海滨</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港铁九龙站</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">从机场/东涌/迪士尼方向，或从中环经东涌线</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">C1/D1出口可经圆方和艺术广场天桥进入文化区；E4/E5出口可步行约10分钟</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">西九文化区内部主要靠步行，场馆之间距离不远，但夏季日照较强，建议带好防晒和水。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、西九龙有什么</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">2.1 主要点位（文化/购物/海滨）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">西九龙的核心资源大致分为三类：</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">文化场馆</strong>：西九文化区是主要集中地，包括 M+、香港故宫文化博物馆、戏曲中心、自由空间等。M+ 以当代艺术、设计和流动影像为主；香港故宫文化博物馆则以故宫博物院借展文物为核心。各馆门票和开放时间可在官网查询。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">购物与餐饮</strong>：圆方是九龙站上的大型商场，品牌较全，也有餐饮选择；戏曲中心附近和海滨一带也有轻食、咖啡和正餐类型的餐厅。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">海滨与公共空间</strong>：西九艺术公园、海滨长廊和大草坪免费开放，适合散步、看海、看日落，也是拍摄维港天际线的角度之一。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">2.2 吃住行的基本特点</h3>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">类型</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">特点</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">预算参考（2025-2026年，港币）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">住宿</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">西九龙/九龙站周边偏高；尖沙咀/佐敦选择多</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">经济型约500-900元/晚；中高档约1200-2500元/晚</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">餐饮</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">商场内较平价；海滨景观餐厅价格更高</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">简餐约60-120元；正餐约200-400元/人</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">交通</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港铁为主，文化区内步行</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">单程约5-15元；靠步行可省不少</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">价格仅供参考，淡忙季、节假日会有浮动，具体以现场为准。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、按预算拆解一日游</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">3.1 经济型（低预算）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">适合人群</strong>：学生党、快闪游客、想控制低消费的一天。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">路线建议</strong>：西九艺术公园 + 海滨长廊散步 → 圆方或柯士甸站附近吃简餐 → 戏曲中心外观/免费公共空间。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">吃什么</strong>：商场美食广场或连锁快餐，也可自带干粮在海滨草坪野餐。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">交通</strong>：全程步行 + 港铁。从柯士甸站或九龙站下车后，基本靠走。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">大致花费（港币，2025-2026年参考）</strong>：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">港铁往返：约20-40元</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">餐饮（两餐简餐）：约120-200元</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">门票：0元（不进收费场馆）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">合计：约150-250元/人</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">旺季/节假日餐饮价格会涨，海滨附近便利店选择有限，建议提前准备。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">3.2 标准型（中等预算）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">适合人群</strong>：普通游客、亲子家庭、想兼顾文化与休闲。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">路线建议</strong>：上午参观一座收费博物馆（M+ 或香港故宫文化博物馆，二选一） → 中午在商场内用餐 → 下午到西九艺术公园/海滨散步 → 傍晚看日落和维港夜景。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">吃什么</strong>：商场内中档餐厅或主题餐饮，人均约150-250元；也可选择海滨轻食。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">交通</strong>：港铁 + 步行。从高铁西九龙站出发，经圆方步行进入文化区比较方便。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">大致花费（港币，2025-2026年参考）</strong>：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">港铁往返：约20-40元</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">博物馆门票：约120-220元（标准展）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">餐饮（两餐）：约250-450元</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">咖啡/水：约30-60元</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">合计：约420-770元/人</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">若选择特展或套票，门票价格更高；节假日部分餐厅可能加收服务费。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">3.3 深度型（高预算）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">适合人群</strong>：文化爱好者、想完整体验西九龙、预算较宽松。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">路线建议</strong>：上午 M+ → 中午海滨景观餐厅或商场正餐 → 下午香港故宫文化博物馆 → 傍晚艺术公园/海滨 → 晚上可选择戏曲中心演出或高空观景台。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">吃什么</strong>：海滨景观餐厅、商场内高级餐厅或酒店餐饮，人均约400-800元。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">交通</strong>：以步行为主，必要时打车或乘穿梭巴士。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">大致花费（港币，2025-2026年参考）</strong>：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">港铁/打车：约50-150元</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">两座博物馆门票：约240-440元</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">餐饮（两餐）：约600-1200元</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">夜间演出/观景台：约200-500元</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">合计：约1090-2290元/人</span></li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">旺季/节假日价格会明显上涨，建议提前在官网预约门票和餐厅。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、实用提醒</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">场馆开放时间不同</strong>：M+ 和香港故宫文化博物馆通常周二休馆或调整开放，戏曲中心演出需提前购票。出发前可在官网确认最新安排。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">西九文化区内部步行距离适中</strong>：但遮阴有限，夏季建议避开正午长时间户外。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">免费接驳和交通</strong>：西九文化区与周边港铁站之间有穿梭巴士和专线小巴，具体班次以官方公布为准。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">网络与支付</strong>：大部分场馆和商场支持移动支付，但部分小巴和街头摊位仍收现金，建议准备少量港币。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">雨天备选</strong>：若遇下雨，可把重点放在 M+、香港故宫文化博物馆、圆方商场或戏曲中心，可相应减少户外行程。</li>
+  </ul>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、下一步</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">西九龙一日可以走得很轻，也可以安排得很满。用一个核心节奏把交通、吃饭和看展串起来，会比把每个点都塞满更可行。如果时间充裕，也可以把西九龙和尖沙咀连成两天线：一天看文化和海滨，一天逛街和维港夜景。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">官方信息来源</h3>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">信息</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">官方来源</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">西九文化区活动、地图与交通</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.westkowloon.hk" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;"><a href="https://www.westkowloon.hk" style="color: #0EA5E9; text-decoration: underline;">https://www.westkowloon.hk</a></a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">M+ 门票、开放时间与展览</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.mplus.org.hk/tc" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;"><a href="https://www.mplus.org.hk/tc" style="color: #0EA5E9; text-decoration: underline;">https://www.mplus.org.hk/tc</a></a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港故宫文化博物馆门票与参观须知</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.hkpm.org.hk" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;"><a href="https://www.hkpm.org.hk" style="color: #0EA5E9; text-decoration: underline;">https://www.hkpm.org.hk</a></a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港铁路线与车费</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.mtr.com.hk" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;"><a href="https://www.mtr.com.hk" style="color: #0EA5E9; text-decoration: underline;">https://www.mtr.com.hk</a></a></td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">香港旅游综合资讯</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;"><a href="https://www.discoverhongkong.com" style="color: #DE7356; text-decoration: none; border-bottom: 1px solid #DE7356;"><a href="https://www.discoverhongkong.com" style="color: #0EA5E9; text-decoration: underline;">https://www.discoverhongkong.com</a></a></td>
+      </tr>
+    </tbody>
+  </table>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 免责声明：本篇内容仅作行程框架参考，价格、开放时间、交通班次等信息会随季节和政策调整，请以各官方平台最新公布为准。旺季/节假日价格通常会上涨，建议出发前再次确认。</p>
+
+  <section style="height: 2px; background: #E0F2FE; padding: 32px 0 28px;"></section>
+
+  <section style="padding: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(14,165,233, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #0EA5E9; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #0EA5E9; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+
+    <section style="text-align: center; padding: 16px 16px 32px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+    <p style="font-size: 18px; font-weight: 800; color: #0EA5E9; padding: 0 0 8px; letter-spacing: 1px;">港通+</p>
+    <p style="font-size: 14px; font-weight: 500; color: #555; padding: 0 0 4px; letter-spacing: 0.5px;">内地↔香港跨境问题的中文索引入口</p>
+    <p style="font-size: 12px; font-weight: 400; color: #999; padding: 0; letter-spacing: 0.8px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p>
+  </section>
+
+</section>
+</div>
+</body>
+</html>

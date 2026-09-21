@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>公众号推送版（一键复制）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; padding: 0 auto; padding: 20px 0;">
+
+  <section style="padding: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(14,165,233, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; padding-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #0EA5E9; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #0EA5E9;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: #F0F9FF;"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.09</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; padding: 0; line-height: 1.1; letter-spacing: -1px;">西九龙吃什么</p>
+          <section style="width: 48px; height: 3px; background: #0EA5E9;; border-radius: 2px; padding: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; padding: 0; line-height: 1.7; letter-spacing: 0.5px;">圆方、西九文化区和柯士甸周边的餐饮类型建议</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">西九龙是香港近年变化最快的区域之一：高铁西九龙站、港铁柯士甸站与九龙站交汇，圆方商场与西九文化区（博物馆、展览场地、艺术公园等）连成片。对游客来说，这里的餐饮选择不算少，但分布比较"分区"——商场内、文化区内、街坊区各有特点，价格跨度也大。如果你在西九龙活动或参观，不知道吃什么，这篇按预算和场景帮你快速定位。</p>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、西九龙餐饮分布特点</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">西九龙的餐饮大致集中在三个区域，各自对应不同的消费场景和节奏：</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">区域</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">餐饮类型</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">人均参考（午市）</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">人均参考（晚市）</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">适合场景</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">圆方商场（Elements）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">美食广场、连锁餐厅、咖啡轻食、中高端餐厅</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HKD 60-150</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HKD 120-400+</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">转车、逛街、家庭聚餐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">西九文化区内</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">轻食店、海滨餐厅、咖啡馆、馆内餐饮</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HKD 70-160</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HKD 150-450+</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">看展前后、海滨散步、拍照</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">柯士甸 / 九龙站附近</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">茶餐厅、粉面档、连锁快餐、便利店轻食</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HKD 40-90</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HKD 60-150</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">赶车、预算有限、体验本地</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">注：价格为参考区间，会随时段、节假日及门店政策变化。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">圆方商场直接与港铁九龙站、高铁西九龙站相连，选择最多、营业时间最长，是转车和雨天最稳妥的选项。西九文化区内的餐饮更偏"体验型"，部分位置能看海，但周末和假期人流大，部分餐厅会限流或调整菜单。柯士甸与九龙站周边则保留了不少街坊食肆，性价比高，但环境相对简朴，部分店铺只收现金或八达通。</p>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、按预算选择</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">2.1 经济型（低预算）</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">参考人均</strong>：HKD 40-80（午市），HKD 60-120（晚市）。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">适合类型</strong>：</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  - 街坊茶餐厅 / 冰室 / 粉面档</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  - 连锁快餐与便利店热食</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">  - 商场美食广场档口</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  - 超市即食轻食或外卖自取</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">推荐区域</strong>：柯士甸 / 九龙站周边、圆方商场美食广场、西九文化区部分轻食店。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">适合场景</strong>：一个人赶时间、看展间隙快速解决、预算有限、带娃想简单吃。</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">低预算在西九龙也可行。柯士甸站一带的茶餐厅和粉面档选择不少，圆方商场的美食广场也能在空调环境里快速解决。西九文化区部分轻食店提供三明治、沙拉、咖啡等，价格相对亲民，但座位紧张，建议避开正午高峰。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">2.2 标准型（中等预算）</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">参考人均</strong>：HKD 90-180（午市），HKD 150-300（晚市）。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">适合类型</strong>：</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  - 商场连锁餐厅（中式、日式、韩式、东南亚、西式简餐）</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  - 咖啡馆全日餐 / 轻食</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">  - 海滨餐厅午市套餐</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  - 酒吧配餐或下午茶</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">推荐区域</strong>：圆方商场、西九文化区海滨一带。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">适合场景</strong>：朋友小聚、情侣约会、看展前后想坐得舒服一点。</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">中等预算的选择很丰富。圆方商场内连锁餐厅集中，菜系多元，环境稳定，适合带长辈或小孩。如果想顺便看海，西九文化区部分餐厅有户外座位或景观位，但晚餐价格通常比午市高出一截，选择午市套餐会更划算。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">2.3 高端型（高预算）</h3>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">参考人均</strong>：HKD 250-500+（晚市），HKD 200-350（午市套餐）。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">适合类型</strong>：</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  - 酒店中餐厅 / 西餐厅 / 日料</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">  - 维港海景餐厅 / 露台餐厅</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">  - 精致下午茶 / 酒吧配餐</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">推荐区域</strong>：圆方商场、九龙站周边酒店、西九文化区海滨高端餐厅。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">适合场景</strong>：商务宴请、纪念日、想体验维港夜景。</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">高端餐饮主要集中在圆方商场和九龙站附近的酒店，西九文化区也有少数景观出色的餐厅。这类餐厅普遍建议提前预约，尤其是周末晚餐和景观位。需要留意部分餐厅有着装要求或最低消费，订位时可一并确认。</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">预算档次</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">午市人均参考</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">晚市人均参考</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">推荐餐饮类型</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">主要集中地</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">经济型</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HKD 40-80</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HKD 60-120</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">茶餐厅、粉面档、美食广场、快餐</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">柯士甸 / 九龙站周边、圆方美食广场</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">标准型</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HKD 90-180</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HKD 150-300</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">连锁餐厅、咖啡馆、海滨午市套餐</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">圆方商场、西九文化区</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高端型</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HKD 200-350（套餐）</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">HKD 250-500+</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">酒店餐厅、中/西/日料、海景餐厅</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">圆方、酒店、西九海滨</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">注：以上价格为 2025 年参考区间，实际以各门店当日菜单和套餐为准。</p>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、不同场景吃什么</h2>
+      </section>
+    </section>
+  </section>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">场景</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">推荐区域</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">推荐餐饮类型</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">小提示</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">看展 / 演出前后</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">西九文化区内或圆方</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">轻食、咖啡馆、馆内餐饮、连锁简餐</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">展览日人流集中，建议错峰或提前订位</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高铁 / 地铁转车</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">圆方商场、柯士甸站周边</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">美食广场、茶餐厅、连锁快餐</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">圆方与九龙站、西九龙站有连廊，雨天也方便</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">带小孩 / 长辈</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">圆方商场</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">连锁餐厅、美食广场</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">环境稳定、座位多、支付方式多元</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">傍晚 / 看夜景</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">西九文化区海滨</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">海滨餐厅、酒吧小食</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">晚餐价格偏高，景观位建议预约</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">雨天 / 夏季高温</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">圆方商场</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">各类商场餐厅</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">全程室内，不需要出站</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">预算有限</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">柯士甸 / 九龙站街坊区</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">茶餐厅、粉面档、便利店</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">部分店铺只收现金或八达通，建议备零钱</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你是"看完西九文化区内的展览后顺便吃一顿"，可以优先考虑西九文化区内的轻食或咖啡馆；如果想吃得丰富、坐得舒服，圆方商场是更稳妥的选项。柯士甸一带则适合想体验本地节奏的旅客。</p>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、省钱与避坑建议</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">午市套餐比晚餐划算</strong>：不少商场餐厅和西九海滨餐厅都提供午市套餐，价格通常比单点晚餐低 30%-50%。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">错峰用餐</strong>：12:00-13:30 和 18:30-20:00 是高峰，排队和等位时间长；建议 11:30 前或 14:00 后用午膳，18:00 前或 20:30 后用晚膳。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">善用美食广场与外卖自取</strong>：圆方美食广场和西九部分轻食店支持外卖自取，能节省等位时间，也适合带去看海野餐。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">留意支付方式</strong>：商场内和连锁餐厅大多支持微信、支付宝、信用卡；街坊茶餐厅、粉面档、熟食摊很多只收现金或八达通，建议随身备少量现金。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">景观位可能要预约或最低消费</strong>：西九文化区部分海滨餐厅景观位热门，周末和假期建议提前订位，并确认是否有最低消费或限时用餐。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">不必硬追排队名店</strong>：西九龙选择很多，圆方和柯士甸周边都有稳定出品的小店，排队半小时以上不一定值得。</li>
+  </ul>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、实用提醒</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">营业时间</strong>：圆方商场内餐厅一般 10:00-22:00；西九文化区餐厅会随展览、演出和活动调整，部分店铺周一休息或提早关门；街坊茶餐厅和粉面档多为早市至晚市，部分只做午晚市。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">预约建议</strong>：高端餐厅、景观位、周末和公众假期建议提前 1-3 天预约；连锁餐厅和美食广场通常无需预约。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">特殊饮食需求</strong>：素食、清真、无麸质等需求在大型商场相对好找，西九文化区部分餐厅也有标注，建议出发前先查看官方菜单。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">交通衔接</strong>：九龙站、柯士甸站、高铁西九龙站与圆方商场有行人连廊；从圆方步行至西九文化区约 10-15 分钟，也可留意文化区接驳车安排。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">价格浮动</strong>：本文价格为参考区间，实际会因节假日、特殊活动、套餐组合及市场情况调整，请以门店当日公布为准。</li>
+  </ul>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、下一步</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">先定预算</strong>：低预算锁定柯士甸 / 九龙站街坊区与圆方美食广场；中等预算在圆方和西九文化区之间挑；高预算优先考虑酒店餐厅或海滨景观餐厅。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">结合行程选区域</strong>：看展日就安排在西九文化区或圆方；转车日直接进圆方；想看夜景就选海滨一带。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">出发前查官方信息</strong>：西九文化区展览日、公众假期和特别活动期间，部分餐厅营业时间和人流安排会有变化，建议出发前查看官网或社交媒体。</li>
+  </ul>
+  <section style="height: 2px; background: #E0F2FE; padding: 24px 0;"></section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">官方信息来源</strong>：西九文化区管理局官网（westkowloon.hk）、圆方商场官方网页、港铁公司官网、香港旅游发展局资料。本文信息整理时间为 2025 年 9 月，营业时间、路线安排与价格请以官方最新公布为准。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ <strong style="font-weight: 900; color: #111827;">免责声明</strong>：本文仅为西九龙区域餐饮类型与选择参考，不构成对任何餐厅、商店或运营商的具体推荐，也不构成任何投资或商业建议。文中价格为估算区间，会随时段、门店政策、节假日及市场情况变化，实际消费请以门店当日信息为准。</p>
+
+  <section style="height: 2px; background: #E0F2FE; padding: 32px 0 28px;"></section>
+
+  <section style="padding: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(14,165,233, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #0EA5E9; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #0EA5E9; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+
+    <section style="text-align: center; padding: 16px 16px 32px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+    <p style="font-size: 18px; font-weight: 800; color: #0EA5E9; padding: 0 0 8px; letter-spacing: 1px;">港通+</p>
+    <p style="font-size: 14px; font-weight: 500; color: #555; padding: 0 0 4px; letter-spacing: 0.5px;">内地↔香港跨境问题的中文索引入口</p>
+    <p style="font-size: 12px; font-weight: 400; color: #999; padding: 0; letter-spacing: 0.8px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p>
+  </section>
+
+  <p style="font-size: 14px; color: #374151; line-height: 2; padding: 0 0 24px; word-break: break-all;">#香港旅游 #西九龙 #西九文化区 #圆方商场 #香港美食 #港通加</p>
+</section>
+</div>
+</body>
+</html>

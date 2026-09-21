@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>公众号推送版（一键复制）</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; padding: 0 auto; padding: 20px 0;">
+
+  <section style="padding: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(14,165,233, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; padding-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #0EA5E9; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #0EA5E9;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: #F0F9FF;"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.09</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; padding: 0; line-height: 1.1; letter-spacing: -1px;">香港酒店按区域和预算怎么选</p>
+          <section style="width: 48px; height: 3px; background: #0EA5E9;; border-radius: 2px; padding: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; padding: 0; line-height: 1.7; letter-spacing: 0.5px;">先看区域再比价格，从西九龙开始</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">香港地方不大，但不同区域的住宿体验、交通条件、周边氛围和价格差异明显。第一次去香港，先看区域再比价格，能少走很多弯路。下面从西九龙出发，把香港主要游客住宿区和对应的预算区间讲清楚。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">一、为什么按区域选酒店</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">香港酒店的价格波动大，房间面积差异也大。如果只看“每晚多少钱”，很容易遇到以下情况：订到了便宜房，却发现离想去的景点很远；或者订在热闹地段，才发现同价位在另一个区能住得更宽敞。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">按区域选酒店，其实是在平衡四件事：</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">交通便利度</strong>：是否靠近地铁、机场快线、跨境口岸或高铁站；</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">景点与活动半径</strong>：步行或几站地铁能到哪些地方；</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">预算基准</strong>：不同区的整体房价水平不同；</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">住宿体验偏好</strong>：繁华商圈、安静新区，还是市井老街。</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">先确定大方向，再在同一区域内比较具体价格和房型，效率会高很多。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">二、香港主要游客住宿区域概览</h2>
+      </section>
+    </section>
+  </section>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">2.1 西九龙（从这里开始）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">西九龙是香港近年发展迅速的新区之一，包括<strong style="font-weight: 900; color: #111827;">九龙站、柯士甸、高铁西九龙站</strong>一带。这里是广深港高铁的终点站，也是机场快线的中途站，去机场、去内地、去港岛都很方便。</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">特点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">交通</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高铁西九龙站、机场快线九龙站、港铁东涌线/屯马线交汇</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">周边</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">西九文化区（M+博物馆、香港故宫文化博物馆）、圆方商场</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">住宿氛围</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">新酒店多，空间相对宽敞，夜晚较安静</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">适合人群</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">从高铁/机场进出、喜欢文化艺术、不追求夜市的旅客</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">参考预算</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中高档起步，平日标准间多在 800-1500 港币区间</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">西九龙的餐饮和夜市选择不如尖沙咀、旺角丰富，但如果行程偏文化、艺术，或者需要频繁往返机场和内地，这里是很好的起点。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">2.2 尖沙咀/佐敦</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">尖沙咀是香港经典的游客住宿区之一。维多利亚港、星光大道、海港城、K11 都在步行范围内，地铁、渡轮、跨境巴士一应俱全。</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">特点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">交通</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港铁荃湾线、东铁线可直达罗湖/落马洲口岸；天星小轮往返中环</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">周边</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">维多利亚港、尖沙咀钟楼、各大商场</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">住宿氛围</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">酒店密度高，从经济型宾馆到中高档酒店都有</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">适合人群</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">第一次去香港、想看维港夜景、购物和吃饭方便的旅客</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">参考预算</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">范围广，平日标准间约 600-2000 港币不等</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">尖沙咀/佐敦的优势是“什么都不用想，出门就是景点”。缺点是旺季人流密集，部分大厦内的旧楼宾馆房间较小。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">2.3 中环/金钟/湾仔/铜锣湾</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这条港岛北线是香港的商业、金融和购物主轴，适合想感受现代香港、 nightlife 和高端消费的旅客。</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">特点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">交通</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港岛线贯穿全线；中环/金钟有机场快线香港站；叮叮车覆盖</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">周边</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中环商业区、太平山顶缆车、兰桂坊、湾仔旧区、铜锣湾商圈</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">住宿氛围</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高端酒店集中，商业气息浓，周末部分区域较安静</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">适合人群</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">商务出行、喜欢夜生活、二次以上访港的游客</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">参考预算</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">整体偏高，平日标准间多在 1000-3000 港币以上</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">住在港岛北线，去太平山、南区海岛更方便，但去九龙看维港夜景需要过海，日常交通成本略高。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">2.4 旺角/油麻地/深水埗</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这一带是老香港的缩影，街道密集、招牌林立、小吃和市集众多，是体验本地生活气息浓厚的区域之一。</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">维度</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">特点</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">交通</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">港铁荃湾线、观塘线、东铁线交汇；巴士线路密集</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">周边</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">女人街、波鞋街、庙街、深水埗鸭寮街、各大旧式商场</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">住宿氛围</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">经济垌住宿集中，房间普遍偏小，旧楼较多</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">适合人群</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">预算有限、想体验市井文化、美食和街头摄影的旅客</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">参考预算</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">平日经济垌多在 300-800 港币区间</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">优点是吃喝便宜、交通方便；缺点是部分区域晚上较吵，酒店设施和房间面积需要放低预期。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">下表是四个区域的核心差异对比：</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">区域</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">最大优势</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">主要局限</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">大致预算区间（平日标准间）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">西九龙</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高铁/机场便利、新酒店多</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">夜生活和本地餐饮较少</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">800-1500 港币</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">尖沙咀/佐敦</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">景点密集、交通辐射港九各区方便</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">旺季人流大、房价波动大</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">600-2000 港币</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中环/金钟/湾仔/铜锣湾</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高端酒店多、商业和夜生活丰富</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">整体价格高、去九龙需过海</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">1000-3000 港币以上</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">旺角/油麻地/深水埗</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">价格低、市井氛围浓</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">房间小、部分街区较旧较吵</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">300-800 港币</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">三、按预算选择</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">价格只是参考，实际会根据日期、房型和预订时间变化。以下三档预算都以<strong style="font-weight: 900; color: #111827;">平日淡季标准间</strong>为基准。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">3.1 经济型（300-600 港币）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这个档位在香港属于入门水平。这个档位建议把位置和安全合规放在前面，面积和设施可适当放宽预期。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">优先考虑区域</strong>：旺角、油麻地、深水埗，以及尖沙咀部分大厦内的持牌宾馆。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">房间预期</strong>：面积通常在 8-13 平方米左右，设施精简，部分为旧楼改建。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">适合人群</strong>：独自旅行、背包客、对住宿要求不高、主要外出游玩的旅客。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">预订策略</strong>：建议多参考住客评价，确认是否为持牌酒店或宾馆；可优先选择靠近地铁出口的房间。</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">⚠️ 旺季、周末、大型展会或节假日期间，这个档位的房间可能涨到 800-1200 港币甚至更高。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">3.2 舒适型（600-1200 港币）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这是大多数普通游客的主流预算区间，可以在多个区域找到条件不错的中档酒店。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">优先考虑区域</strong>：尖沙咀、佐敦、湾仔、铜锣湾，以及西九龙的新酒店。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">房间预期</strong>：面积通常在 15-22 平方米，设施较新，部分含简单早餐或健身房。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">适合人群</strong>：情侣、朋友结伴、家庭短途旅行，追求干净舒适但不想花太多。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">预订策略</strong>：可提前 3-4 周比价，留意是否含早餐、是否可免费取消，并选择近地铁口 500 米内的酒店。</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这个档位在春节、圣诞、暑假等旺季可能涨到 1500-2500 港币。</p>
+  <h3 style="padding: 20px 0 10px; font-size: 18px; font-weight: 800; color: #0EA5E9; letter-spacing: -0.2px; padding-bottom: 6px; border-bottom: 1.5px solid #0EA5E933;">3.3 高端型（1200 港币以上）</h3>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这个区间开始进入四星、五星酒店范围，选择时更应关注<strong style="font-weight: 900; color: #111827;">品牌偏好、景观和附加服务</strong>。</p>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">优先考虑区域</strong>：中环、金钟、尖沙咀海滨、西九龙、铜锣湾。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">房间预期</strong>：面积通常在 25 平方米以上，配有游泳池、健身房、行政酒廊等设施。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">适合人群</strong>：商务出行、家庭度假、纪念日旅行、对服务和景观有要求的旅客。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">预订策略</strong>：建议多比较官网和 OTA 的套餐价格，关注含早餐、延迟退房、积分等权益；大型会议期间（如 Art Basel、珠宝展）价格可能翻倍甚至三倍。</li>
+  </ul>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">高档酒店的价格波动更明显，平日 1500 港币的房间，在大型活动期间可能超过 4000-5000 港币。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">四、快速选择指南</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">如果你还不确定怎么选，可以按自己的优先级直接对应：</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">你的优先级</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">建议优先区域</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">建议预算档位</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">第一次来香港，想一站式方便</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">尖沙咀/佐敦</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">舒适型</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">坐高铁或机场快线进出</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">西九龙</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">舒适型或高端型</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">预算优先，想体验本地生活</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">旺角/油麻地/深水埗</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">经济型或舒适型</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">商务出差、高端体验</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">中环/金钟</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">高端型</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">喜欢夜生活、购物</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">铜锣湾/湾仔</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">舒适型或高端型</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">带娃、行程偏文化艺术</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">西九龙</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">舒适型或高端型</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这张表可以帮你快速缩小范围，再进入具体比价环节。</p>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">五、实用提醒</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">价格波动大</strong>：香港酒店价格在节假日、周末、展会期可能上涨 1-3 倍，建议提前 1 个月以上锁定。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">房间面积小</strong>：普通三星级酒店标准间可能只有 10-15 平方米，预订前看清面积描述。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">看清楚含不含早餐</strong>：很多中档酒店房价不含早餐，需另外购买或外出解决。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">选择持牌住宿</strong>：可通过香港旅游发展局或香港旅馆业监管机构的资料，确认酒店/宾馆是否持牌。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">比价入口类型</strong>：可使用国际或本地在线旅行社（OTA）、酒店官方预订网站，以及香港旅游发展局的住宿搜索专栏进行比价。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">交通卡准备</strong>：住在地铁沿线基本能覆盖大部分行程，建议提前准备八达通或支持的交通支付工具。</li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><strong style="font-weight: 900; color: #111827;">入住/退房时间</strong>：香港多数酒店入住时间为 14:00-15:00，退房时间为 12:00 前，早到可先寄存行李。</li>
+  </ul>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">六、下一步</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">选好区域和预算后，可以按以下方向继续：</p>
+  <table style="width: 100%; border-collapse: collapse; padding: 18px 0; border: 1px solid #E5E7EB;">
+    <thead>
+      <tr style="background: #FFF5F0;;">
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">你的情况</th>
+        <th style="padding: 12px 16px; text-align: left; font-weight: 900; color: #111827; border-right: 1px solid #E5E7EB;">下一步</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">已经确定区域</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">在该区域内按地铁出口、房型和评价筛选</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">还没确定日期</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">先锁定出行日期，再看价格波动</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">想省钱</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">避开节假日和大型展会，提前预订可取消房型</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #E5E7EB;">
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">想更省心</td>
+        <td style="padding: 10px 16px; color: #374151; border-right: 1px solid #E5E7EB;">把酒店和景点、交通卡一起规划，减少跨区往返</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">官方信息来源</h2>
+      </section>
+    </section>
+  </section>
+  <ul style="padding: 14px 0 14px 24px; list-style: none; padding: 0;">
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">香港旅游发展局：www.discoverhongkong.com</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">香港差餉物业估价署（酒店/租金参考数据）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">香港旅馆业监管机构（持牌住宿查询）</span></li>
+    <li style="padding: 8px 0; color: #374151; line-height: 1.8; position: relative; padding-left: 16px;"><span style="position: absolute; left: 0; color: #0EA5E9; font-weight: bold;">•</span><span style="color: #374151;">国际及本地在线旅行社（OTA）官方网站、酒店官方预订渠道</span></li>
+  </ul>
+
+  <section style="margin: 36px 0 18px;">
+    <section style="background: #0EA5E9;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 08</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">免责声明</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">本文内容仅供参考，不构成法律、移民或专业建议。酒店价格、政策、设施及 availability 可能随时变化，请以相关政府部门、官方机构及预订平台的最新信息为准。实际预订前，请核实酒店是否持牌、退改政策、房型面积及所含服务。</p>
+
+  <section style="height: 2px; background: #E0F2FE; padding: 32px 0 28px;"></section>
+
+  <section style="padding: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(14,165,233, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #0EA5E9; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #0EA5E9; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+
+    <section style="text-align: center; padding: 16px 16px 32px; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;">
+    <p style="font-size: 18px; font-weight: 800; color: #0EA5E9; padding: 0 0 8px; letter-spacing: 1px;">港通+</p>
+    <p style="font-size: 14px; font-weight: 500; color: #555; padding: 0 0 4px; letter-spacing: 0.5px;">内地↔香港跨境问题的中文索引入口</p>
+    <p style="font-size: 12px; font-weight: 400; color: #999; padding: 0; letter-spacing: 0.8px;">结构优先 · 入口导向 · 合规底线 · 工具风格</p>
+  </section>
+
+</section>
+</div>
+</body>
+</html>

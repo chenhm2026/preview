@@ -1,0 +1,146 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>封面三版对照 · AI时代打工人自救指南</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  background: #f5f0e8; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  padding: 30px 20px;
+}
+h2 { color: #8B7355; margin-bottom: 24px; font-size: 22px; font-weight: normal; }
+.covers-wrapper { display: flex; flex-direction: column; gap: 50px; align-items: center; }
+.version-label { color: #A0926B; font-size: 15px; margin-bottom: 12px; letter-spacing: 2px; }
+.cover-container {
+  width: 900px; height: 383px; position: relative; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(139, 115, 85, 0.2); border-radius: 12px;
+  background: linear-gradient(120deg, #FBF1E8 0%, #F2DCC4 35%, #E8C5A4 75%, #D9A878 100%);
+}
+
+/* ===== 内容区（左侧） ===== */
+.content-section {
+  position: absolute; left: 50px; right: 440px; top: 85px; z-index: 10;
+}
+
+.series-sub {
+  font-size: 13px; color: #A07555; letter-spacing: 4px; margin-bottom: 16px;
+}
+.article-title {
+  font-size: 27px; color: #4A2E1A; line-height: 1.5; font-weight: 700; margin-bottom: 14px; letter-spacing: 0.5px;
+}
+.article-title .highlight { color: #B8541E; position: relative; }
+.article-title .highlight::after {
+  content: ''; position: absolute; bottom: 2px; left: 0; right: 0;
+  height: 8px; background: rgba(184, 84, 30, 0.15); z-index: -1;
+}
+.subtitle { font-size: 13.5px; color: #6B4A2E; line-height: 2; letter-spacing: 0.5px; margin-bottom: 18px; }
+
+
+
+/* ===== 右侧 SVG 插图：路径·双剪影 ===== */
+.illustration {
+  position: absolute; right: 0; top: 0; width: 420px; height: 383px; z-index: 5;
+}
+
+/* ===== 卡片要点版 ===== */
+.info-card {
+  background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(184, 84, 30, 0.25);
+  border-radius: 10px; padding: 12px 16px; margin-bottom: 14px; backdrop-filter: blur(10px);
+}
+.info-card p {
+  font-size: 12px; color: #5A3A20; line-height: 1.7;
+  display: flex; align-items: center; gap: 8px; margin: 3px 0;
+}
+.info-card .icon { color: #B8541E; font-size: 9px; }
+
+/* ===== 左下角日期（不加系列编号和品牌签名） ===== */
+.deco-corner {
+  position: absolute; bottom: 28px; left: 50px;
+  display: flex; align-items: center; gap: 10px; color: #8B5A2B;
+  font-size: 13px; opacity: 0.7; letter-spacing: 1px; z-index: 10;
+}
+</style></head><body><h2>封面三版对照（主标题 + 3 句核心观点）</h2><div class="covers-wrapper"><div class="version-label">版本一 · 标准列表版</div>
+<div class="cover-container">
+  <div class="content-section" style="top:96px;">
+    <h1 class="article-title">我在保险业，<br>劝你<span class="highlight">别急着辞职</span></h1>
+    <p class="subtitle">— 先保住主业，用副业去试水<br>— 从熟悉的领域开始，把技能跟 AI 结合<br>— 趁工资这条腿还在，先把另一条腿练起来</p>
+  </div>
+  <svg class="illustration" viewBox="0 0 420 383" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="320" cy="115" r="38" fill="#F2A878" opacity="0.6"/>
+        <circle cx="320" cy="115" r="26" fill="#E8916A" opacity="0.5"/>
+        <path d="M 0 220 L 80 190 L 160 205 L 240 175 L 320 195 L 420 180 L 420 383 L 0 383 Z" fill="#D9B594" opacity="0.55"/>
+        <path d="M 0 250 L 100 225 L 200 235 L 300 215 L 420 230 L 420 383 L 0 383 Z" fill="#C4956A" opacity="0.5"/>
+        <path d="M 0 320 Q 210 305, 420 320 L 420 383 L 0 383 Z" fill="#A07555" opacity="0.45"/>
+        <path d="M 0 340 Q 100 330, 180 325 Q 250 320, 420 305" stroke="#FBF1E8" stroke-width="3" fill="none" opacity="0.7"/>
+        <g transform="translate(280, 175)">
+          <path d="M 0 60 Q -7 30, 0 0 Q 7 30, 0 60 Z" fill="#5C3A22"/>
+          <circle cx="0" cy="-12" r="13" fill="#5C3A22"/>
+          <ellipse cx="-10" cy="22" rx="8" ry="15" fill="#7A4A30" opacity="0.85"/>
+          <line x1="15" y1="-2" x2="17" y2="62" stroke="#4A2E1A" stroke-width="2.2" stroke-linecap="round"/>
+        </g>
+        <g transform="translate(195, 270)">
+          <path d="M 0 55 Q -6 25, 0 0 Q 6 25, 0 55 Z" fill="#4A2E1A"/>
+          <circle cx="0" cy="-10" r="11" fill="#4A2E1A"/>
+          <ellipse cx="9" cy="20" rx="7" ry="13" fill="#5C3A22" opacity="0.85"/>
+        </g>
+        <ellipse cx="40" cy="350" rx="6" ry="3" fill="#5C3A22" opacity="0.5"/>
+        <ellipse cx="80" cy="345" rx="5" ry="2.5" fill="#5C3A22" opacity="0.45"/>
+        <ellipse cx="130" cy="340" rx="5" ry="2.5" fill="#5C3A22" opacity="0.4"/>
+      </svg>
+</div>
+<div class="version-label">版本二 · 序号版</div>
+<div class="cover-container">
+  <div class="content-section" style="top:96px;">
+    <h1 class="article-title">我在保险业，<br>劝你<span class="highlight">别急着辞职</span></h1>
+    <p class="subtitle"><b style="color:#B8541E;">01</b>　先保住主业，用副业去试水<br><b style="color:#B8541E;">02</b>　从熟悉的领域开始，把技能跟 AI 结合<br><b style="color:#B8541E;">03</b>　趁工资这条腿还在，先把另一条腿练起来</p>
+  </div>
+  <svg class="illustration" viewBox="0 0 420 383" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="320" cy="115" r="38" fill="#F2A878" opacity="0.6"/>
+        <circle cx="320" cy="115" r="26" fill="#E8916A" opacity="0.5"/>
+        <path d="M 0 220 L 80 190 L 160 205 L 240 175 L 320 195 L 420 180 L 420 383 L 0 383 Z" fill="#D9B594" opacity="0.55"/>
+        <path d="M 0 250 L 100 225 L 200 235 L 300 215 L 420 230 L 420 383 L 0 383 Z" fill="#C4956A" opacity="0.5"/>
+        <path d="M 0 320 Q 210 305, 420 320 L 420 383 L 0 383 Z" fill="#A07555" opacity="0.45"/>
+        <path d="M 0 340 Q 100 330, 180 325 Q 250 320, 420 305" stroke="#FBF1E8" stroke-width="3" fill="none" opacity="0.7"/>
+        <g transform="translate(280, 175)">
+          <path d="M 0 60 Q -7 30, 0 0 Q 7 30, 0 60 Z" fill="#5C3A22"/>
+          <circle cx="0" cy="-12" r="13" fill="#5C3A22"/>
+          <ellipse cx="-10" cy="22" rx="8" ry="15" fill="#7A4A30" opacity="0.85"/>
+          <line x1="15" y1="-2" x2="17" y2="62" stroke="#4A2E1A" stroke-width="2.2" stroke-linecap="round"/>
+        </g>
+        <g transform="translate(195, 270)">
+          <path d="M 0 55 Q -6 25, 0 0 Q 6 25, 0 55 Z" fill="#4A2E1A"/>
+          <circle cx="0" cy="-10" r="11" fill="#4A2E1A"/>
+          <ellipse cx="9" cy="20" rx="7" ry="13" fill="#5C3A22" opacity="0.85"/>
+        </g>
+        <ellipse cx="40" cy="350" rx="6" ry="3" fill="#5C3A22" opacity="0.5"/>
+        <ellipse cx="80" cy="345" rx="5" ry="2.5" fill="#5C3A22" opacity="0.45"/>
+        <ellipse cx="130" cy="340" rx="5" ry="2.5" fill="#5C3A22" opacity="0.4"/>
+      </svg>
+</div>
+<div class="version-label">版本三 · 卡片要点版</div>
+<div class="cover-container">
+  <div class="content-section" style="top:96px;">
+    <h1 class="article-title">我在保险业，<br>劝你<span class="highlight">别急着辞职</span></h1>
+    <div class="info-card"><p><span class="icon">◆</span>先保住主业，用副业去试水</p><p><span class="icon">◆</span>从熟悉的领域开始，把技能跟 AI 结合</p><p><span class="icon">◆</span>趁工资这条腿还在，先把另一条腿练起来</p></div>
+  </div>
+  <svg class="illustration" viewBox="0 0 420 383" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="320" cy="115" r="38" fill="#F2A878" opacity="0.6"/>
+        <circle cx="320" cy="115" r="26" fill="#E8916A" opacity="0.5"/>
+        <path d="M 0 220 L 80 190 L 160 205 L 240 175 L 320 195 L 420 180 L 420 383 L 0 383 Z" fill="#D9B594" opacity="0.55"/>
+        <path d="M 0 250 L 100 225 L 200 235 L 300 215 L 420 230 L 420 383 L 0 383 Z" fill="#C4956A" opacity="0.5"/>
+        <path d="M 0 320 Q 210 305, 420 320 L 420 383 L 0 383 Z" fill="#A07555" opacity="0.45"/>
+        <path d="M 0 340 Q 100 330, 180 325 Q 250 320, 420 305" stroke="#FBF1E8" stroke-width="3" fill="none" opacity="0.7"/>
+        <g transform="translate(280, 175)">
+          <path d="M 0 60 Q -7 30, 0 0 Q 7 30, 0 60 Z" fill="#5C3A22"/>
+          <circle cx="0" cy="-12" r="13" fill="#5C3A22"/>
+          <ellipse cx="-10" cy="22" rx="8" ry="15" fill="#7A4A30" opacity="0.85"/>
+          <line x1="15" y1="-2" x2="17" y2="62" stroke="#4A2E1A" stroke-width="2.2" stroke-linecap="round"/>
+        </g>
+        <g transform="translate(195, 270)">
+          <path d="M 0 55 Q -6 25, 0 0 Q 6 25, 0 55 Z" fill="#4A2E1A"/>
+          <circle cx="0" cy="-10" r="11" fill="#4A2E1A"/>
+          <ellipse cx="9" cy="20" rx="7" ry="13" fill="#5C3A22" opacity="0.85"/>
+        </g>
+        <ellipse cx="40" cy="350" rx="6" ry="3" fill="#5C3A22" opacity="0.5"/>
+        <ellipse cx="80" cy="345" rx="5" ry="2.5" fill="#5C3A22" opacity="0.45"/>
+        <ellipse cx="130" cy="340" rx="5" ry="2.5" fill="#5C3A22" opacity="0.4"/>
+      </svg>
+</div></div></body></html>

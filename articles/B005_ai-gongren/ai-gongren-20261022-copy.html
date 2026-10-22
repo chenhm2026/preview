@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>我在保险业，劝你别急着辞职</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; padding: 0 auto; padding: 20px 0;">
+
+  <section style="padding: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(212,98,42, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; padding-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #D4622A; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #D4622A;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: #FBEFE9;"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.10</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; padding: 0; line-height: 1.1; letter-spacing: -1px;">我在保险业，劝你别急着辞职</p>
+          <section style="width: 48px; height: 3px; background: #D4622A;; border-radius: 2px; padding: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; padding: 0; line-height: 1.7; letter-spacing: 0.5px;">钱难赚、岗位变少、AI 又来了——打工人的旧剧本正在失效，但新门刚刚打开</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+<section style="text-align: center; font-size: 14px; color: #A0926B; padding: 0 0 12px;">📖 全文 4076 字 · 约 14 分钟</section>
+<section style="background: #FBF6EC; border-left: 4px solid #D4622A; border-radius: 8px; overflow: hidden; padding: 0 0 28px 0;"><section style="padding: 18px 22px;"><section style="padding-bottom: 10px;"><span style="font-size: 14px; color: #D4622A; font-weight: bold; letter-spacing: 1px;">📌 本期导读</span></section><section><p style="font-size: 15px; color: #4A3728; line-height: 1.8; padding: 0; padding: 0 0 6px;">经济下行叠加 AI 冲击，打工人的旧剧本正在失效。这篇是我和身边朋友的真实观察，也是一套我亲身验证过的顺序：<strong style="font-weight: 900; color: #111827;">别急着辞职，先保住主业</strong>，用熟悉的行业加 AI 做副业去探收入上限，再给自己的下半程留一条退路。</p></section></section></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #D4622A;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">中年打工人的职场瓶颈</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">最近挺多朋友看到我发的朋友圈，说羡慕我在保险业做得自由自在，又开心，还能赚到钱。可羡慕归羡慕，真跟他们深聊起来才发现，这份羡慕背后，其实是每个人在职场里各有各的难处。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">有个朋友说，他工作也快十年了。老板交代的任务，他很多时候一眼就能看出做下去有没有效果。有些事明知道做不出成果，但为了“碎银几两”，还是得硬着头皮做，甚至要加班加点地做，还学不到什么东西。再加上现在经济下行，晋升不像过去那么快，跳槽涨薪也没以前那么容易了。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">我把这个现象总结为“<span style="color: #B54432; background: #D4622A22;; padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.3px;">中年打工人遇到的职场瓶颈</span>”。这种情况其实不只是经济下行的当下才有，只要工作几年，大家都会遇到。<strong style="font-weight: 900; color: #111827;">只是过去经济上行，项目多、机会多，把这个矛盾掩盖了而已。</strong></p>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #D4622A;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">我们从小信的那句话，正在失效</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这个瓶颈的根源，其实要从我们从小被教导的那句话讲起。我们这代人从小就被教导：好好读书，毕业出来找一份好工作。这个信念在我们父辈那代，确实是成立的。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">父辈那代，毕业之后可能有单位分配工作。就算没有分配工作，90年代改革开放，国家在发展，机会也多很多。也有一批人选择去国央企、体制内，求个稳定，过上一眼望得到头的日子，那时候的工作量也没有现在这么繁重。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">到了10年前后，互联网腾飞，很容易就能进到一家大公司，有的时候甚至学历都不用多好，因为那会儿人才需求缺口巨大。只要在一家公司好好工作，跟着公司发展，除了工资之外还能有分红什么的。总之在10年前后，只要你好好工作，收入也是不会差的。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我是2015年毕业于厦大的，我们那批同学都往外企、互联网跑，因为大家认为互联网正在蓬勃发展，体制外赚得更多。我们当中不少学财会金融的同学，愿意去四大会计师事务所，坚信在那边熬个几年，出来就能去企业就任管理类职位，熬得久一点，当上财务一二把手也更容易。那会儿，一切看起来都是向好的。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">转折是慢慢来的。疫情期间经济其实有受影响，但大家心里一直抱着一个期望，觉得只要等疫情过去了，经济就会回到从前。因为有这股期望在，所以大环境并没有像现在这么不好。但疫情结束之后，地产爆雷的效果慢慢显现，中国经济增速明显放缓了。房地产行业垮了，上下游全受影响，很多土木、建筑专业的学生，还没毕业就已经面临失业。这点我自己的体感也很明显。虽然我的简历在各大求职平台上面很久没有更新了，但一般都会有猎头来联系我。能明显感觉到的是，疫情后猎头找我的频率少了很多。后来我也跟不少猎头聊过，他们跟我说了两个原因。我原来做的是财资系统，搭建系统本来就需要企业投入很多资金，而且短期内未必看得到效果，所以企业在这方面的预算在收缩，相应的岗位也跟着减少。另外，企业整体预算缩减，花在猎头推人上的钱也在往下走，很多招聘干脆不外包，由内部人事自己做。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">再之后，AI来了。受冲击最直接的，是那些执行类岗位，比如设计师。再加上经济下行、内需疲软、年龄压力这些本来就存在的因素，一个兢兢业业打工的人，可能一下子就面临下岗。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">体制内也在反向内卷。我找了几个00后的本科毕业生来帮我带娃（可以看我前面写过的文章），她们很多一边在我这里工作，一边备考公务员，因为外面的工作岗位并不好找。现在体制内一份稳定的、能见得到头的工作，反倒变成了香饽饽。有个女孩子跟我讲，深圳街道办的编外岗位，过去笔试成绩七十几分就有面试机会，现在有的区要到九十几分才能进面，已经卷到白热化了。这其实就是经济体增速放缓、人才供过于求最直接的体现。</p>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #D4622A;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">最坏的时代，也是最好的时代</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">所以很多人说，这是打工人最坏的时代。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">但换个角度看，它可能也是最好的时代——旧门虽然窄了，新门却开了。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">因为AI的出现。过去你想做电商，做一张设计图、一张海报、产品的相关文档，你必须花钱，而且是花很多钱去找设计师打磨。现在你跟AI说几句话，它分分钟就给你做出来，时间短、效果好。效果当然比不上顶级设计师，但对刚起步的人来说够用了——真要卷精细度，那是另一个成本档位的事。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">所以我觉得，当下是<span style="color: #B54432; background: #D4622A22;; padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.3px;">“一人公司”</span>创业最好的时代，门槛变低了。而且互联网真的把整个地球变成了一个地球村，很多事可以足不出户、甚至上班兼着做就能完成。<strong style="font-weight: 900; color: #111827;">一个人，用AI做过去一整个团队的活，第一次成为可能。</strong></p>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #D4622A;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">先说清楚：我不是劝你辞职</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">但请注意，我不是劝你辞职。</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我做保险一开始就没有all in。这行很多保险人熬不过第一年，尤其是前六个月最难熬，我就是平稳地在原来的工作中度过最前面的难熬阶段。等副业稳定了，才能考虑要不要把原工作辞掉，把副业转正。如果一上来就辞职，对小年轻来说可能还好，但对我这种三十几岁、上有老下有小的人，试错成本太高了；而且我在职场年薪已经不低，当前大环境又不好，这时候辞职出来独立创业，风险是非常高的。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">我见过很多从大厂出来的人，以为是自己能力强，其实很多能力要依托原先大平台的资源才能展现；一旦创业失败也很难再回到职场。其实这样的情况不在少数，<strong style="font-weight: 900; color: #111827;">创业成功是一种幸存者偏差</strong>，成功的例子我们才看得见，我们看不见的是背后数以万计的失败案例。</p>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #D4622A;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">到底应该怎么开始</h2>
+      </section>
+    </section>
+  </section>
+
+  <section style="padding: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #D4622A; border-radius: 0 12px 12px 0; ">
+    <section style="display: block; align-items: center; padding-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">✨</span>
+      <span style="font-size: 16px; font-weight: 900; color: #D4622A; letter-spacing: -0.2px;">怎么开始：先保住主业，用副业去试水</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; padding: 0;">因为是副业、兼职，人手和精力都有限，主业是你目前的收入来源，不能因为做副业而忽略主业的工作，这是非常重要的，人还是要现实一点。原来的工作要做好，同时去探索新的可能性。所以我说，AI的出现是做兼职最好的时代，赋予了做兼职的可能性。</p>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">而且，如果要创业、要做一人公司，不应该是从零开始做。我见过太多人创业，一上来就开餐馆、卖衣服、加盟奶茶店。为什么？因为很多人觉得这些事门槛相对低，就算没做过，也能大概想出一二三。<strong style="font-weight: 900; color: #111827;">但其实很多看起来没门槛的事，隐形门槛高得吓人</strong>，而且这类创业首先就要投入不低的初始成本，比如装修和加盟费。没有相关行业经验，相当于从零开始创业，风险非常大，最后很容易沦为加盟平台的韭菜。这些平台到后面，赚的已经不完全是消费者的钱，更多是加盟商的钱。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">就算要创业，也一定要从自己熟悉的领域开始。原来做人事，就做人事相关+AI；原来做摄影，就做摄影相关+AI；原来做财务，就做财务相关+AI。如果不知道要做什么，甚至都可以跟AI聊一聊，或者上网搜集大量资料。现在互联网信息比过去透明多了，不过信息差还在。<strong style="font-weight: 900; color: #111827;">不要抛弃你原来的行业。</strong>你在这一行深耕多年，手里有资源，哪怕这个资源是公司给你的，它也能让你不用从零起步；而且你懂这一行的规则，把规则利用好，变现更快、概率也更大，好过从平地建高楼。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">过去各行各业都在讲传统行业+互联网，叫<span style="color: #B54432; background: #D4622A22;; padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.3px;">“互联网+”</span>，原来只在一个地方卖的东西，因为有了互联网，可以推广到全国甚至全球。我觉得AI+也是一样的，把你自己会的技能跟AI结合在一起，趁着AI正在发展，这是一个非常好的趋势。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我自己验证过的路，就是AI+保险。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我做保险到现在，逐渐一个人忙不过来了。按以前，我可能需要招聘一个秘书帮我处理文书工作，比如做图、做数据。我家老陈是搞IT的，他给我搭了一个AI Agent，帮我做了一个<span style="color: #B54432; background: #D4622A22;; padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.3px;">AI数字分身</span>，代替我处理一些繁琐、重复的工作，甚至一些创造性工作也可以交给它。只不过创造性工作，无论AI产出什么，目前都不能完全替代人，所以我需要对AI产出的内容进行审核。就好比这个公众号的文章，AI帮我提升了写作效率，但每个字我都逐一校对过。这样比我从零开始做，肯定省心多了。过程中如果我觉得哪里做得不好，就给它纠偏；AI会记住，并模仿我的语气和语言习惯，应用到日后生成的资料里。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">老陈在我身上实验成功之后，就把这个“AI+保险”包装成一个产品，卖给其他保险从业人员。这是老陈的副业，而且已经有一些收入了，我觉得这是一个向好的信号。我们常说，站在风口上猪都会飞，我们现在还没有起飞，不过顺着潮流做事，总归稳妥一些。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不过我也说句实话，很多人其实没有AI这方面的技能，这事是有门槛的。像之前很火的“龙虾”，很多人头脑一热就去做，又没有这方面的基础，对IT一无所知，结果出现授权过大、自己账户里的钱被偷之类的情况。所以这件事本身是技术活，有门槛。我非常不建议不懂的人自己去做；当然你可以尝试，但确实很难。也正因为有门槛，帮人搭建AI这件事本身就有需求。老陈也在同步开展这个业务，事实证明需求很大。如果其他行业的朋友也有搭建AI Agent的需求，也可以联系他。老陈懂技术，也能把事靠谱地落地。感兴趣的朋友，可以在公众号后台回复“AI”，我会把联系方式发给你。</p>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #D4622A;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">往上探上限，往下留退路</h2>
+      </section>
+    </section>
+  </section>
+
+  <section style="padding: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #D4622A; border-radius: 0 12px 12px 0; ">
+    <section style="display: block; align-items: center; padding-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">✨</span>
+      <span style="font-size: 16px; font-weight: 900; color: #D4622A; letter-spacing: -0.2px;">打工人不能只有工资这一条腿</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; padding: 0;">我见过太多房地产那一波的人，被逼上绝路才开始探索新的收入渠道。但到那时候已经太晚了，也没给自己留退路。所以别等腿断了再想办法，趁工资这条腿还在，先把另一条腿练起来。</p>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">往上，是副业，去探收入的上限和天花板。副业可以尝试，但我也清楚，不是每个人都适合。如果副业开展不起来，那就更应该考虑把现在收入波峰的钱，填到未来的收入波谷。哪怕副业真的做起来了，未来收入也充满不确定性，依然要为自己多留一条退路，让某个年龄之后的自己，每月能定期领到一笔钱，作为收入补充。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这个社会并没有给我们留下多少试错的空间。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">狡兔尚且有三窟，我们更要给自己多留几条退路。<strong style="font-weight: 900; color: #111827;">上限可以努力去突破，但起码，要给自己留一个保底的东西。</strong></p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">可能有人会说，不是有五险中的养老金吗？</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">五险还是得交，这是国家福利。但除了五险，我们不能只依赖国家到时给我们发退休金。我们下一代出生人口锐减，我们现在交的五险，其实是在托住上一辈的退休金。80后、90后、00后，如果在民营企业工作，很可能还没到退休就被优化掉了，很难干到国家规定的退休那一天，就更别提延迟退休了。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">所以与其等着冲击到来、等着被裁员，再来想这件事，不如现在就开始想：我现在会的技能、资源，跟AI可以怎么结合？</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">不妨试一试。就算创业真的失败，我们也只是兼职在做，主业并没有辞掉；而且AI创业已经大幅降低了成本。成本当然要付出，但没有想象中那么高。可如果不试，我们只能坐在原地，等着某一天被淘汰——而等待被淘汰的过程，其实非常可怕。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">时代给我们的剧本失效了，但门没有关死。<strong style="font-weight: 900; color: #111827;">打工人的出路不是换一份更好的工作，而是在工资之外，让自己再多一个甚至多个收入来源。</strong></p>
+
+  <section style="height: 2px; background: #F5DDD0; padding: 32px 0 28px;"></section>
+
+  <section style="padding: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(212,98,42, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #D4622A; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #D4622A; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+  <section style="padding: 0 0 16px; padding: 22px 24px; background: #ffffff; border-radius: 14px; border: 1px solid rgba(212,98,42, 0.15); border-left: 3px solid #D4622A;">
+    <p style="font-size: 14px; font-weight: 700; color: #D4622A; padding: 0 0 8px; letter-spacing: 0.3px;">💬 聊聊你的故事</p>
+    <p style="font-size: 14px; color: #374151; line-height: 1.85; padding: 0;">如果明天工资停了，你现在能站稳的腿有几条？要是那条“另一条腿”已经开始了，方便说说是什么吗？</p>
+    <p style="font-size: 14px; color: #BBBBBB; padding: 10px 0 0; line-height: 1.6;">欢迎在留言区聊聊～</p>
+  </section>
+
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 15px; font-weight: 700; color: #1a1a1a; padding: 0 0 4px; letter-spacing: 0.3px; white-space: pre-line;">我是Kay，也可以叫我小许。
+始终坚持以解决问题为导向，
+用专业守护重要的人与未来。</p>
+    <p style="font-size: 14px; color: #BBBBBB; padding: 0; letter-spacing: 0.5px;">把复杂的事讲清楚，陪你一步步理明白</p>
+  </section>
+
+  <p style="font-size: 14px; color: #374151; line-height: 2; padding: 0 0 24px; word-break: break-all;">#AI时代 #副业 #职场瓶颈 #一人公司 #打工人 #收入结构 #职业规划 #同行者手记</p>
+</section>
+</div>
+</body>
+</html>

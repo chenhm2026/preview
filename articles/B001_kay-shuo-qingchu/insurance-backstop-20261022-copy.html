@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>保险公司会不会倒？聊聊保单背后的兜底机制</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background-color: #f5f5f5;
+  }
+  .push-container {
+    max-width: 677px;
+    margin: 0 auto;
+    background: #ffffff;
+  }
+  #copy-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 999;
+    background: #ffffff;
+    border: 1.5px solid rgba(222,115,86,0.35);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #DE7356;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+    white-space: nowrap;
+  }
+  #copy-btn:hover { background: #DE7356; color: #ffffff; border-color: #DE7356; }
+  #copy-btn.copied { background: #22C55E; color: #ffffff; border-color: #22C55E; }
+  .copy-hint {
+    position: fixed;
+    top: 60px;
+    right: 16px;
+    background: rgba(34,197,94,0.95);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    z-index: 998;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  }
+  .copy-hint.show { opacity: 1; }
+</style>
+<script>
+  function copyArticle() {
+    var btn = document.getElementById('copy-btn');
+    var container = document.querySelector('.push-container');
+    if (!container) return;
+    // 策略 1：ClipboardItem API（富文本，Chrome 76+, Safari 13.1+）
+    if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+      var html = container.innerHTML;
+      var blob = new Blob([html], {type: 'text/html'});
+      var plainBlob = new Blob([container.innerText], {type: 'text/plain'});
+      navigator.clipboard.write([
+        new ClipboardItem({'text/html': blob, 'text/plain': plainBlob})
+      ]).then(function(){ showCopied(btn); }).catch(function(){ fallbackCopy(btn, container); });
+    } else {
+      fallbackCopy(btn, container);
+    }
+  }
+  function fallbackCopy(btn, container) {
+    // 策略 2：Range + execCommand（老浏览器，部分 sandboxed iframe 仍可用）
+    var range = document.createRange();
+    range.selectNodeContents(container);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) { copied = false; }
+    sel.removeAllRanges();
+    if (copied) { showCopied(btn); return; }
+    // 策略 3：textarea + execCommand（绕过 Range 在 sandbox 失败的情况）
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = container.innerText;
+      ta.style.position = 'fixed';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copied = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (copied) { showCopied(btn); return; }
+    } catch(e) {}
+    // 策略 4：弹窗让用户手动复制（终极兜底，f018 实证飞书内置浏览器走到这里）
+    showHint('复制失败，请长按下方文字全选复制', container);
+  }
+  function showCopied(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 已复制';
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = '已复制全文，去公众号编辑器粘贴即可';
+    if (hint) hint.classList.add('show');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> 一键复制';
+      if (hint) hint.classList.remove('show');
+    }, 2500);
+  }
+  function showHint(msg, container) {
+    var hint = document.getElementById('copy-hint');
+    if (hint) hint.textContent = msg;
+    if (hint) hint.classList.add('show');
+  }
+</script>
+</head>
+<body>
+<button id="copy-btn" onclick="copyArticle()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+  一键复制
+</button>
+<div id="copy-hint" class="copy-hint">已复制全文，去公众号编辑器粘贴即可</div>
+<div class="push-container">
+<section style="font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background-color: #ffffff; color: #374151; line-height: 1.75; letter-spacing: 0.5px; font-size: 16px; max-width: 677px; padding: 0 auto; padding: 20px 0;">
+
+  <section style="padding: 0 0 32px; background: #ffffff; border: 1.5px solid rgba(212,98,42, 0.2); border-radius: 20px; overflow: hidden; width: 100%;">
+    <section style="padding: 32px 28px 28px;">
+      <section style="display: block; align-items: center; padding-bottom: 24px;">
+        <span style="width: 6px; height: 6px; background: #D4622A; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 11px; font-weight: bold; letter-spacing: 3px; color: #D4622A;">BREAKING</span>
+        <span style="width: auto; height: 1px; background: #FBEFE9;"></span>
+        <span style="font-size: 10px; color: #D1D5DB; font-weight: bold;">2026.10</span>
+      </section>
+      <section style="display: block; align-items: center; ">
+        <section style="width: auto;">
+          <p style="font-size: 26px; font-weight: 900; color: #111827; padding: 0; line-height: 1.1; letter-spacing: -1px;">保险公司会不会倒？聊聊保单背后的兜底机制</p>
+          <section style="width: 48px; height: 3px; background: #D4622A;; border-radius: 2px; padding: 12px 0;"></section>
+          <p style="font-size: 13px; color: #9CA3AF; padding: 0; line-height: 1.7; letter-spacing: 0.5px;">两道防线 + 两个视角，讲清楚保单背后的兜底逻辑</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+<section style="text-align: center; font-size: 14px; color: #A0926B; padding: 0 0 12px;">📖 全文 3138 字 · 约 11 分钟</section>
+<section style="background: #FBF6EC; border-left: 4px solid #D4622A; border-radius: 8px; overflow: hidden; padding: 0 0 28px 0;"><section style="padding: 18px 22px;"><section style="padding-bottom: 10px;"><span style="font-size: 14px; color: #D4622A; font-weight: bold; letter-spacing: 1px;">📌 本期导读</span></section><section><p style="font-size: 15px; color: #4A3728; line-height: 1.8; padding: 0; padding: 0 0 6px;">来买养老金、教育金、重疾险、医疗险这类长期产品，客户问得最多的一句话是：保险公司万一倒了，我的保单怎么办？我的保障会不会受影响？这篇按“两道防线+两个视角”来讲，把保单背后的兜底逻辑一次讲清楚。</p></section></section></section>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #D4622A;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 01</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">客户常问这个问题</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">“保险公司万一倒了，我的保单怎么办？我的保障会不会受影响？” 这是客户常问我的其中一个问题。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">他们这么问，不是不信任我，是变谨慎了。自己吃过亏的，会怕；没吃过亏的，也听过别人吃亏。我特别理解这个担心。前几年P2P爆雷，多少人一辈子的积蓄说没就没了。养老本这种东西，谁都不敢赌。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">所以今天我们就从这个问题聊起：保险公司到底会不会倒？真出问题了，保单还有人管吗？</p>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #D4622A;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 02</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">先说结论</h2>
+      </section>
+    </section>
+  </section>
+
+  <section style="padding: 24px 0; padding: 20px 22px; background: #ffffff; border-left: 4px solid #D4622A; border-radius: 0 12px 12px 0; ">
+    <section style="display: block; align-items: center; padding-bottom: 10px;">
+      <span style="font-size: 18px; line-height: 1;">✨</span>
+      <span style="font-size: 16px; font-weight: 900; color: #D4622A; letter-spacing: -0.2px;">先说结论</span>
+    </section>
+    <p style="font-size: 15px; color: #374151; line-height: 1.8; padding: 0;">保险公司可以破产，但客户的保单还是能得到保障的，不会因此权益受损。
+这背后不是靠哪家公司有良心，而是整套制度在后面托着。</p>
+  </section>
+
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我按“两道防线+两个视角”来讲：两道防线是法律与案例、<span style="color: #B54432; background: #D4622A22;; padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.3px;">再保险</span>与保障计划；两个视角是香港保险业的真实需求，以及巴菲特为什么长期押注保险。</p>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #D4622A;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 03</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">第一道防线：公司可以倒，保单不能没人管</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">香港<span style="color: #B54432; background: #D4622A22;; padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.3px;">《保险业条例》（第41章）第46条</span>规定：</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">(1) 本条对属经营长期业务公司的保险人的清盘有效。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">(2) 除非法庭另有命令，否则清盘人须继续经营保险人的长期业务，目的是将该业务作为正营运中的事业而转让给另一保险人，不论此保险人是已存在的保险人或为此目的而成立的保险人…… 法条读起来太绕了，翻译成大白话就是—— 保险公司可以进入清盘或破产程序，但保单不能没人管。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">法律不允许它拍拍屁股走人，把保单扔下不管。监管会摁着保险公司继续经营，直到把保单安顿好。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">内地《保险法》也是这样的。两地做法异曲同工——<strong style="font-weight: 900; color: #111827;">保单优先，公司后置。</strong>光说法律条文还是有点虚，咱们来看个真实案例。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">香港的富通保险，现在叫周大福人寿。这家公司本身不是倒闭案例，但也是一个典型代表，它经历过一次完整的“换东家”。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">富通保险在香港扎根近四十年，股权几经转手。2018年，当时的股东九鼎系陷入困境，把富通保险100%股权卖给周大福集团旗下的公司，作价215亿港元。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">交易完成后，公司继续正常经营。客户保单的保障、利益、日常管理，都没受影响。2024年，公司进一步更名为“周大福人寿”。整个过程里，保单持有人没有因为股东出问题而受到任何损失。<strong style="font-weight: 900; color: #111827;">该理赔理赔，该续保续保。</strong></p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">资本可以换，保单不能断。</strong>富通保险旗下的所有保单，包括储蓄分红寿险、重疾险、医疗险等主流产品，都被周大福人寿完整承接下来了。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">再看看内地华夏人寿这个典型案例。这家公司后来出问题，根本原因是“明天系”旗下激进扩张、违规运用资金，加上投资端踩雷，偿付能力一路恶化，2020年7月被监管正式接管。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">最终的处置方式是，原银保监会批准筹建瑞众人寿，由保险保障基金和多家国资寿险公司共同出资。瑞众人寿开业后，依法受让华夏人寿的资产负债，全面履行保险合同义务。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">客户的保单没有作废，原合同继续有效，权益不受影响，只是换了一家公司继续兑付。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这两个例子的共同点是，不管是股东出问题，还是公司自身出问题，保单都被完整承接、继续有效。对于消费者来说，最重要的是保单上的承诺会有人接着兑现。</p>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #D4622A;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 04</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">第二道防线：保费背后还有再保险和保障计划</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">很多人不知道，保险公司自己也是要买保险的——再保险。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">保险公司把一部分风险分给再保险公司，相当于“保险公司的保险公司”。监管要求保险公司对经营的风险做足够的再保险安排，不能把所有风险都压在自己身上。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">真遇上大地震、大瘟疫这种单一公司扛不住的极端情况，再保险公司会承担相当一部分赔付。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">除此之外，香港正在推进设立<span style="color: #B54432; background: #D4622A22;; padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.3px;">保单持有人保障计划</span>。按方案设计，保险公司会按保费缴付征费，钱攒成基金；万一有公司无力偿债，保单持有人可以从基金获得赔偿，基金也会出钱促成保单转让，让保障继续有效。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">所以客户的保费，不是交给一家公司赌它不倒，而是进了一个多层缓冲的系统：公司自己扛一层，再保险分一层，香港正在推进的保障计划，未来再托底。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">讲完两道防线，再换两个角度看：一个是香港本地的真实需求，一个是巴菲特的选择。</p>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #D4622A;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 05</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">视角一：为什么香港的保险业“被逼得这么发达”</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">聊到这里，我想插一个看似跟本文主题无关、但很能说明问题的角度。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">香港和内地有一个很大的不同：香港没有内地那种统筹发放的退休养老金。香港70岁以上的居民可以领“<span style="color: #B54432; background: #D4622A22;; padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.3px;">生果金</span>”，也就是高龄津贴，2026年2月起每月可以领1675港元，一年下来两万港元出头。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">在香港的物价水平下，这笔钱能做什么，大家心里有数。另外还有长者生活津贴，每月4345港元，但要通过收入和资产审查，并非人人都能领取。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我在香港这些年，见过很多次这样的画面：七八十岁的阿公阿婆还在路边捡纸皮、收废纸去卖。不是他们闲不住，是手停口停。政府的安全网，兜住的是“不至于饿死”；想过一个有体面、有尊严的晚年，光靠这点钱是不够的。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">医疗这边也一样。香港没有内地那种全民医保，很多人会说香港公立医院便宜、医生水平高，这话没错，但公立医院人手有限，排期很长。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">我爸之前眼睛雾蒙蒙的，感觉不舒服，但还不影响视力，去公立医院一查，是轻度白内障，需要手术，结果医生给的排期是4年后。后来我们带他回广东做的手术。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">香港公立医院虽然便宜，但真遇到需要手术、又不想一直等的情况，很多人会转向私家医院。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">私家医院不用排那么久，但费用高，所以香港本地人往往会额外买补充医疗险，就是为了需要的时候能随时去私家医院看病，不用一直等。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">正因为这样，香港人对商业保险的需求是刚性的。补充医疗、重疾、养老储蓄这些东西，在香港不是有钱人的理财选择，是普通打工人给自己晚年买的底线。要是不在年轻的时候把钱放进去，老了就只能靠每月那一千多块。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">这个现实，反过来塑造了香港保险业的生态。所以香港保险业是一个被真实需求逼出来的市场，监管不可能坐视不管。当千千万万普通人的晚年都压在商业保单上的时候，保险出问题就不再是“某家公司经营不善”那么简单。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;"><strong style="font-weight: 900; color: #111827;">它是民生问题。</strong>政府可以接受一家公司倒，但不能接受一整代人的医疗、重疾和养老保障跟着一起倒。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">这也解释了为什么香港保险业的监管逻辑，从来是“<span style="color: #B54432; background: #D4622A22;; padding: 2px 8px; border-radius: 4px; font-weight: 700; letter-spacing: 0.3px;">事前严防、事后兜底</span>”。不是政府对保险公司特别仁慈，是这个行业承载的东西太重了。<strong style="font-weight: 900; color: #111827;">重到不能让它随便塌。</strong></p>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #D4622A;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 06</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">视角二：巴菲特为什么长期押注保险</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">聊到这儿，可能有人还是觉得，前面说的都是出事之后怎么救。那出事之前，这个行业是否靠谱呢？这里我要请出知名投资家巴菲特——他基本上把整个投资生涯都押在了保险上。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">1967年，他收购国民赔偿保险公司，保险从此成为伯克希尔·哈撒韦（巴菲特掌舵的投资控股公司）的核心引擎。后来又收购GEICO、通用再保险等公司。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">巴菲特在2013年致股东的信里写过一句话，原文是：</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">“Let’s look first at insurance, Berkshire’s core operation and the engine that has consistently propelled our expansion since that 1967 report was published.”</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">直译过来就是：“我们先来看保险——它是伯克希尔的核心运营，也是自1967年年报发布以来持续推动我们扩张的引擎。”</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">巴菲特在股东大会上多次表示，保险是伯克希尔的核心。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">我说这些，不是让你去买伯克希尔的股票，也不是说巴菲特买的东西就一定不出问题。如果保险真是一个“随时可能归零”的行业，一个公认最会算账的人，不会把核心业务放在这里五六十年。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">他敢把核心业务长期放在保险上，前提之一是这行受监管、有制度兜底。否则一次系统性崩塌，再好的模式也没用。</p>
+
+  <section style="padding: 36px 0 18px;">
+    <section style="background: #D4622A;; border-radius: 12px; overflow: hidden; display: block; width: 100%; box-sizing: border-box; padding: 16px 20px;">
+      <section style="padding-bottom: 6px;">
+        <span style="font-size: 10px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,0.7); text-transform: uppercase;">PART 07</span>
+      </section>
+      <section style="display: block;">
+        <h2 style="font-size: 20px; font-weight: 900; color: #ffffff; padding: 0; letter-spacing: -0.2px; line-height: 1.35; word-break: break-word; overflow-wrap: break-word;">写在最后</h2>
+      </section>
+    </section>
+  </section>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">回到最开始那个问题：保险公司会不会倒？ 会。</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">但客户的保单，不会因为公司倒了就跟着失效。这不是哪一家公司的承诺，而是法律、再保险和监管处置机制在一起兜底。买长期产品时担心的那个“万一”，过去几十年里已经出现过多次，也都有相应的处置路径。</p>
+  <p style="padding: 28px 0; color: #374151; line-height: 1.8; font-size: 16px;">说到底，买长期的东西，本来就该多问几句。问清楚了再下手，比稀里糊涂签单要负责任得多。汉字守恒: 2723 -> 2723 OK</p>
+  <p style="padding: 14px 0; color: #374151; line-height: 1.8; font-size: 16px;">正文段落: 41 | 最长: 239 | >90字残留: 11</p>
+
+  <section style="height: 2px; background: #F5DDD0; padding: 32px 0 28px;"></section>
+
+  <section style="padding: 0 0 16px; padding: 24px 24px 20px; background: #fff8f5; border-radius: 16px; border: 1px solid rgba(212,98,42, 0.12); text-align: center;">
+
+    <p style="font-size: 14px; color: #D4622A; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">🌟 感恩每一次的相遇与陪伴。</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0 0 12px;">如果刚好能帮到你，不妨顺手转给身边需要的朋友，让这份价值继续传递。</p>
+    <p style="font-size: 14px; color: #D4622A; font-weight: 700; line-height: 1.9; padding: 0 0 6px;">👉 喜欢我们的内容？</p>
+    <p style="font-size: 14px; color: #555555; line-height: 1.9; padding: 0;">点击头像进入主页，选择「关注」；<br>再点右上角「···」设为「⭐星标」，<br>这样就不会错过我们的每一次更新啦！</p>
+
+  </section>
+
+
+  <section style="padding: 0 0 16px; padding: 22px 24px; background: #ffffff; border-radius: 14px; border: 1px solid rgba(212,98,42, 0.15); border-left: 3px solid #D4622A;">
+    <p style="font-size: 14px; font-weight: 700; color: #D4622A; padding: 0 0 8px; letter-spacing: 0.3px;">💬 聊聊你的故事</p>
+    <p style="font-size: 14px; color: #374151; line-height: 1.85; padding: 0;">你有没有因为一家公司出过事，就不敢再碰同类产品的经历？后来是怎么重新建立信心的？</p>
+    <p style="font-size: 14px; color: #BBBBBB; padding: 10px 0 0; line-height: 1.6;">欢迎在留言区聊聊～</p>
+  </section>
+
+
+  <section style="text-align: center; padding: 4px 0 32px;">
+    <p style="font-size: 15px; font-weight: 700; color: #1a1a1a; padding: 0 0 4px; letter-spacing: 0.3px; white-space: pre-line;">我是Kay，也可以叫我小许。
+始终坚持以解决问题为导向，
+用专业守护重要的人与未来。</p>
+    <p style="font-size: 14px; color: #BBBBBB; padding: 0; letter-spacing: 0.5px;">把复杂的事讲清楚，陪你一步步理明白</p>
+  </section>
+
+  <p style="font-size: 14px; color: #374151; line-height: 2; padding: 0 0 24px; word-break: break-all;">#香港保险 #保险公司倒闭 #保单安全 #保险监管 #储蓄险 #养老金 #Kay说清楚</p>
+</section>
+</div>
+</body>
+</html>
